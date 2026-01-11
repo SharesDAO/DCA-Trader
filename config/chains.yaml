@@ -1,0 +1,30 @@
+# Blockchain configuration for different networks
+
+ethereum:
+  chain_id: 1
+  name: "Ethereum Mainnet"
+  usdc_address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  alchemy_network: "eth-mainnet"
+  native_token: "ETH"
+
+arbitrum:
+  chain_id: 42161
+  name: "Arbitrum One"
+  usdc_address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
+  alchemy_network: "arb-mainnet"
+  native_token: "ETH"
+
+base:
+  chain_id: 8453
+  name: "Base"
+  usdc_address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+  alchemy_network: "base-mainnet"
+  native_token: "ETH"
+
+bnb:
+  chain_id: 56
+  name: "BNB Chain"
+  usdc_address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"
+  alchemy_network: "bnb-mainnet"
+  native_token: "BNB"
+  note: "Uses BNB_RPC_URL from .env (Alchemy doesn't support BSC)"

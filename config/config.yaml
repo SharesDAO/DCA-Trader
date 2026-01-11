@@ -1,0 +1,39 @@
+# DCA Trading Bot Configuration
+
+# Blockchain selection: ethereum, arbitrum, base, bnb
+blockchain: arbitrum
+
+# Vault address (holds main funds)
+vault_address: "0x..."
+
+# SharesDAO Pool addresses (auto-populated from API, optional fallback)
+pool:
+  mint_address: ""  # Buy orders sent here (loaded from API)
+  burn_address: ""  # Sell orders sent here (loaded from API)
+
+# Trading parameters
+trading:
+  max_usd_per_wallet: 40  # Maximum USDC per wallet
+  min_usd_per_wallet: 20   # Minimum USDC per wallet (should be >= $5 for valid orders)
+  order_expiry_days: 2     # Order expiration in days
+  min_profit: 1            # Minimum profit percentage to sell
+  max_hold_days: 3        # Maximum holding days before selling
+  max_loss_traders: 3      # Max consecutive losses before abandoning wallet
+  
+# Trading pools (each pool represents a stock/ticker)
+# Leave empty to use all available pools from SharesDAO, or specify tickers to filter
+stocks:
+  # Example: Specify pool tickers you want to trade (optional)
+  - AAPL
+  - GOOGL
+  - TSLA
+  - NVDA
+  - MSFT
+  # Or leave as empty list [] to trade all available pools
+
+# Monitoring settings
+monitoring:
+  check_interval_seconds: 600  # Check every 10 minutes
+  
+# Dry-run mode (true = simulate only, false = real trading)
+dry_run: false

@@ -77,6 +77,11 @@ class TradeManager:
                 logger.error(f"Wallet not found: {wallet_address}")
                 return None
             
+            # Ensure wallet has enough gas
+            if not self.wallet_manager.ensure_wallet_has_gas(wallet_address, dry_run=dry_run):
+                logger.error(f"Wallet {wallet_address} has insufficient gas and cannot be refilled")
+                return None
+            
             # Get current stock price
             current_price = self.api.get_stock_price(stock_ticker)
             if not current_price:
@@ -112,6 +117,7 @@ class TradeManager:
                 customer_id=customer_id,
                 mint_address=self.config.mint_address,
                 expiry_days=self.config.order_expiry_days,
+                order_type='LIMIT',  # Always use LIMIT for buy orders
                 dry_run=dry_run
             )
             
@@ -141,7 +147,8 @@ class TradeManager:
             return None
     
     def place_sell_order(self, wallet_address: str, stock_ticker: str,
-                        quantity: float, dry_run: bool = False) -> Optional[str]:
+                        quantity: float, order_type: str = 'LIMIT',
+                        dry_run: bool = False) -> Optional[str]:
         """
         Place a sell order by sending stock tokens to pool with memo.
         
@@ -149,6 +156,7 @@ class TradeManager:
             wallet_address: Wallet address
             stock_ticker: Stock ticker to sell
             quantity: Stock quantity to sell
+            order_type: Order type ('LIMIT' or 'MARKET')
             dry_run: If True, simulate only
             
         Returns:
@@ -163,14 +171,25 @@ class TradeManager:
                 logger.error(f"Wallet not found: {wallet_address}")
                 return None
             
+            # Ensure wallet has enough gas
+            if not self.wallet_manager.ensure_wallet_has_gas(wallet_address, dry_run=dry_run):
+                logger.error(f"Wallet {wallet_address} has insufficient gas and cannot be refilled")
+                return None
+            
             # Get current stock price
             current_price = self.api.get_stock_price(stock_ticker)
             if not current_price:
                 logger.error(f"Failed to get price for {stock_ticker}")
                 return None
             
-            # Set limit price (slightly below market for faster fill)
-            limit_price = current_price * 0.995  # -0.5%
+            # Set price based on order type
+            if order_type == 'MARKET':
+                # Market order: use current market price
+                limit_price = current_price
+            else:
+                # Limit order: apply slippage below market for faster fill
+                limit_price = current_price * (1 - self.config.sell_slippage)
+            
             limit_price = round(limit_price, 2)
             
             # Calculate expected USDC amount
@@ -182,7 +201,7 @@ class TradeManager:
                 logger.warning(f"Sell order value ${usdc_amount:.2f} is below minimum ${MIN_ORDER_VALUE}")
                 return None
             
-            logger.info(f"Sell: {quantity:.6f} {stock_ticker} @ ${limit_price} (market: ${current_price})")
+            logger.info(f"Sell: {quantity:.6f} {stock_ticker} @ ${limit_price} (market: ${current_price}, type: {order_type})")
             
             # Get stock token address
             stock_token_address = self.config.get_stock_token_address(stock_ticker)
@@ -200,6 +219,7 @@ class TradeManager:
                 customer_id=customer_id,
                 burn_address=self.config.burn_address,
                 expiry_days=self.config.order_expiry_days,
+                order_type=order_type,
                 dry_run=dry_run
             )
             
@@ -653,6 +673,186 @@ class TradeManager:
                     else:
                         logger.error(f"Failed to retrieve updated wallet info for {wallet_address}")
     
+    
+    def liquidate_all_positions(self, dry_run: bool = False) -> Dict[str, Any]:
+        """
+        Liquidate all positions: sell all stock tokens at market price.
+        After sell orders are confirmed, USDC will be transferred back to vault.
+        
+        This is a shutdown/emergency feature.
+        
+        Args:
+            dry_run: If True, simulate only
+            
+        Returns:
+            Dict with liquidation summary
+        """
+        logger.info("=" * 60)
+        logger.info("STARTING LIQUIDATION PROCESS")
+        logger.info("=" * 60)
+        
+        positions = self.db.get_all_positions()
+        
+        if not positions:
+            logger.info("No positions to liquidate")
+            return {
+                'positions_found': 0,
+                'sell_orders_placed': 0,
+                'wallets_to_liquidate': []
+            }
+        
+        logger.info(f"Found {len(positions)} positions to liquidate")
+        
+        sell_orders_placed = 0
+        wallets_to_liquidate = []
+        
+        # Step 1: Place sell orders for all positions at market price
+        for position in positions:
+            wallet_address = position['wallet_address']
+            stock_ticker = position['stock_ticker']
+            quantity = position['quantity']
+            
+            logger.info(f"Liquidating position: {wallet_address} - {stock_ticker} ({quantity:.6f})")
+            
+            # Cancel any existing pending sell orders
+            pending_sells = [
+                o for o in self.db.get_wallet_orders(wallet_address)
+                if o['order_type'] == 'sell' and o['status'] == 'pending'
+            ]
+            
+            for old_order in pending_sells:
+                logger.info(f"Marking old sell order as cancelled: {old_order['order_id']}")
+                self.db.update_order_status(old_order['order_id'], 'cancelled')
+            
+            # Place market sell order (MARKET type for immediate execution)
+            customer_id = self.place_sell_order(
+                wallet_address=wallet_address,
+                stock_ticker=stock_ticker,
+                quantity=quantity,
+                order_type='MARKET',  # Use MARKET order for liquidation
+                dry_run=dry_run
+            )
+            
+            if customer_id:
+                sell_orders_placed += 1
+                wallets_to_liquidate.append({
+                    'wallet_address': wallet_address,
+                    'stock_ticker': stock_ticker,
+                    'quantity': quantity,
+                    'order_id': customer_id
+                })
+                logger.info(f"Liquidation sell order placed: {customer_id}")
+            else:
+                logger.error(f"Failed to place liquidation sell order for {wallet_address}")
+        
+        summary = {
+            'positions_found': len(positions),
+            'sell_orders_placed': sell_orders_placed,
+            'wallets_to_liquidate': wallets_to_liquidate
+        }
+        
+        logger.info("=" * 60)
+        logger.info("LIQUIDATION ORDERS PLACED")
+        logger.info(f"Total positions: {len(positions)}")
+        logger.info(f"Sell orders placed: {sell_orders_placed}")
+        logger.info("=" * 60)
+        logger.info("Note: After sell orders are confirmed, run 'sweep' command to transfer USDC to vault")
+        
+        return summary
+    
+    def sweep_wallets_to_vault(self, dry_run: bool = False) -> Dict[str, Any]:
+        """
+        Sweep all USDC from all wallets back to vault.
+        Should be called after liquidate_all_positions and orders are confirmed.
+        
+        Args:
+            dry_run: If True, simulate only
+            
+        Returns:
+            Dict with sweep summary
+        """
+        logger.info("=" * 60)
+        logger.info("SWEEPING WALLETS TO VAULT")
+        logger.info("=" * 60)
+        
+        # Get all wallets (active and abandoned)
+        all_wallets = self.db.get_active_wallets(self.config.blockchain)
+        
+        if not all_wallets:
+            logger.info("No wallets to sweep")
+            return {
+                'wallets_checked': 0,
+                'wallets_swept': 0,
+                'total_usdc_swept': 0.0,
+                'errors': []
+            }
+        
+        logger.info(f"Checking {len(all_wallets)} wallets for USDC...")
+        
+        wallets_swept = 0
+        total_usdc_swept = 0.0
+        errors = []
+        MIN_SWEEP_AMOUNT = 0.01  # Minimum USDC to sweep (avoid dust)
+        
+        for wallet in all_wallets:
+            wallet_address = wallet['address']
+            
+            try:
+                # Check USDC balance
+                usdc_balance = self.blockchain.get_usdc_balance(wallet_address)
+                
+                if usdc_balance >= MIN_SWEEP_AMOUNT:
+                    logger.info(f"Sweeping {usdc_balance:.2f} USDC from {wallet_address}")
+                    
+                    # Get wallet private key
+                    wallet_data = self.db.get_wallet(wallet_address)
+                    if not wallet_data:
+                        logger.error(f"Wallet data not found: {wallet_address}")
+                        errors.append(f"Wallet data not found: {wallet_address}")
+                        continue
+                    
+                    # Transfer USDC to vault
+                    tx_hash = self.blockchain.transfer_usdc(
+                        from_private_key=wallet_data['private_key'],
+                        to_address=self.config.vault_address,
+                        amount=usdc_balance,
+                        dry_run=dry_run
+                    )
+                    
+                    if tx_hash:
+                        wallets_swept += 1
+                        total_usdc_swept += usdc_balance
+                        logger.info(f"Swept {usdc_balance:.2f} USDC - TX: {tx_hash}")
+                        
+                        # Mark wallet as abandoned
+                        self.db.update_wallet_status(wallet_address, 'abandoned')
+                    else:
+                        logger.error(f"Failed to sweep USDC from {wallet_address}")
+                        errors.append(f"Failed to sweep: {wallet_address}")
+                else:
+                    logger.debug(f"Skipping {wallet_address} - balance too low: {usdc_balance:.2f}")
+                    
+            except Exception as e:
+                logger.error(f"Error sweeping {wallet_address}: {e}", exc_info=True)
+                errors.append(f"Error sweeping {wallet_address}: {str(e)}")
+        
+        summary = {
+            'wallets_checked': len(all_wallets),
+            'wallets_swept': wallets_swept,
+            'total_usdc_swept': total_usdc_swept,
+            'errors': errors
+        }
+        
+        logger.info("=" * 60)
+        logger.info("SWEEP COMPLETED")
+        logger.info(f"Wallets checked: {len(all_wallets)}")
+        logger.info(f"Wallets swept: {wallets_swept}")
+        logger.info(f"Total USDC swept: ${total_usdc_swept:.2f}")
+        if errors:
+            logger.warning(f"Errors: {len(errors)}")
+        logger.info("=" * 60)
+        
+        return summary
     
     def get_trading_stats(self) -> Dict[str, Any]:
         """

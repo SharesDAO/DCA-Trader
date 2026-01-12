@@ -5,6 +5,8 @@ Handles Web3 connections and blockchain interactions via Alchemy API.
 
 import json
 import logging
+import threading
+import time
 from typing import Optional, Dict, Any
 from decimal import Decimal
 from web3 import Web3
@@ -84,6 +86,10 @@ class BlockchainClient:
         # Get USDC decimals
         self.usdc_decimals = self.usdc_contract.functions.decimals().call()
         logger.info(f"USDC contract loaded: {self.usdc_address} (decimals: {self.usdc_decimals})")
+        
+        # Nonce management for preventing conflicts
+        self._nonce_lock = threading.Lock()
+        self._nonce_cache: Dict[str, int] = {}  # address -> next nonce
     
     def create_account(self) -> tuple[str, str]:
         """
@@ -106,6 +112,76 @@ class BlockchainClient:
             LocalAccount instance
         """
         return Account.from_key(private_key)
+    
+    def get_nonce(self, address: str, pending: bool = True) -> int:
+        """
+        Get transaction nonce for an address with caching to prevent conflicts.
+        Thread-safe for concurrent transactions from same address.
+        
+        Args:
+            address: Wallet address
+            pending: If True, include pending transactions (recommended)
+            
+        Returns:
+            Next nonce to use
+        """
+        checksum_address = Web3.to_checksum_address(address)
+        
+        with self._nonce_lock:
+            try:
+                # Get current nonce from blockchain
+                if pending:
+                    chain_nonce = self.w3.eth.get_transaction_count(checksum_address, 'pending')
+                else:
+                    chain_nonce = self.w3.eth.get_transaction_count(checksum_address)
+                
+                # Get cached nonce (if exists)
+                cached_nonce = self._nonce_cache.get(checksum_address, 0)
+                
+                # Use the higher of chain nonce or cached nonce
+                nonce = max(chain_nonce, cached_nonce)
+                
+                # Update cache for next transaction
+                self._nonce_cache[checksum_address] = nonce + 1
+                
+                logger.debug(f"Nonce for {address}: {nonce} (chain={chain_nonce}, cached={cached_nonce}, pending={pending})")
+                return nonce
+                
+            except Exception as e:
+                logger.error(f"Failed to get nonce for {address}: {e}")
+                raise
+    
+    def reset_nonce_cache(self, address: str = None):
+        """
+        Reset nonce cache for an address (or all addresses).
+        Useful when transactions fail and need to resync with blockchain.
+        
+        Args:
+            address: Specific address to reset, or None to reset all
+        """
+        with self._nonce_lock:
+            if address:
+                checksum_address = Web3.to_checksum_address(address)
+                if checksum_address in self._nonce_cache:
+                    del self._nonce_cache[checksum_address]
+                    logger.debug(f"Reset nonce cache for {address}")
+            else:
+                self._nonce_cache.clear()
+                logger.debug("Reset all nonce caches")
+    
+    def _is_nonce_error(self, error: Exception) -> bool:
+        """
+        Check if an error is related to nonce issues.
+        
+        Args:
+            error: Exception to check
+            
+        Returns:
+            True if error is nonce-related
+        """
+        error_msg = str(error).lower()
+        nonce_keywords = ['nonce', 'transaction underpriced', 'replacement transaction underpriced']
+        return any(keyword in error_msg for keyword in nonce_keywords)
     
     def get_native_balance(self, address: str) -> float:
         """
@@ -186,6 +262,7 @@ class BlockchainClient:
                         stock_token_address: str, usdc_amount: float,
                         stock_quantity: float, customer_id: str,
                         mint_address: str, expiry_days: int,
+                        order_type: str = 'LIMIT',
                         dry_run: bool = False) -> Optional[str]:
         """
         Submit a buy order by sending USDC to mint address with memo.
@@ -199,6 +276,7 @@ class BlockchainClient:
             customer_id: Order tracking ID
             mint_address: Pool mint address
             expiry_days: Order expiry in days
+            order_type: Order type ('LIMIT' or 'MARKET')
             dry_run: If True, simulate only
             
         Returns:
@@ -216,14 +294,14 @@ class BlockchainClient:
             # Build memo
             memo = {
                 "customer_id": customer_id,
-                "type": "LIMIT",
+                "type": order_type,  # 'LIMIT' or 'MARKET'
                 "offer": offer_wei,
                 "request": request_wei,
                 "token_address": Web3.to_checksum_address(stock_token_address),
                 "expiry_days": expiry_days
             }
             
-            logger.info(f"Buy order: {usdc_amount} USDC for {stock_quantity} {stock_ticker}")
+            logger.info(f"Buy order: {usdc_amount} USDC for {stock_quantity} {stock_ticker} (type: {order_type})")
             logger.info(f"Memo: {json.dumps(memo)}")
             
             if dry_run:
@@ -242,7 +320,8 @@ class BlockchainClient:
             
             # Build USDC transfer with memo appended to data
             to_checksum = Web3.to_checksum_address(mint_address)
-            nonce = self.w3.eth.get_transaction_count(from_address)
+            # Get nonce (includes pending transactions)
+            nonce = self.get_nonce(from_address)
             
             # Standard ERC20 transfer data
             transfer_data = self.usdc_contract.functions.transfer(
@@ -276,16 +355,17 @@ class BlockchainClient:
             except:
                 gas_limit = 150000  # Safe fallback
             
-            gas_price = self.w3.eth.gas_price
+            transaction['gas'] = gas_limit
             
-            transaction.update({
-                'gas': gas_limit,
-                'gasPrice': gas_price
-            })
+            # Add EIP-1559 gas parameters
+            transaction = self.build_eip1559_transaction(transaction)
             
             # Sign and send
-            signed_txn = self.w3.eth.account.sign_transaction(transaction, from_private_key)
-            tx_hash = self.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            # Use Account directly (web3.py 6.0+ compatible)
+            signed_txn = Account.sign_transaction(transaction, from_private_key)
+            # Support both old (rawTransaction) and new (raw_transaction) web3.py versions
+            raw_tx = getattr(signed_txn, 'raw_transaction', None) or getattr(signed_txn, 'rawTransaction', None)
+            tx_hash = self.w3.eth.send_raw_transaction(raw_tx)
             tx_hash_hex = tx_hash.hex()
             
             logger.info(f"Buy order submitted: {tx_hash_hex}")
@@ -301,13 +381,31 @@ class BlockchainClient:
                 return None
                 
         except Exception as e:
+            error_msg = str(e)
             logger.error(f"Buy order error: {e}", exc_info=True)
+            
+            # Special handling for nonce errors
+            if 'nonce' in error_msg.lower():
+                try:
+                    # Reset nonce cache for this address
+                    self.reset_nonce_cache(from_address)
+                    
+                    # Get fresh nonce from blockchain for debugging
+                    with self._nonce_lock:
+                        current_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address))
+                        pending_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address), 'pending')
+                    logger.error(f"Nonce debug - Address: {from_address}, Current: {current_nonce}, Pending: {pending_nonce}")
+                    logger.info(f"Nonce cache reset for {from_address}, will resync on next transaction")
+                except:
+                    pass
+            
             return None
     
     def submit_sell_order(self, from_private_key: str, stock_ticker: str,
                          stock_token_address: str, stock_quantity: float,
                          usdc_amount: float, customer_id: str,
                          burn_address: str, expiry_days: int,
+                         order_type: str = 'LIMIT',
                          dry_run: bool = False) -> Optional[str]:
         """
         Submit a sell order by sending stock tokens to burn address with memo.
@@ -321,6 +419,7 @@ class BlockchainClient:
             customer_id: Order tracking ID
             burn_address: Pool burn address
             expiry_days: Order expiry in days
+            order_type: Order type ('LIMIT' or 'MARKET')
             dry_run: If True, simulate only
             
         Returns:
@@ -338,14 +437,14 @@ class BlockchainClient:
             # Build memo
             memo = {
                 "customer_id": customer_id,
-                "type": "LIMIT",
+                "type": order_type,  # 'LIMIT' or 'MARKET'
                 "offer": offer_wei,
                 "request": request_wei,
                 "token_address": Web3.to_checksum_address(stock_token_address),
                 "expiry_days": expiry_days
             }
             
-            logger.info(f"Sell order: {stock_quantity} {stock_ticker} for {usdc_amount} USDC")
+            logger.info(f"Sell order: {stock_quantity} {stock_ticker} for {usdc_amount} USDC (type: {order_type})")
             logger.info(f"Memo: {json.dumps(memo)}")
             
             if dry_run:
@@ -367,7 +466,8 @@ class BlockchainClient:
             
             # Build stock token transfer with memo
             to_checksum = Web3.to_checksum_address(burn_address)
-            nonce = self.w3.eth.get_transaction_count(from_address)
+            # Get nonce (includes pending transactions)
+            nonce = self.get_nonce(from_address)
             
             # Standard ERC20 transfer data
             transfer_data = stock_contract.functions.transfer(
@@ -401,16 +501,17 @@ class BlockchainClient:
             except:
                 gas_limit = 150000  # Safe fallback
             
-            gas_price = self.w3.eth.gas_price
+            transaction['gas'] = gas_limit
             
-            transaction.update({
-                'gas': gas_limit,
-                'gasPrice': gas_price
-            })
+            # Add EIP-1559 gas parameters
+            transaction = self.build_eip1559_transaction(transaction)
             
             # Sign and send
-            signed_txn = self.w3.eth.account.sign_transaction(transaction, from_private_key)
-            tx_hash = self.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            # Use Account directly (web3.py 6.0+ compatible)
+            signed_txn = Account.sign_transaction(transaction, from_private_key)
+            # Support both old (rawTransaction) and new (raw_transaction) web3.py versions
+            raw_tx = getattr(signed_txn, 'raw_transaction', None) or getattr(signed_txn, 'rawTransaction', None)
+            tx_hash = self.w3.eth.send_raw_transaction(raw_tx)
             tx_hash_hex = tx_hash.hex()
             
             logger.info(f"Sell order submitted: {tx_hash_hex}")
@@ -426,92 +527,274 @@ class BlockchainClient:
                 return None
                 
         except Exception as e:
+            error_msg = str(e)
             logger.error(f"Sell order error: {e}", exc_info=True)
+            
+            # Special handling for nonce errors
+            if 'nonce' in error_msg.lower():
+                try:
+                    # Reset nonce cache for this address
+                    self.reset_nonce_cache(from_address)
+                    
+                    # Get fresh nonce from blockchain for debugging
+                    with self._nonce_lock:
+                        current_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address))
+                        pending_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address), 'pending')
+                    logger.error(f"Nonce debug - Address: {from_address}, Current: {current_nonce}, Pending: {pending_nonce}")
+                    logger.info(f"Nonce cache reset for {from_address}, will resync on next transaction")
+                except:
+                    pass
+            
             return None
     
     def transfer_usdc(self, from_private_key: str, to_address: str, 
-                     amount: float, dry_run: bool = False) -> Optional[str]:
+                     amount: float, dry_run: bool = False, max_retries: int = 3) -> Optional[str]:
         """
-        Transfer USDC from one address to another.
+        Transfer USDC from one address to another with automatic retry on nonce errors.
         
         Args:
             from_private_key: Sender's private key
             to_address: Recipient address
             amount: USDC amount to transfer
             dry_run: If True, simulate only
+            max_retries: Maximum number of retry attempts for nonce errors
             
         Returns:
             Transaction hash or None on failure
         """
-        try:
-            # Get sender account
-            sender_account = self.get_account(from_private_key)
-            from_address = sender_account.address
-            
-            # Convert addresses to checksum format
-            to_checksum = Web3.to_checksum_address(to_address)
-            
-            # Convert amount to wei
-            amount_raw = int(amount * (10 ** self.usdc_decimals))
-            
-            logger.info(f"Transferring {amount} USDC from {from_address} to {to_address}")
-            
-            if dry_run:
-                logger.info("[DRY RUN] Would transfer USDC")
-                return "0x" + "0" * 64  # Fake tx hash
-            
-            # Check balance
-            sender_balance = self.get_usdc_balance(from_address)
-            if sender_balance < amount:
-                logger.error(f"Insufficient USDC balance: {sender_balance} < {amount}")
-                return None
-            
-            # Build transaction
-            nonce = self.w3.eth.get_transaction_count(from_address)
-            
-            # Estimate gas
-            gas_estimate = self.usdc_contract.functions.transfer(
-                to_checksum, amount_raw
-            ).estimate_gas({'from': from_address})
-            
-            # Get gas price
-            gas_price = self.w3.eth.gas_price
-            
-            # Build transaction
-            transaction = self.usdc_contract.functions.transfer(
-                to_checksum, amount_raw
-            ).build_transaction({
-                'from': from_address,
-                'gas': int(gas_estimate * 1.2),  # Add 20% buffer
-                'gasPrice': gas_price,
-                'nonce': nonce,
-                'chainId': self.chain_id
-            })
-            
-            # Sign transaction
-            signed_txn = self.w3.eth.account.sign_transaction(
-                transaction, from_private_key
-            )
-            
-            # Send transaction
-            tx_hash = self.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-            tx_hash_hex = tx_hash.hex()
-            
-            logger.info(f"USDC transfer submitted: {tx_hash_hex}")
-            
-            # Wait for confirmation
-            receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash, timeout=300)
-            
-            if receipt['status'] == 1:
-                logger.info(f"USDC transfer confirmed: {tx_hash_hex}")
-                return tx_hash_hex
-            else:
-                logger.error(f"USDC transfer failed: {tx_hash_hex}")
-                return None
-                
-        except Exception as e:
-            logger.error(f"USDC transfer error: {e}")
+        # Get sender account (outside retry loop)
+        sender_account = self.get_account(from_private_key)
+        from_address = sender_account.address
+        
+        # Convert addresses to checksum format
+        to_checksum = Web3.to_checksum_address(to_address)
+        
+        # Convert amount to wei
+        amount_raw = int(amount * (10 ** self.usdc_decimals))
+        
+        logger.info(f"Transferring {amount} USDC from {from_address} to {to_address}")
+        
+        if dry_run:
+            logger.info("[DRY RUN] Would transfer USDC")
+            return "0x" + "0" * 64  # Fake tx hash
+        
+        # Check balance (outside retry loop)
+        sender_balance = self.get_usdc_balance(from_address)
+        if sender_balance < amount:
+            logger.error(f"Insufficient USDC balance: {sender_balance} < {amount}")
             return None
+        
+        # Retry loop for nonce errors
+        for attempt in range(1, max_retries + 1):
+            try:
+                # Build transaction
+                # Get nonce (includes pending transactions)
+                nonce = self.get_nonce(from_address)
+                
+                # Estimate gas
+                gas_estimate = self.usdc_contract.functions.transfer(
+                    to_checksum, amount_raw
+                ).estimate_gas({'from': from_address})
+                
+                # Build base transaction
+                transaction = self.usdc_contract.functions.transfer(
+                    to_checksum, amount_raw
+                ).build_transaction({
+                    'from': from_address,
+                    'gas': int(gas_estimate * 1.2),  # Add 20% buffer
+                    'nonce': nonce,
+                    'chainId': self.chain_id
+                })
+                
+                # Add EIP-1559 gas parameters
+                transaction = self.build_eip1559_transaction(transaction)
+                
+                # Sign transaction
+                # Use Account directly (web3.py 6.0+ compatible)
+                signed_txn = Account.sign_transaction(transaction, from_private_key)
+                
+                # Send transaction
+                # Support both old (rawTransaction) and new (raw_transaction) web3.py versions
+                raw_tx = getattr(signed_txn, 'raw_transaction', None) or getattr(signed_txn, 'rawTransaction', None)
+                tx_hash = self.w3.eth.send_raw_transaction(raw_tx)
+                tx_hash_hex = tx_hash.hex()
+                
+                logger.info(f"USDC transfer submitted: {tx_hash_hex}")
+                
+                # Wait for confirmation
+                receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash, timeout=300)
+                
+                if receipt['status'] == 1:
+                    logger.info(f"USDC transfer confirmed: {tx_hash_hex}")
+                    return tx_hash_hex
+                else:
+                    logger.error(f"USDC transfer failed: {tx_hash_hex}")
+                    return None
+                    
+            except Exception as e:
+                error_msg = str(e)
+                is_nonce_error = self._is_nonce_error(e)
+                
+                if is_nonce_error and attempt < max_retries:
+                    # Reset nonce cache and retry
+                    self.reset_nonce_cache(from_address)
+                    
+                    # Get fresh nonce from blockchain for debugging
+                    try:
+                        with self._nonce_lock:
+                            current_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address))
+                            pending_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address), 'pending')
+                        logger.warning(f"[Attempt {attempt}/{max_retries}] Nonce error - Address: {from_address}, Current: {current_nonce}, Pending: {pending_nonce}")
+                        logger.info(f"Nonce cache reset, retrying in 2 seconds...")
+                        time.sleep(2)  # Brief delay before retry
+                        continue
+                    except:
+                        pass
+                
+                # Log error and exit
+                logger.error(f"USDC transfer error: {e}")
+                if is_nonce_error:
+                    try:
+                        self.reset_nonce_cache(from_address)
+                        with self._nonce_lock:
+                            current_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address))
+                            pending_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address), 'pending')
+                        logger.error(f"Nonce debug - Address: {from_address}, Current: {current_nonce}, Pending: {pending_nonce}")
+                    except:
+                        pass
+                
+                return None
+        
+        logger.error(f"USDC transfer failed after {max_retries} attempts")
+        return None
+    
+    def transfer_native_token(self, from_private_key: str, to_address: str,
+                             amount: float, dry_run: bool = False, max_retries: int = 3) -> Optional[str]:
+        """
+        Transfer native token (ETH/BNB) from one address to another with automatic retry on nonce errors.
+        
+        Args:
+            from_private_key: Sender's private key
+            to_address: Recipient address
+            amount: Amount in native token (e.g., 0.001 ETH)
+            dry_run: If True, simulate only
+            max_retries: Maximum number of retry attempts for nonce errors
+            
+        Returns:
+            Transaction hash or None on failure
+        """
+        # Get sender account (outside retry loop)
+        sender_account = self.get_account(from_private_key)
+        from_address = sender_account.address
+        
+        # Convert addresses to checksum format
+        to_checksum = Web3.to_checksum_address(to_address)
+        
+        # Convert amount to wei (18 decimals for all native tokens)
+        amount_wei = int(amount * (10 ** 18))
+        
+        native_token = self.chain_config.get('native_token', 'ETH')
+        logger.info(f"Transferring {amount} {native_token} from {from_address} to {to_address}")
+        
+        if dry_run:
+            logger.info("[DRY RUN] Would transfer native token")
+            return "0x" + "0" * 64  # Fake tx hash
+        
+        # Check balance (outside retry loop)
+        sender_balance_wei = self.w3.eth.get_balance(from_address)
+        sender_balance = sender_balance_wei / (10 ** 18)
+        
+        # Need to reserve some for gas
+        gas_reserve = 0.001  # Reserve 0.001 for gas
+        if sender_balance < (amount + gas_reserve):
+            logger.error(f"Insufficient {native_token} balance: {sender_balance} < {amount + gas_reserve} (including gas reserve)")
+            return None
+        
+        # Retry loop for nonce errors
+        for attempt in range(1, max_retries + 1):
+            try:
+                # Build transaction
+                # Get nonce (includes pending transactions)
+                nonce = self.get_nonce(from_address)
+                
+                # Build base transaction
+                transaction = {
+                    'from': from_address,
+                    'to': to_checksum,
+                    'value': amount_wei,
+                    'nonce': nonce,
+                    'chainId': self.chain_id
+                }
+                
+                # Estimate gas for simple transfer
+                try:
+                    gas_estimate = self.w3.eth.estimate_gas(transaction)
+                    gas_limit = int(gas_estimate * 1.2)  # Add 20% buffer
+                except Exception as e:
+                    logger.warning(f"Failed to estimate gas for native transfer: {e}")
+                    gas_limit = 21000  # Standard ETH transfer gas
+                
+                transaction['gas'] = gas_limit
+                
+                # Add EIP-1559 gas parameters
+                transaction = self.build_eip1559_transaction(transaction)
+                
+                # Sign transaction
+                signed_txn = Account.sign_transaction(transaction, from_private_key)
+                
+                # Send transaction
+                raw_tx = getattr(signed_txn, 'raw_transaction', None) or getattr(signed_txn, 'rawTransaction', None)
+                tx_hash = self.w3.eth.send_raw_transaction(raw_tx)
+                tx_hash_hex = tx_hash.hex()
+                
+                logger.info(f"{native_token} transfer submitted: {tx_hash_hex}")
+                
+                # Wait for confirmation
+                receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash, timeout=300)
+                
+                if receipt['status'] == 1:
+                    logger.info(f"{native_token} transfer confirmed: {tx_hash_hex}")
+                    return tx_hash_hex
+                else:
+                    logger.error(f"{native_token} transfer failed: {tx_hash_hex}")
+                    return None
+                    
+            except Exception as e:
+                error_msg = str(e)
+                is_nonce_error = self._is_nonce_error(e)
+                
+                if is_nonce_error and attempt < max_retries:
+                    # Reset nonce cache and retry
+                    self.reset_nonce_cache(from_address)
+                    
+                    # Get fresh nonce from blockchain for debugging
+                    try:
+                        with self._nonce_lock:
+                            current_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address))
+                            pending_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address), 'pending')
+                        logger.warning(f"[Attempt {attempt}/{max_retries}] Nonce error - Address: {from_address}, Current: {current_nonce}, Pending: {pending_nonce}")
+                        logger.info(f"Nonce cache reset, retrying in 2 seconds...")
+                        time.sleep(2)  # Brief delay before retry
+                        continue
+                    except:
+                        pass
+                
+                # Log error and exit
+                logger.error(f"Native token transfer error: {e}")
+                if is_nonce_error:
+                    try:
+                        self.reset_nonce_cache(from_address)
+                        with self._nonce_lock:
+                            current_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address))
+                            pending_nonce = self.w3.eth.get_transaction_count(Web3.to_checksum_address(from_address), 'pending')
+                        logger.error(f"Nonce debug - Address: {from_address}, Current: {current_nonce}, Pending: {pending_nonce}")
+                    except:
+                        pass
+                
+                return None
+        
+        logger.error(f"{native_token} transfer failed after {max_retries} attempts")
+        return None
     
     def get_transaction_receipt(self, tx_hash: str) -> Optional[dict]:
         """
@@ -577,6 +860,57 @@ class BlockchainClient:
         """
         balance = self.get_native_balance(address)
         return balance >= min_balance
+    
+    def build_eip1559_transaction(self, base_transaction: dict) -> dict:
+        """
+        Build transaction with EIP-1559 gas parameters.
+        
+        Automatically uses EIP-1559 (maxFeePerGas/maxPriorityFeePerGas) if supported,
+        otherwise falls back to legacy gasPrice.
+        
+        Args:
+            base_transaction: Base transaction dict without gas parameters
+            
+        Returns:
+            Transaction dict with appropriate gas parameters
+        """
+        try:
+            # Try to get latest block to check if EIP-1559 is supported
+            latest_block = self.w3.eth.get_block('latest')
+            
+            # Check if baseFeePerGas exists (EIP-1559 support)
+            if 'baseFeePerGas' in latest_block:
+                # EIP-1559 transaction
+                base_fee = latest_block['baseFeePerGas']
+                
+                # Get max priority fee (tip to miner)
+                try:
+                    max_priority_fee = self.w3.eth.max_priority_fee
+                except:
+                    # Fallback priority fee (1 Gwei)
+                    max_priority_fee = self.w3.to_wei(1, 'gwei')
+                
+                # Calculate maxFeePerGas: base fee * 2 + priority fee
+                # Multiplying by 2 gives buffer for base fee increases
+                max_fee_per_gas = (base_fee * 2) + max_priority_fee
+                
+                base_transaction['maxFeePerGas'] = max_fee_per_gas
+                base_transaction['maxPriorityFeePerGas'] = max_priority_fee
+                
+                logger.debug(f"Using EIP-1559: maxFee={max_fee_per_gas}, priorityFee={max_priority_fee}, baseFee={base_fee}")
+            else:
+                # Legacy transaction
+                gas_price = self.w3.eth.gas_price
+                base_transaction['gasPrice'] = gas_price
+                logger.debug(f"Using legacy gas: gasPrice={gas_price}")
+            
+            return base_transaction
+            
+        except Exception as e:
+            logger.warning(f"Error building EIP-1559 transaction, falling back to legacy: {e}")
+            # Fallback to legacy gas price
+            base_transaction['gasPrice'] = self.w3.eth.gas_price
+            return base_transaction
 
 
 def create_blockchain_client(config) -> BlockchainClient:

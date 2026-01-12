@@ -147,7 +147,7 @@ class Database:
     # Wallet operations
     
     def create_wallet(self, address: str, private_key: str, blockchain: str, 
-                     assigned_stock: str) -> bool:
+                     assigned_stock: str, status: str = 'active') -> bool:
         """
         Create a new wallet record.
         
@@ -156,6 +156,7 @@ class Database:
             private_key: Private key (will be encrypted)
             blockchain: Blockchain name
             assigned_stock: Assigned stock ticker
+            status: Wallet status (default: 'active')
             
         Returns:
             True if successful
@@ -166,9 +167,9 @@ class Database:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute("""
-                    INSERT INTO wallets (address, private_key_encrypted, blockchain, assigned_stock)
-                    VALUES (?, ?, ?, ?)
-                """, (address, encrypted_key, blockchain, assigned_stock))
+                    INSERT INTO wallets (address, private_key_encrypted, blockchain, assigned_stock, status)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (address, encrypted_key, blockchain, assigned_stock, status))
             
             logger.info(f"Created wallet {address} for {assigned_stock} on {blockchain}")
             return True
@@ -218,6 +219,33 @@ class Database:
                 )
             else:
                 cursor.execute("SELECT * FROM wallets WHERE status = 'active'")
+            
+            wallets = []
+            for row in cursor.fetchall():
+                wallet = dict(row)
+                wallet['private_key'] = self.decrypt_private_key(wallet['private_key_encrypted'])
+                del wallet['private_key_encrypted']
+                wallets.append(wallet)
+            
+            return wallets
+    
+    def get_wallets_by_status(self, blockchain: str, status: str) -> List[Dict[str, Any]]:
+        """
+        Get all wallets with a specific status.
+        
+        Args:
+            blockchain: Blockchain name
+            status: Wallet status (e.g., 'pending_funding', 'active', 'abandoned')
+            
+        Returns:
+            List of wallet dicts
+        """
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT * FROM wallets WHERE status = ? AND blockchain = ?",
+                (status, blockchain)
+            )
             
             wallets = []
             for row in cursor.fetchall():

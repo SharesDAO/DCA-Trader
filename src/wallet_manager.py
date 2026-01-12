@@ -5,6 +5,7 @@ Handles wallet creation, funding, and lifecycle management.
 
 import logging
 import random
+import time
 from typing import Optional, List, Dict, Any
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ class WalletManager:
     def create_new_wallet(self, dry_run: bool = False) -> Optional[Dict[str, Any]]:
         """
         Create a new wallet with funding and stock assignment.
+        If funding fails, wallet is saved with 'pending_funding' status for retry in next iteration.
         
         Args:
             dry_run: If True, simulate only
@@ -40,52 +42,125 @@ class WalletManager:
         Returns:
             Wallet dict or None on failure
         """
+        # Generate new account
+        address, private_key = self.blockchain.create_account()
+        logger.info(f"Generated new wallet: {address}")
+        
+        # Get active wallets for balanced stock selection
+        active_wallets = self.db.get_active_wallets(self.config.blockchain)
+        
+        # Assign stock (balanced allocation)
+        assigned_stock = self.stock_selector.assign_balanced_stock(active_wallets)
+        
+        # Random funding amount (ensure minimum $5 for trading)
+        MIN_TRADING_AMOUNT = 5.0
+        min_amount = max(self.config.min_usd_per_wallet, MIN_TRADING_AMOUNT)
+        
+        funding_amount = random.uniform(
+            min_amount,
+            self.config.max_usd_per_wallet
+        )
+        funding_amount = round(funding_amount, 2)
+        
+        # Save wallet to database with 'pending_funding' status
         try:
-            # Generate new account
-            address, private_key = self.blockchain.create_account()
-            logger.info(f"Generated new wallet: {address}")
-            
-            # Get active wallets for balanced stock selection
-            active_wallets = self.db.get_active_wallets(self.config.blockchain)
-            
-            # Assign stock (balanced allocation)
-            assigned_stock = self.stock_selector.assign_balanced_stock(active_wallets)
-            
-            # Random funding amount (ensure minimum $5 for trading)
-            MIN_TRADING_AMOUNT = 5.0
-            min_amount = max(self.config.min_usd_per_wallet, MIN_TRADING_AMOUNT)
-            
-            funding_amount = random.uniform(
-                min_amount,
-                self.config.max_usd_per_wallet
-            )
-            funding_amount = round(funding_amount, 2)
-            
-            logger.info(f"Funding {address} with {funding_amount} USDC for {assigned_stock}")
-            
-            # Transfer USDC from vault
-            tx_hash = self.blockchain.transfer_usdc(
-                self.config.vault_private_key,
-                address,
-                funding_amount,
-                dry_run=dry_run
-            )
-            
-            if not tx_hash:
-                logger.error(f"Failed to fund wallet {address}")
-                return None
-            
-            # Save to database
             success = self.db.create_wallet(
                 address=address,
                 private_key=private_key,
                 blockchain=self.config.blockchain,
-                assigned_stock=assigned_stock
+                assigned_stock=assigned_stock,
+                status='pending_funding'
             )
             
             if not success:
                 logger.error(f"Failed to save wallet {address} to database")
                 return None
+                
+            logger.info(f"Wallet {address} saved to database with 'pending_funding' status")
+        except Exception as e:
+            logger.error(f"Failed to save wallet to database: {e}")
+            return None
+        
+        # Try to fund the wallet
+        result = self.fund_wallet(address, private_key, assigned_stock, funding_amount, dry_run)
+        
+        if result:
+            # Update status to active
+            self.db.update_wallet_status(address, 'active')
+            logger.info(f"Successfully created and funded wallet {address}")
+            return result
+        else:
+            logger.warning(f"Wallet {address} created but funding failed, will retry in next iteration")
+            return None
+    
+    def fund_wallet(self, address: str, private_key: str, assigned_stock: str, 
+                    funding_amount: float, dry_run: bool = False) -> Optional[Dict[str, Any]]:
+        """
+        Fund a wallet with ETH/BNB and USDC.
+        
+        Args:
+            address: Wallet address
+            private_key: Wallet private key
+            assigned_stock: Assigned stock ticker
+            funding_amount: USDC amount to transfer
+            dry_run: If True, simulate only
+            
+        Returns:
+            Wallet dict if successful, None otherwise
+        """
+        try:
+            native_token = self.blockchain.chain_config.get('native_token', 'ETH')
+            logger.info(f"Funding {address} with {funding_amount} USDC and {self.config.gas_per_wallet} {native_token} for {assigned_stock}")
+            
+            # Check vault has enough native token (ETH/BNB) for gas
+            vault_native_balance = self.blockchain.get_native_balance(self.config.vault_address)
+            gas_reserve = 0.002  # Reserve some for vault's own transactions
+            required_native = self.config.gas_per_wallet + gas_reserve
+            
+            if vault_native_balance < required_native:
+                logger.error(f"Insufficient {native_token} in vault: {vault_native_balance:.6f} < {required_native:.6f}")
+                logger.error(f"Please add more {native_token} to vault address: {self.config.vault_address}")
+                return None
+            
+            logger.debug(f"Vault {native_token} balance: {vault_native_balance:.6f} (sufficient)")
+            
+            # Check if wallet already has gas (from previous failed attempt)
+            current_gas_balance = self.blockchain.get_native_balance(address)
+            if current_gas_balance >= (self.config.gas_per_wallet * 0.5):
+                logger.info(f"Wallet already has {current_gas_balance:.6f} {native_token}, skipping gas transfer")
+            else:
+                # Transfer native token (ETH/BNB) for gas
+                gas_tx_hash = self.blockchain.transfer_native_token(
+                    self.config.vault_private_key,
+                    address,
+                    self.config.gas_per_wallet,
+                    dry_run=dry_run
+                )
+                
+                if not gas_tx_hash:
+                    logger.error(f"Failed to transfer gas to wallet {address}")
+                    return None
+                
+                logger.info(f"Gas transfer confirmed: {gas_tx_hash}")
+            
+            # Check if wallet already has USDC (from previous failed attempt)
+            current_usdc_balance = self.blockchain.get_usdc_balance(address)
+            if current_usdc_balance >= (funding_amount * 0.5):
+                logger.info(f"Wallet already has {current_usdc_balance:.2f} USDC, skipping USDC transfer")
+            else:
+                # Transfer USDC from vault
+                tx_hash = self.blockchain.transfer_usdc(
+                    self.config.vault_private_key,
+                    address,
+                    funding_amount,
+                    dry_run=dry_run
+                )
+                
+                if not tx_hash:
+                    logger.error(f"Failed to fund wallet {address} with USDC")
+                    return None
+                
+                logger.info(f"USDC transfer confirmed: {tx_hash}")
             
             wallet = {
                 'address': address,
@@ -93,15 +168,53 @@ class WalletManager:
                 'blockchain': self.config.blockchain,
                 'assigned_stock': assigned_stock,
                 'balance': funding_amount,
-                'tx_hash': tx_hash
             }
             
-            logger.info(f"Successfully created and funded wallet {address}")
             return wallet
             
         except Exception as e:
-            logger.error(f"Failed to create wallet: {e}")
+            logger.error(f"Error funding wallet {address}: {e}")
             return None
+    
+    def retry_pending_funding_wallets(self, dry_run: bool = False) -> int:
+        """
+        Retry funding for all pending_funding wallets.
+        
+        Args:
+            dry_run: If True, simulate only
+            
+        Returns:
+            Number of wallets successfully funded
+        """
+        # Get all pending_funding wallets
+        pending_wallets = self.db.get_wallets_by_status(self.config.blockchain, 'pending_funding')
+        
+        if not pending_wallets:
+            return 0
+        
+        logger.info(f"Found {len(pending_wallets)} wallet(s) with pending funding, retrying...")
+        
+        success_count = 0
+        for wallet in pending_wallets:
+            address = wallet['address']
+            private_key = wallet['private_key']
+            assigned_stock = wallet['assigned_stock']
+            
+            # Use a default funding amount (could also store this in DB)
+            funding_amount = (self.config.min_usd_per_wallet + self.config.max_usd_per_wallet) / 2
+            
+            logger.info(f"Retrying funding for wallet {address}")
+            result = self.fund_wallet(address, private_key, assigned_stock, funding_amount, dry_run)
+            
+            if result:
+                # Update status to active
+                self.db.update_wallet_status(address, 'active')
+                logger.info(f"Successfully funded wallet {address}, status updated to 'active'")
+                success_count += 1
+            else:
+                logger.warning(f"Funding still failed for {address}, will retry in next iteration")
+        
+        return success_count
     
     def get_active_wallets(self) -> List[Dict[str, Any]]:
         """
@@ -143,6 +256,8 @@ class WalletManager:
             
             logger.info(f"Abandoning wallet {address}")
             
+            native_token = self.blockchain.chain_config.get('native_token', 'ETH')
+            
             # Check USDC balance
             usdc_balance = self.blockchain.get_usdc_balance(address)
             
@@ -157,7 +272,31 @@ class WalletManager:
                 )
                 
                 if not tx_hash:
-                    logger.warning(f"Failed to return funds from {address} to vault")
+                    logger.warning(f"Failed to return USDC from {address} to vault")
+            
+            # Check native token balance and return to vault
+            native_balance = self.blockchain.get_native_balance(address)
+            min_native_to_return = 0.0005  # Minimum to make it worth the gas cost
+            gas_cost_estimate = 0.0001  # Estimated gas cost for the transfer itself
+            
+            if native_balance > (min_native_to_return + gas_cost_estimate):
+                # Calculate amount to send (keep enough for gas)
+                amount_to_return = native_balance - gas_cost_estimate
+                logger.info(f"Returning {amount_to_return:.6f} {native_token} to vault")
+                
+                native_tx_hash = self.blockchain.transfer_native_token(
+                    wallet['private_key'],
+                    self.config.vault_address,
+                    amount_to_return,
+                    dry_run=dry_run
+                )
+                
+                if native_tx_hash:
+                    logger.info(f"Recovered {amount_to_return:.6f} {native_token} from {address}")
+                else:
+                    logger.warning(f"Failed to return {native_token} from {address} to vault")
+            else:
+                logger.debug(f"Skipping {native_token} recovery from {address} - balance too low: {native_balance:.6f}")
             
             # Update wallet status
             self.db.update_wallet_status(address, 'abandoned')
@@ -251,6 +390,115 @@ class WalletManager:
         min_required = self.config.min_usd_per_wallet * 2
         
         return vault_balance >= min_required
+    
+    def ensure_wallet_has_gas(self, wallet_address: str, dry_run: bool = False) -> bool:
+        """
+        Check if wallet has enough gas, and refill if needed.
+        
+        Args:
+            wallet_address: Wallet address to check
+            dry_run: If True, simulate only
+            
+        Returns:
+            True if wallet has sufficient gas or was successfully refilled
+        """
+        try:
+            native_token = self.blockchain.chain_config.get('native_token', 'ETH')
+            
+            # Check wallet's current gas balance
+            current_balance = self.blockchain.get_native_balance(wallet_address)
+            min_required_gas = self.config.gas_per_wallet * 0.3  # Alert if below 30% of original allocation
+            
+            if current_balance >= min_required_gas:
+                logger.debug(f"{wallet_address} has sufficient gas: {current_balance:.6f} {native_token}")
+                return True
+            
+            # Wallet needs refill
+            refill_amount = self.config.gas_per_wallet  # Refill to full amount
+            logger.warning(f"{wallet_address} low on gas: {current_balance:.6f} {native_token} (< {min_required_gas:.6f})")
+            logger.info(f"Refilling {wallet_address} with {refill_amount:.6f} {native_token}")
+            
+            # Check vault has enough native token
+            vault_native_balance = self.blockchain.get_native_balance(self.config.vault_address)
+            gas_reserve = 0.005  # Reserve for vault's own transactions
+            required_native = refill_amount + gas_reserve
+            
+            if vault_native_balance < required_native:
+                logger.error(f"Cannot refill - insufficient {native_token} in vault: {vault_native_balance:.6f} < {required_native:.6f}")
+                logger.error(f"Please add more {native_token} to vault address: {self.config.vault_address}")
+                return False
+            
+            # Transfer gas from vault to wallet
+            tx_hash = self.blockchain.transfer_native_token(
+                self.config.vault_private_key,
+                wallet_address,
+                refill_amount,
+                dry_run=dry_run
+            )
+            
+            if tx_hash:
+                logger.info(f"Successfully refilled {wallet_address} with {refill_amount:.6f} {native_token} - TX: {tx_hash}")
+                return True
+            else:
+                logger.error(f"Failed to refill gas for {wallet_address}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error checking/refilling gas for {wallet_address}: {e}")
+            return False
+    
+    def check_all_wallets_gas(self, dry_run: bool = False) -> Dict[str, Any]:
+        """
+        Check and refill gas for all active wallets.
+        
+        Args:
+            dry_run: If True, simulate only
+            
+        Returns:
+            Dict with summary of checks and refills
+        """
+        logger.info("Checking gas levels for all active wallets...")
+        
+        active_wallets = self.db.get_active_wallets(self.config.blockchain)
+        
+        if not active_wallets:
+            logger.info("No active wallets to check")
+            return {
+                'wallets_checked': 0,
+                'wallets_refilled': 0,
+                'wallets_sufficient': 0,
+                'wallets_failed': 0
+            }
+        
+        native_token = self.blockchain.chain_config.get('native_token', 'ETH')
+        wallets_refilled = 0
+        wallets_sufficient = 0
+        wallets_failed = 0
+        
+        for wallet in active_wallets:
+            wallet_address = wallet['address']
+            current_balance = self.blockchain.get_native_balance(wallet_address)
+            min_required = self.config.gas_per_wallet * 0.3
+            
+            if current_balance >= min_required:
+                wallets_sufficient += 1
+            else:
+                # Try to refill
+                success = self.ensure_wallet_has_gas(wallet_address, dry_run=dry_run)
+                if success:
+                    wallets_refilled += 1
+                else:
+                    wallets_failed += 1
+        
+        summary = {
+            'wallets_checked': len(active_wallets),
+            'wallets_refilled': wallets_refilled,
+            'wallets_sufficient': wallets_sufficient,
+            'wallets_failed': wallets_failed
+        }
+        
+        logger.info(f"Gas check complete: {wallets_sufficient} sufficient, {wallets_refilled} refilled, {wallets_failed} failed")
+        return summary
     
     def get_wallet_stats(self) -> Dict[str, Any]:
         """

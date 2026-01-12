@@ -52,27 +52,40 @@ class SharesDAOClient:
         Returns:
             Dict of {ticker: pool_info}
         """
+        logger.info(f"Fetching pool list from {self.api_url}/pool/list for blockchain={self.blockchain}")
+        
         try:
             url = f"{self.api_url}/pool/list"
+            logger.debug(f"POST {url} with payload: {{'type': 2}}")
+            
             response = self.session.post(url, json={"type": 2}, timeout=10)
             
+            logger.debug(f"Response status: {response.status_code}")
+            
             if response.status_code != 200:
-                logger.error(f"Failed to get pool list: {response.status_code}")
+                logger.error(f"Failed to get pool list: {response.status_code}, Response: {response.text[:200]}")
                 return {}
             
             pools_data = response.json()
+            logger.info(f"Received {len(pools_data)} pools from API")
+            
             pools = {}
             
             # Determine blockchain type
             blockchain_type = BLOCKCHAIN_TYPES.get('evm') if self.blockchain in ['ethereum', 'arbitrum', 'base', 'bnb'] else None
+            logger.debug(f"Blockchain type for {self.blockchain}: {blockchain_type}")
             
+            filtered_count = 0
             for pool in pools_data:
                 # Filter by blockchain type
-                if blockchain_type and pool.get("blockchain") != blockchain_type:
+                pool_blockchain = pool.get("blockchain")
+                if blockchain_type and pool_blockchain != blockchain_type:
+                    filtered_count += 1
                     continue
                 
                 symbol = pool.get("symbol")
                 if not symbol:
+                    logger.debug(f"Skipping pool without symbol: {pool.get('pool_id')}")
                     continue
                 
                 # Parse token_id for EVM chains
@@ -113,13 +126,22 @@ class SharesDAOClient:
                     "burn_address": pool.get("burn_address"),
                     "pool_id": pool.get("pool_id")
                 }
+                logger.debug(f"Added pool: {symbol} (pool_id={pool.get('pool_id')}, asset_id={asset_id})")
             
-            logger.info(f"Loaded {len(pools)} pools (stocks) for {self.blockchain}")
+            logger.info(f"Loaded {len(pools)} pools for {self.blockchain} (filtered out {filtered_count} pools from other blockchains)")
+            
+            if len(pools) == 0:
+                logger.warning(f"No pools found for blockchain={self.blockchain}, blockchain_type={blockchain_type}")
+                logger.warning(f"Total pools from API: {len(pools_data)}")
+            
             self.stock_pools = pools
             return pools
             
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Network error fetching pool list: {e}")
+            return {}
         except Exception as e:
-            logger.error(f"Error fetching pool list: {e}")
+            logger.error(f"Error fetching pool list: {e}", exc_info=True)
             return {}
     
     def get_stock_price(self, ticker: str, slippage: float = 0.005) -> Optional[float]:
@@ -316,9 +338,18 @@ def create_sharesdao_client(config) -> SharesDAOClient:
         SharesDAOClient instance
     """
     api_url = config.sharesdao_api_url if hasattr(config, 'sharesdao_api_url') else "https://api.sharesdao.com:8443"
+    
+    logger.info(f"Creating SharesDAO client: URL={api_url}, blockchain={config.blockchain}")
+    
     client = SharesDAOClient(api_url, blockchain=config.blockchain)
     
     # Load stock pools on initialization
-    client.get_pool_list()
+    logger.info("Loading pools from SharesDAO API...")
+    pools = client.get_pool_list()
+    
+    if not pools:
+        logger.error("Failed to load any pools from SharesDAO API")
+    else:
+        logger.info(f"Successfully loaded {len(pools)} pools")
     
     return client

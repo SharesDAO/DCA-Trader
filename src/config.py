@@ -5,12 +5,16 @@ Loads settings from config.yaml and environment variables.
 
 import os
 import yaml
+import logging
 from pathlib import Path
 from typing import Dict, List, Any
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# Setup logger
+logger = logging.getLogger(__name__)
 
 
 class Config:
@@ -43,7 +47,6 @@ class Config:
         
         # Blockchain
         self.blockchain = config.get('blockchain', 'arbitrum')
-        self.vault_address = config.get('vault_address')
         
         # Pool addresses (will be populated from API)
         pool = config.get('pool', {})
@@ -54,10 +57,12 @@ class Config:
         trading = config.get('trading', {})
         self.max_usd_per_wallet = trading.get('max_usd_per_wallet', 100)
         self.min_usd_per_wallet = trading.get('min_usd_per_wallet', 10)
+        self.gas_per_wallet = trading.get('gas_per_wallet', 0.002)
         self.order_expiry_days = trading.get('order_expiry_days', 7)
         self.min_profit = trading.get('min_profit', 5)
         self.max_hold_days = trading.get('max_hold_days', 30)
         self.max_loss_traders = trading.get('max_loss_traders', 3)
+        self.sell_slippage = trading.get('sell_slippage', 0.005)  # Default 0.5%
         
         # Pools filter (optional list of pool tickers to trade)
         # Can be a list of tickers or empty list to use all available pools
@@ -90,10 +95,39 @@ class Config:
         self.vault_private_key = os.getenv('VAULT_PRIVATE_KEY')
         self.database_encryption_key = os.getenv('DATABASE_ENCRYPTION_KEY')
         self.alchemy_api_key = os.getenv('ALCHEMY_API_KEY')
-        self.bnb_rpc_url = os.getenv('BNB_RPC_URL')
         
         # SharesDAO API
         self.sharesdao_api_url = os.getenv('SHARESDAO_API_URL', 'https://api.sharesdao.com:8443')
+        
+        # Derive vault address from private key
+        self.vault_address = self._derive_address_from_private_key(self.vault_private_key)
+    
+    def _derive_address_from_private_key(self, private_key: str) -> str:
+        """
+        Derive Ethereum address from private key.
+        
+        Args:
+            private_key: Private key (with or without 0x prefix)
+            
+        Returns:
+            Ethereum address (checksummed)
+        """
+        if not private_key:
+            return None
+        
+        try:
+            from eth_account import Account
+            
+            # Ensure private key has 0x prefix
+            if not private_key.startswith('0x'):
+                private_key = '0x' + private_key
+            
+            # Derive account from private key
+            account = Account.from_key(private_key)
+            return account.address
+        except Exception as e:
+            logger.error(f"Failed to derive address from private key: {e}")
+            return None
     
     def get_chain_config(self, blockchain: str = None) -> Dict[str, Any]:
         """
@@ -123,13 +157,7 @@ class Config:
         chain = blockchain or self.blockchain
         chain_config = self.get_chain_config(chain)
         
-        # Special handling for BNB
-        if chain == 'bnb':
-            if self.bnb_rpc_url:
-                return self.bnb_rpc_url
-            raise ValueError("BNB_RPC_URL not set in environment variables")
-        
-        # Use Alchemy for other chains
+        # Use Alchemy for all supported chains
         alchemy_network = chain_config.get('alchemy_network')
         if not alchemy_network:
             raise ValueError(f"No alchemy_network configured for {chain}")
@@ -149,22 +177,18 @@ class Config:
         errors = []
         
         # Check required fields
-        if not self.vault_address or self.vault_address == "0x...":
-            errors.append("vault_address not configured in config.yaml")
-        
-        # Pool addresses will be loaded from API, so we don't validate them here
-        
         if not self.vault_private_key:
             errors.append("VAULT_PRIVATE_KEY not set in .env")
+        elif not self.vault_address:
+            errors.append("Failed to derive vault address from VAULT_PRIVATE_KEY")
+        
+        # Pool addresses will be loaded from API, so we don't validate them here
         
         if not self.database_encryption_key:
             errors.append("DATABASE_ENCRYPTION_KEY not set in .env")
         
         if not self.alchemy_api_key:
             errors.append("ALCHEMY_API_KEY not set in .env")
-        
-        if self.blockchain == 'bnb' and not self.bnb_rpc_url:
-            errors.append("BNB_RPC_URL not set in .env (required for BNB chain)")
         
         # Note: trading_stocks (pools) will be populated from API at runtime
         # Validation happens after API call

@@ -298,7 +298,8 @@ class BlockchainClient:
                 "offer": offer_wei,
                 "request": request_wei,
                 "token_address": Web3.to_checksum_address(stock_token_address),
-                "expiry_days": expiry_days
+                "expiry_days": expiry_days,
+                "did_id": from_address
             }
             
             logger.info(f"Buy order: {usdc_amount} USDC for {stock_quantity} {stock_ticker} (type: {order_type})")
@@ -441,7 +442,8 @@ class BlockchainClient:
                 "offer": offer_wei,
                 "request": request_wei,
                 "token_address": Web3.to_checksum_address(stock_token_address),
-                "expiry_days": expiry_days
+                "expiry_days": expiry_days,
+                "did_id": from_address
             }
             
             logger.info(f"Sell order: {stock_quantity} {stock_ticker} for {usdc_amount} USDC (type: {order_type})")

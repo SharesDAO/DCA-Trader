@@ -183,43 +183,73 @@ class BlockchainClient:
         nonce_keywords = ['nonce', 'transaction underpriced', 'replacement transaction underpriced']
         return any(keyword in error_msg for keyword in nonce_keywords)
     
-    def get_native_balance(self, address: str) -> float:
+    def get_native_balance(self, address: str, max_retries: int = 3) -> float:
         """
-        Get native token balance (ETH/BNB).
+        Get native token balance (ETH/BNB) with retry on network errors.
         
         Args:
             address: Wallet address
+            max_retries: Maximum retry attempts for network errors
             
         Returns:
             Balance in native token
         """
-        try:
-            checksum_address = Web3.to_checksum_address(address)
-            balance_wei = self.w3.eth.get_balance(checksum_address)
-            balance = self.w3.from_wei(balance_wei, 'ether')
-            return float(balance)
-        except Exception as e:
-            logger.error(f"Failed to get native balance for {address}: {e}")
-            return 0.0
+        checksum_address = Web3.to_checksum_address(address)
+        
+        for attempt in range(1, max_retries + 1):
+            try:
+                balance_wei = self.w3.eth.get_balance(checksum_address)
+                balance = self.w3.from_wei(balance_wei, 'ether')
+                return float(balance)
+            except Exception as e:
+                error_msg = str(e).lower()
+                is_network_error = any(keyword in error_msg for keyword in [
+                    'connection', 'timeout', 'reset', 'refused', 'unreachable'
+                ])
+                
+                if is_network_error and attempt < max_retries:
+                    logger.warning(f"[Attempt {attempt}/{max_retries}] Network error getting balance for {address}, retrying...")
+                    time.sleep(1)
+                    continue
+                
+                logger.error(f"Failed to get native balance for {address}: {e}")
+                return 0.0
+        
+        return 0.0
     
-    def get_usdc_balance(self, address: str) -> float:
+    def get_usdc_balance(self, address: str, max_retries: int = 3) -> float:
         """
-        Get USDC balance.
+        Get USDC balance with retry on network errors.
         
         Args:
             address: Wallet address
+            max_retries: Maximum retry attempts for network errors
             
         Returns:
             USDC balance
         """
-        try:
-            checksum_address = Web3.to_checksum_address(address)
-            balance_raw = self.usdc_contract.functions.balanceOf(checksum_address).call()
-            balance = balance_raw / (10 ** self.usdc_decimals)
-            return float(balance)
-        except Exception as e:
-            logger.error(f"Failed to get USDC balance for {address}: {e}")
-            return 0.0
+        checksum_address = Web3.to_checksum_address(address)
+        
+        for attempt in range(1, max_retries + 1):
+            try:
+                balance_raw = self.usdc_contract.functions.balanceOf(checksum_address).call()
+                balance = balance_raw / (10 ** self.usdc_decimals)
+                return float(balance)
+            except Exception as e:
+                error_msg = str(e).lower()
+                is_network_error = any(keyword in error_msg for keyword in [
+                    'connection', 'timeout', 'reset', 'refused', 'unreachable'
+                ])
+                
+                if is_network_error and attempt < max_retries:
+                    logger.warning(f"[Attempt {attempt}/{max_retries}] Network error getting USDC balance for {address}, retrying...")
+                    time.sleep(1)
+                    continue
+                
+                logger.error(f"Failed to get USDC balance for {address}: {e}")
+                return 0.0
+        
+        return 0.0
     
     def get_token_contract(self, token_address: str) -> Contract:
         """
@@ -234,29 +264,43 @@ class BlockchainClient:
         checksum_address = Web3.to_checksum_address(token_address)
         return self.w3.eth.contract(address=checksum_address, abi=ERC20_ABI)
     
-    def get_token_balance(self, token_address: str, wallet_address: str) -> float:
+    def get_token_balance(self, token_address: str, wallet_address: str, max_retries: int = 3) -> float:
         """
-        Get ERC-20 token balance.
+        Get ERC-20 token balance with retry on network errors.
         
         Args:
             token_address: Token contract address
             wallet_address: Wallet address
+            max_retries: Maximum retry attempts for network errors
             
         Returns:
             Token balance
         """
-        try:
-            contract = self.get_token_contract(token_address)
-            checksum_wallet = Web3.to_checksum_address(wallet_address)
-            
-            balance_raw = contract.functions.balanceOf(checksum_wallet).call()
-            decimals = contract.functions.decimals().call()
-            balance = balance_raw / (10 ** decimals)
-            
-            return float(balance)
-        except Exception as e:
-            logger.error(f"Failed to get token balance for {wallet_address}: {e}")
-            return 0.0
+        for attempt in range(1, max_retries + 1):
+            try:
+                contract = self.get_token_contract(token_address)
+                checksum_wallet = Web3.to_checksum_address(wallet_address)
+                
+                balance_raw = contract.functions.balanceOf(checksum_wallet).call()
+                decimals = contract.functions.decimals().call()
+                balance = balance_raw / (10 ** decimals)
+                
+                return float(balance)
+            except Exception as e:
+                error_msg = str(e).lower()
+                is_network_error = any(keyword in error_msg for keyword in [
+                    'connection', 'timeout', 'reset', 'refused', 'unreachable'
+                ])
+                
+                if is_network_error and attempt < max_retries:
+                    logger.warning(f"[Attempt {attempt}/{max_retries}] Network error getting token balance for {wallet_address}, retrying...")
+                    time.sleep(1)
+                    continue
+                
+                logger.error(f"Failed to get token balance for {wallet_address}: {e}")
+                return 0.0
+        
+        return 0.0
     
     def submit_buy_order(self, from_private_key: str, stock_ticker: str,
                         stock_token_address: str, usdc_amount: float,
@@ -453,11 +497,49 @@ class BlockchainClient:
                 logger.info("[DRY RUN] Would submit sell order")
                 return f"0xdry_sell_{customer_id}"
             
-            # Check stock token balance
+            # Check stock token balance and adjust if needed
             stock_balance = self.get_token_balance(stock_token_address, from_address)
+            
             if stock_balance < stock_quantity:
-                logger.error(f"Insufficient stock tokens: {stock_balance} < {stock_quantity}")
-                return None
+                # Calculate the difference percentage
+                difference = stock_quantity - stock_balance
+                difference_pct = (difference / stock_quantity) * 100
+                
+                # If difference is small (< 1%), adjust to actual balance
+                if difference_pct < 1.0 and stock_balance > 0:
+                    logger.warning(f"Stock balance slightly less than requested: {stock_balance} < {stock_quantity}")
+                    logger.info(f"Difference: {difference:.10f} ({difference_pct:.4f}%), adjusting sell amount to actual balance")
+                    
+                    # Store original quantity for logging
+                    original_quantity = stock_quantity
+                    original_usdc = usdc_amount
+                    
+                    # Adjust stock quantity to actual balance
+                    stock_quantity = stock_balance
+                    offer_wei = int(stock_quantity * (10 ** 18))
+                    
+                    # Recalculate USDC amount proportionally
+                    # price_per_token = original_usdc / original_quantity
+                    # new_usdc = price_per_token * new_quantity
+                    adjusted_usdc_amount = (usdc_amount / original_quantity) * stock_quantity
+                    request_wei = int(adjusted_usdc_amount * (10 ** self.usdc_decimals))
+                    
+                    # Update memo with adjusted amounts
+                    memo = {
+                        "customer_id": customer_id,
+                        "type": order_type,
+                        "offer": offer_wei,
+                        "request": request_wei,
+                        "token_address": Web3.to_checksum_address(stock_token_address),
+                        "expiry_days": expiry_days,
+                        "did_id": from_address
+                    }
+                    
+                    logger.info(f"Adjusted sell order: {stock_quantity:.10f} {stock_ticker} for ${adjusted_usdc_amount:.2f} USDC")
+                    logger.info(f"Original: {original_quantity:.10f} {stock_ticker} for ${original_usdc:.2f} USDC")
+                else:
+                    logger.error(f"Insufficient stock tokens: {stock_balance} < {stock_quantity} (difference: {difference_pct:.2f}%)")
+                    return None
             
             # Get stock token contract
             stock_contract = self.get_token_contract(stock_token_address)

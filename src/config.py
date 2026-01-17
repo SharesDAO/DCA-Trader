@@ -81,6 +81,7 @@ class Config:
         # Monitoring
         monitoring = config.get('monitoring', {})
         self.check_interval_seconds = monitoring.get('check_interval_seconds', 300)
+        self.portfolio_cache_refresh = monitoring.get('portfolio_cache_refresh', 3)
         
         # Dry-run mode
         self.dry_run = config.get('dry_run', False)
@@ -220,6 +221,18 @@ class Config:
         else:
             self.trading_stocks = stocks
             logger.info(f"Using all available pools: {len(stocks)}")
+    
+    def get_pool_by_ticker(self, ticker: str) -> Dict[str, Any]:
+        """
+        Get pool information by ticker.
+        
+        Args:
+            ticker: Pool ticker symbol
+            
+        Returns:
+            Pool info dictionary, or None if not found
+        """
+        return self.trading_stocks.get(ticker)
     
     def get_stock_token_address(self, ticker: str) -> str:
         """

@@ -35,6 +35,7 @@ stocks:
 # Monitoring settings
 monitoring:
   check_interval_seconds: 600  # Check every 10 minutes
+  portfolio_cache_refresh: 1   # Refresh portfolio value every N iterations (reduces API calls)
   
 # Dry-run mode (true = simulate only, false = real trading)
 dry_run: false

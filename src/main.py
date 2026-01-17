@@ -8,7 +8,6 @@ import logging
 import signal
 import sys
 import argparse
-from pathlib import Path
 
 # Import modules
 from config import load_config
@@ -18,59 +17,6 @@ from stock_selector import create_stock_selector
 from wallet_manager import create_wallet_manager
 from sharesdao_client import create_sharesdao_client
 from trade_manager import create_trade_manager
-
-# Setup logging
-def setup_logging(log_level: str = 'INFO'):
-    """
-    Setup logging configuration with daily rotation.
-    
-    Logs are rotated daily at midnight and kept for 7 days.
-    
-    Args:
-        log_level: Logging level (DEBUG, INFO, WARNING, ERROR)
-    """
-    from logging.handlers import TimedRotatingFileHandler
-    
-    # Create logs directory
-    project_root = Path(__file__).parent.parent
-    log_dir = project_root / 'logs'
-    log_dir.mkdir(exist_ok=True)
-    
-    # Configure logging with rotation
-    log_file = log_dir / 'bot.log'
-    
-    # Create rotating file handler
-    # - when='midnight': Rotate at midnight
-    # - interval=1: Rotate every 1 day
-    # - backupCount=7: Keep 7 days of logs
-    file_handler = TimedRotatingFileHandler(
-        filename=log_file,
-        when='midnight',
-        interval=1,
-        backupCount=7,
-        encoding='utf-8'
-    )
-    file_handler.suffix = '%Y-%m-%d'  # Log files: bot.log.2026-01-11
-    
-    # Console handler
-    console_handler = logging.StreamHandler(sys.stdout)
-    
-    # Set format
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler.setFormatter(formatter)
-    console_handler.setFormatter(formatter)
-    
-    # Configure root logger
-    logging.basicConfig(
-        level=getattr(logging, log_level.upper()),
-        handlers=[file_handler, console_handler]
-    )
-    
-    logger = logging.getLogger(__name__)
-    logger.info(f"Logging initialized - Level: {log_level}")
-    logger.info(f"Log file: {log_file} (rotates daily, keeps 7 days)")
-
-
 
 logger = logging.getLogger(__name__)
 
@@ -167,6 +113,11 @@ class TradingBot:
         # Running flag
         self.running = True
         
+        # Portfolio value cache to reduce API calls
+        self._portfolio_cache = None
+        self._portfolio_cache_iteration = 0
+        self._portfolio_cache_interval = self.config.portfolio_cache_refresh  # Refresh every N iterations
+        
         # Setup signal handlers
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
@@ -184,6 +135,8 @@ class TradingBot:
             
             if funded_count > 0:
                 logger.info(f"Successfully funded {funded_count} pending wallet(s)")
+                # Invalidate cache after funding wallets
+                self.invalidate_portfolio_cache()
                 
                 # Place initial buy orders for newly funded wallets
                 active_wallets = self.wallet_manager.get_active_wallets()
@@ -216,6 +169,8 @@ class TradingBot:
             
             if wallet:
                 logger.info(f"New wallet created and funded: {wallet['address']}")
+                # Invalidate cache after creating new wallet
+                self.invalidate_portfolio_cache()
                 
                 # Place initial buy order
                 order_id = self.trade_manager.place_buy_order(
@@ -241,12 +196,16 @@ class TradingBot:
             processed = self.trade_manager.check_order_confirmations(dry_run=self.config.dry_run)
             if processed > 0:
                 logger.info(f"Processed {processed} orders (filled or refunded)")
+                # Invalidate cache after order confirmations (balance changed)
+                self.invalidate_portfolio_cache()
             
             # Monitor positions (mainly for max hold time check)
             # Note: Sell orders are placed immediately after buy confirmation
             sell_orders = self.trade_manager.monitor_positions(dry_run=self.config.dry_run)
             if sell_orders > 0:
                 logger.info(f"Placed {sell_orders} sell orders (max hold time reached)")
+                # Invalidate cache after placing sell orders (tokens will be transferred)
+                self.invalidate_portfolio_cache()
             
         except Exception as e:
             logger.error(f"Error in monitor_and_trade: {e}", exc_info=True)
@@ -273,13 +232,172 @@ class TradingBot:
             
             await asyncio.sleep(1)
     
+    def invalidate_portfolio_cache(self):
+        """Invalidate portfolio cache after important events (wallet creation, order confirmation, etc.)."""
+        self._portfolio_cache = None
+        self._portfolio_cache_iteration = 0
+        logger.debug("Portfolio cache invalidated")
+    
+    async def calculate_total_usd_value(self, force_refresh: bool = False):
+        """
+        Calculate total USD value across all wallets and vault.
+        
+        Uses caching to reduce blockchain API calls. Cache is refreshed:
+        - Every N iterations (configurable)
+        - When force_refresh=True (after wallet creation, order confirmation, etc.)
+        - When cache is empty
+        
+        Args:
+            force_refresh: Force cache refresh regardless of iteration count
+        
+        Returns:
+            Dict with total_value, vault_balance, wallet_count, wallet_details
+        """
+        try:
+            # Return cached value if available and fresh enough
+            if not force_refresh and self._portfolio_cache is not None:
+                if self._portfolio_cache_iteration < self._portfolio_cache_interval:
+                    self._portfolio_cache_iteration += 1
+                    logger.debug(f"Using cached portfolio value (iteration {self._portfolio_cache_iteration}/{self._portfolio_cache_interval})")
+                    return self._portfolio_cache
+            
+            # Refresh cache
+            logger.debug("Refreshing portfolio value from database...")
+            
+            total_value = 0.0
+            wallet_details = []
+            
+            # Get all active wallets
+            active_wallets = self.wallet_manager.get_active_wallets()
+            
+            # Get all pending orders grouped by wallet
+            pending_orders_by_wallet = {}
+            all_pending_orders = self.db.get_pending_orders()
+            for order in all_pending_orders:
+                wallet_addr = order['wallet_address']
+                if wallet_addr not in pending_orders_by_wallet:
+                    pending_orders_by_wallet[wallet_addr] = {'buy': [], 'sell': []}
+                pending_orders_by_wallet[wallet_addr][order['order_type']].append(order)
+            
+            # Get all positions
+            all_positions = {pos['wallet_address']: pos for pos in self.db.get_all_positions()}
+            
+            for wallet in active_wallets:
+                wallet_address = wallet['address']
+                stock_ticker = wallet['assigned_stock']
+                wallet_value = 0.0
+                usdc_value = 0.0
+                stock_value = 0.0
+                stock_balance = 0.0
+                
+                # Get pending orders for this wallet
+                pending_orders = pending_orders_by_wallet.get(wallet_address, {'buy': [], 'sell': []})
+                pending_buy_orders = pending_orders['buy']
+                pending_sell_orders = pending_orders['sell']
+                
+                # 1. Get actual token balances in wallet (current holdings)
+                actual_usdc_balance = self.blockchain.get_usdc_balance(wallet_address)
+                pool_info = self.config.get_pool_by_ticker(stock_ticker)
+                actual_stock_balance = 0.0
+                if pool_info:
+                    token_address = pool_info.get('asset_id')
+                    if token_address:
+                        actual_stock_balance = self.blockchain.get_token_balance(token_address, wallet_address)
+                
+                # 2. Calculate value from actual balances
+                usdc_value = actual_usdc_balance
+                if actual_stock_balance > 0:
+                    stock_price = self.api.get_stock_price(stock_ticker)
+                    if stock_price and stock_price > 0:
+                        stock_value = actual_stock_balance * stock_price
+                    else:
+                        logger.warning(f"Failed to get price for {stock_ticker}, stock value not included")
+                
+                # 3. Add pending buy orders value (USDC sent but order not confirmed)
+                # Pending buy orders: USDC has been sent but order not confirmed yet
+                # Only count USDC value, NOT stock value (order not confirmed)
+                pending_buy_usdc = sum(buy_order['amount_usdc'] for buy_order in pending_buy_orders)
+                usdc_value += pending_buy_usdc
+                
+                # 4. Add pending sell orders value (stocks sent but order not confirmed)
+                # Pending sell orders: Stocks have been sent but order not confirmed yet
+                # Only count stock value, NOT USDC value (order not confirmed)
+                pending_sell_quantity = sum(sell_order['quantity'] for sell_order in pending_sell_orders)
+                if pending_sell_quantity > 0:
+                    stock_price = self.api.get_stock_price(stock_ticker)
+                    if stock_price and stock_price > 0:
+                        pending_sell_value = pending_sell_quantity * stock_price
+                        stock_value += pending_sell_value
+                    else:
+                        logger.warning(f"Failed to get price for {stock_ticker}, pending sell value not included")
+                
+                wallet_value = usdc_value + stock_value
+                stock_balance = actual_stock_balance
+                
+                position = all_positions.get(wallet_address)
+                wallet_details.append({
+                    'address': wallet_address,
+                    'stock': stock_ticker,
+                    'value': wallet_value,
+                    'usdc_value': usdc_value,
+                    'stock_value': stock_value,
+                    'actual_usdc_balance': actual_usdc_balance,
+                    'actual_stock_balance': actual_stock_balance,
+                    'pending_buy_usdc': pending_buy_usdc,
+                    'pending_sell_quantity': pending_sell_quantity,
+                    'position_quantity': position['quantity'] if position else 0.0,
+                    'pending_buy_orders': len(pending_buy_orders),
+                    'pending_sell_orders': len(pending_sell_orders)
+                })
+                total_value += wallet_value
+            
+            # Add vault USDC balance (vault doesn't have pending orders, so query balance)
+            vault_balance = self.blockchain.get_usdc_balance(self.config.vault_address)
+            total_value += vault_balance
+            
+            result = {
+                'total_value': total_value,
+                'vault_balance': vault_balance,
+                'wallet_count': len(active_wallets),
+                'wallet_details': wallet_details
+            }
+            
+            # Update cache
+            self._portfolio_cache = result
+            self._portfolio_cache_iteration = 1
+            logger.debug(f"Portfolio cache refreshed: ${result['total_value']:.2f}")
+            
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error calculating total USD value: {e}", exc_info=True)
+            return {
+                'total_value': 0.0,
+                'vault_balance': 0.0,
+                'wallet_count': 0,
+                'wallet_details': []
+            }
+    
     async def print_status(self):
         """Print current bot status."""
         try:
+            # Calculate total portfolio value (force refresh for accurate status report)
+            value_info = await self.calculate_total_usd_value(force_refresh=True)
+            
+            # Calculate breakdown
+            total_usdc = value_info['vault_balance']
+            total_stock_value = 0.0
+            for wallet_detail in value_info['wallet_details']:
+                total_usdc += wallet_detail.get('usdc_value', 0.0)
+                total_stock_value += wallet_detail.get('stock_value', 0.0)
+            
             # Wallet stats
             wallet_stats = self.wallet_manager.get_wallet_stats()
             logger.info("=" * 60)
             logger.info("STATUS UPDATE")
+            logger.info("-" * 60)
+            logger.info(f"💰 TOTAL PORTFOLIO VALUE: ${value_info['total_value']:.2f} USD")
+            logger.info(f"   USDC Value: ${total_usdc:.2f} | Stock Value: ${total_stock_value:.2f}")
             logger.info("-" * 60)
             logger.info(f"Active wallets: {wallet_stats['total_active_wallets']}")
             logger.info(f"Total USDC in wallets: ${wallet_stats['total_usdc_in_wallets']:.2f}")
@@ -289,6 +407,17 @@ class TradingBot:
                 logger.info("Stock distribution:")
                 for stock, count in wallet_stats['stock_distribution'].items():
                     logger.info(f"  {stock}: {count} wallets")
+            
+            # Wallet values breakdown (top 5 by value)
+            if value_info['wallet_details']:
+                sorted_wallets = sorted(value_info['wallet_details'], key=lambda x: x['value'], reverse=True)
+                top_wallets = sorted_wallets[:5]
+                if top_wallets:
+                    logger.info("Top wallets by value:")
+                    for w in top_wallets:
+                        usdc_val = w.get('usdc_value', 0.0)
+                        stock_val = w.get('stock_value', 0.0)
+                        logger.info(f"  {w['address'][:8]}...{w['address'][-4:]} ({w['stock']}): ${w['value']:.2f} (USDC: ${usdc_val:.2f}, Stock: ${stock_val:.2f})")
             
             # Trading stats
             trade_stats = self.trade_manager.get_trading_stats()
@@ -314,6 +443,20 @@ class TradingBot:
             try:
                 iteration += 1
                 logger.info(f"--- Iteration {iteration} ---")
+                
+                # Log total USD value
+                value_info = await self.calculate_total_usd_value()
+                
+                # Calculate breakdown
+                total_usdc = value_info['vault_balance']
+                total_stock_value = 0.0
+                for wallet_detail in value_info['wallet_details']:
+                    total_usdc += wallet_detail.get('usdc_value', 0.0)
+                    total_stock_value += wallet_detail.get('stock_value', 0.0)
+                
+                logger.info(f"💰 Total Portfolio Value: ${value_info['total_value']:.2f} USD")
+                logger.info(f"   USDC: ${total_usdc:.2f} | Stocks: ${total_stock_value:.2f}")
+                logger.info(f"   Vault: ${value_info['vault_balance']:.2f} | Active Wallets: {value_info['wallet_count']}")
                 
                 # Task 1: Create new wallet if needed
                 await self.create_new_wallet_if_needed()
@@ -348,194 +491,16 @@ class TradingBot:
             logger.info("Trading bot stopped")
 
 
-def check_config_command(args):
-    """Check configuration validity."""
-    setup_logging('INFO')
-    
-    try:
-        config = load_config(args.config)
-        errors = config.validate()
-        
-        if errors:
-            print("❌ Configuration validation failed:")
-            for error in errors:
-                print(f"  - {error}")
-            return 1
-        else:
-            print("✅ Configuration valid!")
-            print(f"   Blockchain: {config.blockchain}")
-            print(f"   Vault: {config.vault_address}")
-            print(f"   Trading stocks: {', '.join(config.trading_stocks)}")
-            print(f"   Dry-run mode: {config.dry_run}")
-            return 0
-    except Exception as e:
-        print(f"❌ Error loading configuration: {e}")
-        return 1
-
-
-async def run_bot(args):
-    """Run the bot."""
-    setup_logging(args.log_level)
-    
-    bot = TradingBot(config_path=args.config)
-    await bot.run()
-
-
-async def liquidate_command(args):
-    """Liquidate all positions."""
-    setup_logging(args.log_level)
-    
-    bot = TradingBot(config_path=args.config)
-    
-    logger.info("Starting liquidation process...")
-    
-    # Liquidate all positions (place sell orders)
-    result = bot.trade_manager.liquidate_all_positions(dry_run=args.dry_run)
-    
-    print("\n" + "=" * 60)
-    print("LIQUIDATION SUMMARY")
-    print("=" * 60)
-    print(f"Positions found: {result['positions_found']}")
-    print(f"Sell orders placed: {result['sell_orders_placed']}")
-    print("=" * 60)
-    
-    if result['sell_orders_placed'] > 0:
-        print("\n⚠️  IMPORTANT:")
-        print("1. Wait for sell orders to be confirmed (monitor with bot)")
-        print("2. Run 'python -m src.main --sweep' to transfer USDC to vault")
-    
-    return 0
-
-
-async def sweep_command(args):
-    """Sweep all USDC from wallets to vault."""
-    setup_logging(args.log_level)
-    
-    bot = TradingBot(config_path=args.config)
-    
-    logger.info("Starting wallet sweep...")
-    
-    # Sweep all USDC to vault
-    result = bot.trade_manager.sweep_wallets_to_vault(dry_run=args.dry_run)
-    
-    print("\n" + "=" * 60)
-    print("SWEEP SUMMARY")
-    print("=" * 60)
-    print(f"Wallets checked: {result['wallets_checked']}")
-    print(f"Wallets swept: {result['wallets_swept']}")
-    print(f"Total USDC swept: ${result['total_usdc_swept']:.2f}")
-    if result['errors']:
-        print(f"Errors: {len(result['errors'])}")
-        for error in result['errors']:
-            print(f"  - {error}")
-    print("=" * 60)
-    
-    return 0
-
-
-async def wallets_command(args):
-    """Display detailed wallet information."""
-    setup_logging(args.log_level)
-    
-    bot = TradingBot(config_path=args.config)
-    
-    # Get all wallets
-    all_wallets = bot.db.get_active_wallets(bot.config.blockchain)
-    pending_wallets = bot.db.get_wallets_by_status(bot.config.blockchain, 'pending_funding')
-    abandoned_wallets = bot.db.get_wallets_by_status(bot.config.blockchain, 'abandoned')
-    
-    native_token = bot.blockchain.chain_config.get('native_token', 'ETH')
-    
-    print("\n" + "=" * 80)
-    print("WALLET INFORMATION")
-    print("=" * 80)
-    print(f"Blockchain: {bot.config.blockchain}")
-    print(f"Total wallets: {len(all_wallets) + len(pending_wallets) + len(abandoned_wallets)}")
-    print(f"  - Active: {len(all_wallets)}")
-    print(f"  - Pending funding: {len(pending_wallets)}")
-    print(f"  - Abandoned: {len(abandoned_wallets)}")
-    print("=" * 80)
-    
-    # Display active wallets
-    if all_wallets:
-        print("\n📊 ACTIVE WALLETS")
-        print("-" * 80)
-        total_usdc = 0.0
-        total_native = 0.0
-        
-        for i, wallet in enumerate(all_wallets, 1):
-            address = wallet['address']
-            stock = wallet['assigned_stock']
-            loss_count = wallet['loss_count']
-            
-            # Get balances
-            usdc_balance = bot.blockchain.get_usdc_balance(address)
-            native_balance = bot.blockchain.get_native_balance(address)
-            total_usdc += usdc_balance
-            total_native += native_balance
-            
-            # Get active position
-            position = bot.db.get_position(address)
-            position_info = ""
-            if position:
-                stock_balance = bot.blockchain.get_token_balance(position['stock_token_address'], address)
-                position_info = f" | Position: {stock_balance:.4f} {position['stock_ticker']}"
-            
-            # Get pending orders
-            orders = bot.db.get_wallet_orders(address)
-            pending_orders = [o for o in orders if o['status'] == 'pending']
-            order_info = f" | Orders: {len(pending_orders)} pending" if pending_orders else ""
-            
-            print(f"\n{i}. {address}")
-            print(f"   Stock: {stock} | Losses: {loss_count}/{bot.config.max_loss_traders}")
-            print(f"   Balance: ${usdc_balance:.2f} USDC | {native_balance:.6f} {native_token}{position_info}{order_info}")
-        
-        print(f"\n{'─' * 80}")
-        print(f"Total: ${total_usdc:.2f} USDC | {total_native:.6f} {native_token}")
-    
-    # Display pending funding wallets
-    if pending_wallets:
-        print("\n⏳ PENDING FUNDING WALLETS")
-        print("-" * 80)
-        
-        for i, wallet in enumerate(pending_wallets, 1):
-            address = wallet['address']
-            stock = wallet['assigned_stock']
-            
-            # Get current balances
-            usdc_balance = bot.blockchain.get_usdc_balance(address)
-            native_balance = bot.blockchain.get_native_balance(address)
-            
-            print(f"\n{i}. {address}")
-            print(f"   Stock: {stock}")
-            print(f"   Current: ${usdc_balance:.2f} USDC | {native_balance:.6f} {native_token}")
-            print(f"   Status: Waiting for funding retry")
-    
-    # Display abandoned wallets (summary only)
-    if abandoned_wallets:
-        print(f"\n🗑️  ABANDONED WALLETS: {len(abandoned_wallets)}")
-        if args.show_abandoned:
-            print("-" * 80)
-            for i, wallet in enumerate(abandoned_wallets, 1):
-                address = wallet['address']
-                stock = wallet['assigned_stock']
-                print(f"{i}. {address} | Stock: {stock}")
-    
-    # Vault information
-    print("\n💰 VAULT")
-    print("-" * 80)
-    vault_usdc = bot.blockchain.get_usdc_balance(bot.config.vault_address)
-    vault_native = bot.blockchain.get_native_balance(bot.config.vault_address)
-    print(f"Address: {bot.config.vault_address}")
-    print(f"Balance: ${vault_usdc:.2f} USDC | {vault_native:.6f} {native_token}")
-    
-    print("=" * 80)
-    
-    return 0
-
-
 def main():
     """Main entry point."""
+    from commands.cli import (
+        check_config_command,
+        run_bot,
+        liquidate_command,
+        sweep_command,
+        wallets_command
+    )
+    
     parser = argparse.ArgumentParser(description='DCA Trading Bot')
     parser.add_argument('--config', type=str, help='Path to config.yaml file')
     parser.add_argument('--log-level', type=str, default='INFO',

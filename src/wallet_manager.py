@@ -114,7 +114,7 @@ class WalletManager:
             
             # Check vault has enough native token (ETH/BNB) for gas
             vault_native_balance = self.blockchain.get_native_balance(self.config.vault_address)
-            gas_reserve = 0.002  # Reserve some for vault's own transactions
+            gas_reserve = 0.001  # Reserve some for vault's own transactions
             required_native = self.config.gas_per_wallet + gas_reserve
             
             if vault_native_balance < required_native:

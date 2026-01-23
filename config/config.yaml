@@ -30,6 +30,7 @@ stocks:
   - COIN
   - IAU
   - IBIT
+  - ETHE
   # Or leave as empty list [] to trade all available pools
 
 # Monitoring settings

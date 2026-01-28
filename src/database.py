@@ -474,6 +474,7 @@ class Database:
                 
                 if existing:
                     # Update existing position
+                    # Note: first_buy_date is NOT updated - it should remain the original buy date
                     cursor.execute("""
                         UPDATE positions 
                         SET quantity = ?, avg_buy_price = ?, total_cost_usdc = ?, 

@@ -171,6 +171,26 @@ class TradeManager:
                 logger.error(f"Wallet not found: {wallet_address}")
                 return None
             
+            # Check if holding time exceeds max_hold_days, if so force MARKET order
+            position = self.db.get_position(wallet_address)
+            if position and position.get('stock_ticker') == stock_ticker:
+                first_buy_date_str = position.get('first_buy_date')
+                if first_buy_date_str:
+                    try:
+                        first_buy_date = datetime.strptime(first_buy_date_str, '%Y-%m-%d').date()
+                        holding_days = (date.today() - first_buy_date).days
+                        
+                        if holding_days >= self.config.max_hold_days:
+                            logger.warning(
+                                f"Holding time ({holding_days} days) exceeds max_hold_days ({self.config.max_hold_days} days), "
+                                f"forcing MARKET order for immediate execution"
+                            )
+                            order_type = 'MARKET'  # Force MARKET order
+                        else:
+                            logger.debug(f"Holding time: {holding_days} days (max: {self.config.max_hold_days} days), using {order_type} order")
+                    except (ValueError, TypeError) as e:
+                        logger.warning(f"Failed to parse first_buy_date '{first_buy_date_str}': {e}, using provided order_type")
+            
             # Ensure wallet has enough gas
             if not self.wallet_manager.ensure_wallet_has_gas(wallet_address, dry_run=dry_run):
                 logger.error(f"Wallet {wallet_address} has insufficient gas and cannot be refilled")
@@ -551,21 +571,30 @@ class TradeManager:
         
         logger.info(f"Processing filled {order_type} order: {order_id}")
         
+        # Get confirmation time (when order is filled)
+        filled_at = datetime.now()
+        
         # Update order status
-        self.db.update_order_status(order_id, 'filled', filled_at=datetime.now())
+        self.db.update_order_status(order_id, 'filled', filled_at=filled_at)
         
         if order_type == 'buy':
             # Create or update position
             total_cost = quantity * limit_price
+            
+            # Use buy order confirmation date (filled_at) as first_buy_date
+            # This ensures holding time is calculated from when the buy order was actually confirmed/filled
+            # Holding time starts from when we actually received the stocks, not when order was placed
+            first_buy_date = filled_at.date()
+            
             self.db.create_or_update_position(
                 wallet_address=wallet_address,
                 stock_ticker=stock_ticker,
                 quantity=quantity,
                 avg_buy_price=limit_price,
                 total_cost_usdc=total_cost,
-                first_buy_date=date.today()
+                first_buy_date=first_buy_date
             )
-            logger.info(f"Position created: {wallet_address} - {quantity} {stock_ticker}")
+            logger.info(f"Position created: {wallet_address} - {quantity} {stock_ticker} (first_buy_date: {first_buy_date})")
             
             # Immediately place sell order with target profit
             logger.info(f"Placing immediate sell order with {self.config.min_profit}% target profit")

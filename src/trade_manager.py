@@ -600,13 +600,29 @@ class TradeManager:
             if position:
                 avg_buy_price = position['avg_buy_price']
                 total_cost = position['total_cost_usdc']
+                first_buy_date = datetime.strptime(position['first_buy_date'], '%Y-%m-%d').date()
+                
+                # Calculate holding days
+                holding_days = (date.today() - first_buy_date).days
                 
                 # Calculate profit/loss
                 sell_amount = quantity * limit_price
                 profit_loss = sell_amount - total_cost
                 profit_pct = (profit_loss / total_cost) * 100
                 
-                logger.info(f"Sell completed: P/L=${profit_loss:.2f} ({profit_pct:.2f}%)")
+                logger.info(f"Sell completed: P/L=${profit_loss:.2f} ({profit_pct:.2f}%), held {holding_days} days")
+                
+                # Check if sold due to max_hold_days exceeded
+                # If holding time exceeded max_hold_days, treat as loss regardless of profit/loss
+                is_max_hold_exceeded = holding_days >= self.config.max_hold_days
+                
+                if is_max_hold_exceeded:
+                    logger.info(f"Position held {holding_days} days (>= {self.config.max_hold_days}), treating as loss regardless of P/L")
+                    # Force treat as loss even if profitable
+                    treat_as_loss = True
+                else:
+                    # Normal case: treat based on actual profit/loss
+                    treat_as_loss = (profit_loss <= 0)
                 
                 # Update order with profit/loss
                 self.db.update_order_status(order_id, 'filled', 
@@ -616,15 +632,20 @@ class TradeManager:
                 # Delete position
                 self.db.delete_position(wallet_address)
                 
-                # Handle wallet based on profit/loss
+                # Handle wallet based on whether to treat as loss
                 should_abandon = False
                 
-                if profit_loss > 0:
-                    # Profitable trade - reuse wallet
+                if not treat_as_loss:
+                    # Profitable trade (and not max_hold_exceeded) - reuse wallet
                     logger.info(f"Profitable trade, reusing wallet {wallet_address}")
                     self.wallet_manager.reuse_wallet(wallet_address, dry_run=dry_run)
                 else:
-                    # Loss - increment loss count
+                    # Loss or max_hold_exceeded - increment loss count
+                    if is_max_hold_exceeded:
+                        logger.info(f"Max hold time exceeded ({holding_days} days), treating as loss")
+                    else:
+                        logger.info(f"Loss recorded: P/L=${profit_loss:.2f}")
+                    
                     loss_count = self.db.increment_loss_count(wallet_address)
                     logger.info(f"Loss recorded for {wallet_address}, count: {loss_count}")
                     

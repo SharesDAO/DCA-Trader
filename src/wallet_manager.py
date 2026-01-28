@@ -328,9 +328,6 @@ class WalletManager:
             
             logger.info(f"Reusing wallet {address}")
             
-            # Reset loss count
-            self.db.reset_loss_count(address)
-            
             # Get active wallets for balanced selection
             active_wallets = self.db.get_active_wallets(self.config.blockchain)
             

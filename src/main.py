@@ -514,7 +514,9 @@ def main():
     parser.add_argument('--sweep', action='store_true',
                        help='Sweep all USDC from wallets to vault')
     parser.add_argument('--collect-eth', action='store_true',
-                       help='Collect ETH/BNB from abandoned wallets and send to vault')
+                       help='Collect ETH/BNB from wallets with almost zero USDC balance and send to vault')
+    parser.add_argument('--min-usdc-threshold', type=float, default=1.0,
+                       help='Maximum USDC balance to consider wallet for ETH collection (default: 1.0)')
     parser.add_argument('--wallets', action='store_true',
                        help='Display detailed wallet information')
     parser.add_argument('--show-abandoned', action='store_true',

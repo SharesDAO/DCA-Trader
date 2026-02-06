@@ -124,6 +124,27 @@ class WalletManager:
             
             logger.debug(f"Vault {native_token} balance: {vault_native_balance:.6f} (sufficient)")
             
+            # Step 1: Transfer USDC first (only transfer native token after USDC succeeds)
+            # Check if wallet already has USDC (from previous failed attempt)
+            current_usdc_balance = self.blockchain.get_usdc_balance(address)
+            if current_usdc_balance >= (funding_amount * 0.5):
+                logger.info(f"Wallet already has {current_usdc_balance:.2f} USDC, skipping USDC transfer")
+            else:
+                # Transfer USDC from vault
+                tx_hash = self.blockchain.transfer_usdc(
+                    self.config.vault_private_key,
+                    address,
+                    funding_amount,
+                    dry_run=dry_run
+                )
+                
+                if not tx_hash:
+                    logger.error(f"Failed to fund wallet {address} with USDC, aborting funding")
+                    return None
+                
+                logger.info(f"USDC transfer confirmed: {tx_hash}")
+            
+            # Step 2: Transfer native token (ETH/BNB) for gas only after USDC transfer succeeds
             # Check if wallet already has gas (from previous failed attempt)
             current_gas_balance = self.blockchain.get_native_balance(address)
             if current_gas_balance >= (self.config.gas_per_wallet * 0.5):
@@ -139,28 +160,11 @@ class WalletManager:
                 
                 if not gas_tx_hash:
                     logger.error(f"Failed to transfer gas to wallet {address}")
+                    # Note: USDC already transferred, but gas transfer failed
+                    # Wallet can still use USDC if it has some gas from elsewhere
                     return None
                 
                 logger.info(f"Gas transfer confirmed: {gas_tx_hash}")
-            
-            # Check if wallet already has USDC (from previous failed attempt)
-            current_usdc_balance = self.blockchain.get_usdc_balance(address)
-            if current_usdc_balance >= (funding_amount * 0.5):
-                logger.info(f"Wallet already has {current_usdc_balance:.2f} USDC, skipping USDC transfer")
-            else:
-                # Transfer USDC from vault
-                tx_hash = self.blockchain.transfer_usdc(
-                    self.config.vault_private_key,
-                    address,
-                    funding_amount,
-                    dry_run=dry_run
-                )
-                
-                if not tx_hash:
-                    logger.error(f"Failed to fund wallet {address} with USDC")
-                    return None
-                
-                logger.info(f"USDC transfer confirmed: {tx_hash}")
             
             wallet = {
                 'address': address,
@@ -497,52 +501,76 @@ class WalletManager:
         logger.info(f"Gas check complete: {wallets_sufficient} sufficient, {wallets_refilled} refilled, {wallets_failed} failed")
         return summary
     
-    def collect_abandoned_wallets_native_token(self, dry_run: bool = False) -> Dict[str, Any]:
+    def collect_abandoned_wallets_native_token(self, dry_run: bool = False, 
+                                               min_usdc_threshold: float = 1.0) -> Dict[str, Any]:
         """
-        Collect native tokens (ETH/BNB) from all abandoned wallets and send to vault.
+        Collect native tokens (ETH/BNB) from wallets with almost zero USDC balance.
+        Scans all wallets (active, pending_funding, abandoned) and collects ETH/BNB
+        from those with USDC balance below threshold.
         
         Args:
             dry_run: If True, simulate only
+            min_usdc_threshold: Maximum USDC balance to consider wallet as "almost zero" (default: 1.0)
             
         Returns:
             Dict with summary of collection
         """
-        logger.info("Collecting native tokens from abandoned wallets...")
+        logger.info(f"Collecting native tokens from wallets with USDC balance < ${min_usdc_threshold:.2f}...")
         
+        # Get all wallets regardless of status (active, pending_funding, abandoned)
+        active_wallets = self.db.get_active_wallets(self.config.blockchain)
+        pending_wallets = self.db.get_wallets_by_status(self.config.blockchain, 'pending_funding')
         abandoned_wallets = self.db.get_wallets_by_status(self.config.blockchain, 'abandoned')
         
-        if not abandoned_wallets:
-            logger.info("No abandoned wallets to collect from")
+        # Combine all wallets
+        all_wallets = active_wallets + pending_wallets + abandoned_wallets
+        
+        if not all_wallets:
+            logger.info("No wallets found")
             return {
                 'wallets_checked': 0,
                 'wallets_collected': 0,
                 'total_collected': 0.0,
-                'errors': []
+                'errors': [],
+                'wallets_skipped_usdc': 0
             }
         
         native_token = self.blockchain.chain_config.get('native_token', 'ETH')
         wallets_collected = 0
+        wallets_skipped_usdc = 0
         total_collected = 0.0
         errors = []
         
         # Gas cost estimate for native token transfer (get from chain config)
         gas_cost_estimate = self.config.get_gas_cost_estimate()
         
-        for wallet in abandoned_wallets:
+        for wallet in all_wallets:
             wallet_address = wallet['address']
+            wallet_status = wallet.get('status', 'active')
             
             try:
+                # Check USDC balance first
+                usdc_balance = self.blockchain.get_usdc_balance(wallet_address)
+                
+                if usdc_balance >= min_usdc_threshold:
+                    logger.debug(f"Skipping {wallet_address} ({wallet_status}) - USDC balance ${usdc_balance:.2f} >= ${min_usdc_threshold:.2f}")
+                    wallets_skipped_usdc += 1
+                    continue
+                
                 # Get current native token balance
                 native_balance = self.blockchain.get_native_balance(wallet_address)
                 
                 if native_balance <= gas_cost_estimate:
-                    logger.debug(f"Skipping {wallet_address} - balance too low: {native_balance:.6f} {native_token} (need > {gas_cost_estimate:.6f} for gas)")
+                    logger.debug(f"Skipping {wallet_address} ({wallet_status}) - native balance too low: {native_balance:.6f} {native_token} (need > {gas_cost_estimate:.6f} for gas)")
                     continue
                 
                 # Calculate amount to send (keep enough for gas)
                 amount_to_return = native_balance - gas_cost_estimate
                 
-                logger.info(f"Collecting {amount_to_return:.6f} {native_token} from {wallet_address} (balance: {native_balance:.6f})")
+                logger.info(
+                    f"Collecting {amount_to_return:.6f} {native_token} from {wallet_address} "
+                    f"({wallet_status}, USDC: ${usdc_balance:.2f}, {native_token}: {native_balance:.6f})"
+                )
                 
                 # Transfer native token to vault
                 tx_hash = self.blockchain.transfer_native_token(
@@ -567,14 +595,16 @@ class WalletManager:
                 errors.append(error_msg)
         
         summary = {
-            'wallets_checked': len(abandoned_wallets),
+            'wallets_checked': len(all_wallets),
             'wallets_collected': wallets_collected,
+            'wallets_skipped_usdc': wallets_skipped_usdc,
             'total_collected': total_collected,
             'errors': errors
         }
         
         logger.info(
-            f"Collection complete: {wallets_collected}/{len(abandoned_wallets)} wallets collected, "
+            f"Collection complete: {wallets_collected}/{len(all_wallets)} wallets collected "
+            f"({wallets_skipped_usdc} skipped due to USDC balance >= ${min_usdc_threshold:.2f}), "
             f"total: {total_collected:.6f} {native_token}"
         )
         

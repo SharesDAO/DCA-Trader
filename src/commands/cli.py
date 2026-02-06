@@ -100,22 +100,30 @@ async def sweep_command(args):
 
 
 async def collect_eth_command(args):
-    """Collect ETH/BNB from abandoned wallets and send to vault."""
+    """Collect ETH/BNB from wallets with almost zero USDC balance and send to vault."""
     setup_logging(args.log_level)
     
     bot = _get_trading_bot(config_path=args.config)
     
     native_token = bot.blockchain.chain_config.get('native_token', 'ETH')
     
-    logger.info(f"Starting {native_token} collection from abandoned wallets...")
+    # Default threshold: wallets with USDC < $1.0
+    min_usdc_threshold = getattr(args, 'min_usdc_threshold', 1.0)
     
-    # Collect native tokens from abandoned wallets
-    result = bot.wallet_manager.collect_abandoned_wallets_native_token(dry_run=args.dry_run)
+    logger.info(f"Starting {native_token} collection from wallets with USDC < ${min_usdc_threshold:.2f}...")
+    
+    # Collect native tokens from wallets with low USDC balance
+    result = bot.wallet_manager.collect_abandoned_wallets_native_token(
+        dry_run=args.dry_run,
+        min_usdc_threshold=min_usdc_threshold
+    )
     
     print("\n" + "=" * 60)
     print(f"{native_token.upper()} COLLECTION SUMMARY")
     print("=" * 60)
-    print(f"Abandoned wallets checked: {result['wallets_checked']}")
+    print(f"USDC threshold: < ${min_usdc_threshold:.2f}")
+    print(f"Wallets checked: {result['wallets_checked']}")
+    print(f"Wallets skipped (USDC >= ${min_usdc_threshold:.2f}): {result.get('wallets_skipped_usdc', 0)}")
     print(f"Wallets collected: {result['wallets_collected']}")
     print(f"Total {native_token} collected: {result['total_collected']:.6f}")
     if result['errors']:

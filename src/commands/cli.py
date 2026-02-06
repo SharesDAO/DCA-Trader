@@ -112,6 +112,45 @@ async def wallets_command(args):
     
     native_token = bot.blockchain.chain_config.get('native_token', 'ETH')
     
+    # If --abandoned-only flag is set, only show abandoned wallets
+    if args.abandoned_only:
+        print("\n" + "=" * 80)
+        print("ABANDONED WALLETS")
+        print("=" * 80)
+        print(f"Blockchain: {bot.config.blockchain}")
+        print(f"Total abandoned wallets: {len(abandoned_wallets)}")
+        print("=" * 80)
+        
+        if abandoned_wallets:
+            print("\n🗑️  ABANDONED WALLETS DETAILS")
+            print("-" * 80)
+            total_usdc = 0.0
+            total_native = 0.0
+            
+            for i, wallet in enumerate(abandoned_wallets, 1):
+                address = wallet['address']
+                stock = wallet['assigned_stock']
+                loss_count = wallet['loss_count']
+                
+                # Get current balances
+                usdc_balance = bot.blockchain.get_usdc_balance(address)
+                native_balance = bot.blockchain.get_native_balance(address)
+                
+                total_usdc += usdc_balance
+                total_native += native_balance
+                
+                print(f"\n{i}. {address}")
+                print(f"   Stock: {stock} | Losses: {loss_count}/{bot.config.max_loss_traders}")
+                print(f"   USDC: ${usdc_balance:.2f} | {native_token}: {native_balance:.6f}")
+            
+            print(f"\n{'─' * 80}")
+            print(f"Total: ${total_usdc:.2f} USDC | {total_native:.6f} {native_token}")
+        else:
+            print("\nNo abandoned wallets found.")
+        
+        print("=" * 80)
+        return 0
+    
     print("\n" + "=" * 80)
     print("WALLET INFORMATION")
     print("=" * 80)

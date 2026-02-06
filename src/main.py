@@ -516,6 +516,8 @@ def main():
                        help='Display detailed wallet information')
     parser.add_argument('--show-abandoned', action='store_true',
                        help='Show abandoned wallets in detail (use with --wallets)')
+    parser.add_argument('--abandoned-only', action='store_true',
+                       help='Show only abandoned wallets with their USDC and ETH balances')
     parser.add_argument('--dry-run', action='store_true',
                        help='Simulate liquidation/sweep without executing')
     
@@ -535,7 +537,7 @@ def main():
         except KeyboardInterrupt:
             print("\nSweep cancelled by user")
             sys.exit(1)
-    elif args.wallets:
+    elif args.wallets or args.abandoned_only:
         try:
             sys.exit(asyncio.run(wallets_command(args)))
         except KeyboardInterrupt:

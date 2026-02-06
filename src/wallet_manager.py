@@ -277,12 +277,12 @@ class WalletManager:
             # Check native token balance and return to vault
             native_balance = self.blockchain.get_native_balance(address)
             min_native_to_return = 0.0005  # Minimum to make it worth the gas cost
-            gas_cost_estimate = 0.0001  # Estimated gas cost for the transfer itself
+            gas_cost_estimate = self.config.get_gas_cost_estimate()  # Get from chain config
             
             if native_balance > (min_native_to_return + gas_cost_estimate):
                 # Calculate amount to send (keep enough for gas)
                 amount_to_return = native_balance - gas_cost_estimate
-                logger.info(f"Returning {amount_to_return:.6f} {native_token} to vault")
+                logger.info(f"Returning {amount_to_return:.6f} {native_token} to vault (keeping {gas_cost_estimate:.6f} for gas)")
                 
                 native_tx_hash = self.blockchain.transfer_native_token(
                     wallet['private_key'],
@@ -525,8 +525,8 @@ class WalletManager:
         total_collected = 0.0
         errors = []
         
-        # Gas cost estimate for native token transfer
-        gas_cost_estimate = 0.00005  # Estimated gas cost for the transfer itself
+        # Gas cost estimate for native token transfer (get from chain config)
+        gas_cost_estimate = self.config.get_gas_cost_estimate()
         
         for wallet in abandoned_wallets:
             wallet_address = wallet['address']

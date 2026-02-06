@@ -145,6 +145,20 @@ class Config:
             raise ValueError(f"Unknown blockchain: {chain}")
         return self.chains[chain]
     
+    def get_gas_cost_estimate(self, blockchain: str = None) -> float:
+        """
+        Get gas cost estimate for native token transfer on a specific blockchain.
+        
+        Args:
+            blockchain: Blockchain name (default: current blockchain from config)
+            
+        Returns:
+            Gas cost estimate in native token (e.g., ETH, BNB)
+        """
+        chain_config = self.get_chain_config(blockchain)
+        # Default to 0.0002 if not configured (conservative estimate for L2s)
+        return chain_config.get('gas_cost_estimate', 0.0002)
+    
     def get_rpc_url(self, blockchain: str = None) -> str:
         """
         Get RPC URL for a specific blockchain.

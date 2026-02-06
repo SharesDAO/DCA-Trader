@@ -6,6 +6,7 @@ ethereum:
   usdc_address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
   alchemy_network: "eth-mainnet"
   native_token: "ETH"
+  gas_cost_estimate: 0.0001  # Estimated gas cost for native token transfer (ETH)
 
 arbitrum:
   chain_id: 42161
@@ -13,6 +14,7 @@ arbitrum:
   usdc_address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
   alchemy_network: "arb-mainnet"
   native_token: "ETH"
+  gas_cost_estimate: 0.000001  # Estimated gas cost for native token transfer (ETH)
 
 base:
   chain_id: 8453
@@ -20,6 +22,7 @@ base:
   usdc_address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
   alchemy_network: "base-mainnet"
   native_token: "ETH"
+  gas_cost_estimate: 0.00002  # Estimated gas cost for native token transfer (ETH)
 
 bnb:
   chain_id: 56
@@ -27,3 +30,4 @@ bnb:
   usdc_address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"
   alchemy_network: "bnb-mainnet"
   native_token: "BNB"
+  gas_cost_estimate: 0.00002  # Estimated gas cost for native token transfer (BNB)

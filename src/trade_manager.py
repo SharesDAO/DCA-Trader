@@ -320,27 +320,15 @@ class TradeManager:
                         )
                         
                         # Try to detect filled order by checking USDC balance against expected amount
-                        for sell_order in pending_sell_orders:
-                            expected_usdc = sell_order['amount_usdc'] * 0.95  # Allow 5% slippage
-                            
-                            if usdc_balance >= expected_usdc:
-                                logger.info(
-                                    f"Detected potential filled sell order {sell_order['order_id']}: "
-                                    f"USDC balance ${usdc_balance:.2f} >= expected ${expected_usdc:.2f}. "
-                                    f"Processing as filled order..."
-                                )
-                                # Process as filled order
-                                try:
-                                    self._handle_filled_order(sell_order, dry_run)
-                                    # Order processed, break to avoid duplicate processing
-                                    break
-                                except Exception as e:
-                                    logger.error(f"Error processing potentially filled order {sell_order['order_id']}: {e}", exc_info=True)
-                            else:
-                                logger.debug(
-                                    f"Order {sell_order['order_id']}: USDC balance ${usdc_balance:.2f} < expected ${expected_usdc:.2f}, "
-                                    f"order might be partially filled or balance from other source"
-                                )
+                        for sell_order in pending_sell_orders:                          
+                            # Process as filled order
+                            try:
+                                self._handle_filled_order(sell_order, dry_run)
+                                # Order processed, break to avoid duplicate processing
+                                break
+                            except Exception as e:
+                                logger.error(f"Error processing potentially filled order {sell_order['order_id']}: {e}", exc_info=True)
+                  
                     else:
                         # No USDC balance, order still pending
                         logger.info(f"{wallet_address} - {stock_ticker}: max hold time reached ({holding_days} days), waiting for order expiry/refund")

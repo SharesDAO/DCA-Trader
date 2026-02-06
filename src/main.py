@@ -498,6 +498,7 @@ def main():
         run_bot,
         liquidate_command,
         sweep_command,
+        collect_eth_command,
         wallets_command
     )
     
@@ -512,6 +513,8 @@ def main():
                        help='Liquidate all positions (sell all stocks)')
     parser.add_argument('--sweep', action='store_true',
                        help='Sweep all USDC from wallets to vault')
+    parser.add_argument('--collect-eth', action='store_true',
+                       help='Collect ETH/BNB from abandoned wallets and send to vault')
     parser.add_argument('--wallets', action='store_true',
                        help='Display detailed wallet information')
     parser.add_argument('--show-abandoned', action='store_true',
@@ -536,6 +539,12 @@ def main():
             sys.exit(asyncio.run(sweep_command(args)))
         except KeyboardInterrupt:
             print("\nSweep cancelled by user")
+            sys.exit(1)
+    elif args.collect_eth:
+        try:
+            sys.exit(asyncio.run(collect_eth_command(args)))
+        except KeyboardInterrupt:
+            print("\nCollection cancelled by user")
             sys.exit(1)
     elif args.wallets or args.abandoned_only:
         try:

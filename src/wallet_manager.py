@@ -497,6 +497,89 @@ class WalletManager:
         logger.info(f"Gas check complete: {wallets_sufficient} sufficient, {wallets_refilled} refilled, {wallets_failed} failed")
         return summary
     
+    def collect_abandoned_wallets_native_token(self, dry_run: bool = False) -> Dict[str, Any]:
+        """
+        Collect native tokens (ETH/BNB) from all abandoned wallets and send to vault.
+        
+        Args:
+            dry_run: If True, simulate only
+            
+        Returns:
+            Dict with summary of collection
+        """
+        logger.info("Collecting native tokens from abandoned wallets...")
+        
+        abandoned_wallets = self.db.get_wallets_by_status(self.config.blockchain, 'abandoned')
+        
+        if not abandoned_wallets:
+            logger.info("No abandoned wallets to collect from")
+            return {
+                'wallets_checked': 0,
+                'wallets_collected': 0,
+                'total_collected': 0.0,
+                'errors': []
+            }
+        
+        native_token = self.blockchain.chain_config.get('native_token', 'ETH')
+        wallets_collected = 0
+        total_collected = 0.0
+        errors = []
+        
+        # Gas cost estimate for native token transfer
+        gas_cost_estimate = 0.0001  # Estimated gas cost for the transfer itself
+        
+        for wallet in abandoned_wallets:
+            wallet_address = wallet['address']
+            
+            try:
+                # Get current native token balance
+                native_balance = self.blockchain.get_native_balance(wallet_address)
+                
+                if native_balance <= gas_cost_estimate:
+                    logger.debug(f"Skipping {wallet_address} - balance too low: {native_balance:.6f} {native_token} (need > {gas_cost_estimate:.6f} for gas)")
+                    continue
+                
+                # Calculate amount to send (keep enough for gas)
+                amount_to_return = native_balance - gas_cost_estimate
+                
+                logger.info(f"Collecting {amount_to_return:.6f} {native_token} from {wallet_address} (balance: {native_balance:.6f})")
+                
+                # Transfer native token to vault
+                tx_hash = self.blockchain.transfer_native_token(
+                    wallet['private_key'],
+                    self.config.vault_address,
+                    amount_to_return,
+                    dry_run=dry_run
+                )
+                
+                if tx_hash:
+                    wallets_collected += 1
+                    total_collected += amount_to_return
+                    logger.info(f"Collected {amount_to_return:.6f} {native_token} from {wallet_address} - TX: {tx_hash}")
+                else:
+                    error_msg = f"Failed to collect {native_token} from {wallet_address}"
+                    logger.error(error_msg)
+                    errors.append(error_msg)
+                    
+            except Exception as e:
+                error_msg = f"Error collecting from {wallet_address}: {e}"
+                logger.error(error_msg, exc_info=True)
+                errors.append(error_msg)
+        
+        summary = {
+            'wallets_checked': len(abandoned_wallets),
+            'wallets_collected': wallets_collected,
+            'total_collected': total_collected,
+            'errors': errors
+        }
+        
+        logger.info(
+            f"Collection complete: {wallets_collected}/{len(abandoned_wallets)} wallets collected, "
+            f"total: {total_collected:.6f} {native_token}"
+        )
+        
+        return summary
+    
     def get_wallet_stats(self) -> Dict[str, Any]:
         """
         Get wallet statistics.

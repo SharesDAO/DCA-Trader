@@ -14,7 +14,7 @@ arbitrum:
   usdc_address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831"
   alchemy_network: "arb-mainnet"
   native_token: "ETH"
-  gas_cost_estimate: 0.000001  # Estimated gas cost for native token transfer (ETH)
+  gas_cost_estimate: 0.000005  # Estimated gas cost for native token transfer (ETH)
 
 base:
   chain_id: 8453

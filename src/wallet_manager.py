@@ -526,7 +526,7 @@ class WalletManager:
         errors = []
         
         # Gas cost estimate for native token transfer
-        gas_cost_estimate = 0.0001  # Estimated gas cost for the transfer itself
+        gas_cost_estimate = 0.00005  # Estimated gas cost for the transfer itself
         
         for wallet in abandoned_wallets:
             wallet_address = wallet['address']

@@ -789,7 +789,7 @@ class BlockchainClient:
         sender_balance = sender_balance_wei / (10 ** 18)
         
         # Need to reserve some for gas
-        gas_reserve = 0.001  # Reserve 0.001 for gas
+        gas_reserve = 0.00005  # Reserve 0.001 for gas
         if sender_balance < (amount + gas_reserve):
             logger.error(f"Insufficient {native_token} balance: {sender_balance} < {amount + gas_reserve} (including gas reserve)")
             return None

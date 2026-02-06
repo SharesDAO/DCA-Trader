@@ -55,16 +55,18 @@ ERC20_ABI = [
 class BlockchainClient:
     """Web3 blockchain client using Alchemy API."""
     
-    def __init__(self, rpc_url: str, chain_config: dict):
+    def __init__(self, rpc_url: str, chain_config: dict, config=None):
         """
         Initialize blockchain client.
         
         Args:
             rpc_url: RPC endpoint URL (Alchemy)
             chain_config: Chain configuration dict
+            config: Optional Config instance for accessing gas cost estimates
         """
         self.rpc_url = rpc_url
         self.chain_config = chain_config
+        self.config = config  # Store config for gas cost estimates
         self.chain_id = chain_config['chain_id']
         self.usdc_address = Web3.to_checksum_address(chain_config['usdc_address'])
         self.native_token = chain_config['native_token']
@@ -788,8 +790,13 @@ class BlockchainClient:
         sender_balance_wei = self.w3.eth.get_balance(from_address)
         sender_balance = sender_balance_wei / (10 ** 18)
         
-        # Need to reserve some for gas
-        gas_reserve = 0.00005  # Reserve 0.001 for gas
+        # Need to reserve some for gas (use config if available, otherwise fallback)
+        if self.config:
+            gas_reserve = self.config.get_gas_cost_estimate()
+        else:
+            # Fallback to chain config or default
+            gas_reserve = self.chain_config.get('gas_cost_estimate', 0.0002)
+        
         if sender_balance < (amount + gas_reserve):
             logger.error(f"Insufficient {native_token} balance: {sender_balance} < {amount + gas_reserve} (including gas reserve)")
             return None
@@ -1010,4 +1017,4 @@ def create_blockchain_client(config) -> BlockchainClient:
     rpc_url = config.get_rpc_url()
     chain_config = config.get_chain_config()
     
-    return BlockchainClient(rpc_url, chain_config)
+    return BlockchainClient(rpc_url, chain_config, config=config)

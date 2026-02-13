@@ -86,6 +86,9 @@ class Config:
         # Dry-run mode
         self.dry_run = config.get('dry_run', False)
         
+        # Liquidation mode
+        self.liquid_mode = config.get('liquid_mode', False)
+        
     def _load_chains(self):
         """Load chain configurations from chains.yaml."""
         with open(self.chains_path, 'r') as f:

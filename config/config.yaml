@@ -40,3 +40,6 @@ monitoring:
   
 # Dry-run mode (true = simulate only, false = real trading)
 dry_run: false
+
+# Liquidation mode (true = no new buy orders, all sell orders are MARKET type, collect empty wallets)
+liquid_mode: false

@@ -144,20 +144,29 @@ class TradingBot:
                     # Check if wallet has no orders yet (newly funded)
                     existing_orders = self.db.get_wallet_orders(wallet['address'])
                     if not existing_orders:
-                        usdc_balance = self.blockchain.get_usdc_balance(wallet['address'])
-                        if usdc_balance >= 5.0:  # Minimum trading amount
-                            logger.info(f"Placing initial buy order for newly funded wallet {wallet['address']}")
-                            order_id = self.trade_manager.place_buy_order(
-                                wallet_address=wallet['address'],
-                                stock_ticker=wallet['assigned_stock'],
-                                usdc_amount=usdc_balance,
-                                dry_run=self.config.dry_run
-                            )
-                            
-                            if order_id:
-                                logger.info(f"Initial buy order placed: {order_id}")
-                            else:
-                                logger.error(f"Failed to place initial buy order for {wallet['address']}")
+                        # Skip placing buy orders in liquidation mode
+                        if self.config.liquid_mode:
+                            logger.debug(f"Liquidation mode enabled - skipping buy order for {wallet['address']}")
+                        else:
+                            usdc_balance = self.blockchain.get_usdc_balance(wallet['address'])
+                            if usdc_balance >= 5.0:  # Minimum trading amount
+                                logger.info(f"Placing initial buy order for newly funded wallet {wallet['address']}")
+                                order_id = self.trade_manager.place_buy_order(
+                                    wallet_address=wallet['address'],
+                                    stock_ticker=wallet['assigned_stock'],
+                                    usdc_amount=usdc_balance,
+                                    dry_run=self.config.dry_run
+                                )
+                                
+                                if order_id:
+                                    logger.info(f"Initial buy order placed: {order_id}")
+                                else:
+                                    logger.error(f"Failed to place initial buy order for {wallet['address']}")
+            
+            # Skip creating new wallets in liquidation mode
+            if self.config.liquid_mode:
+                logger.debug("Liquidation mode enabled - skipping new wallet creation")
+                return
             
             # Then check if we can create a new wallet
             if not self.wallet_manager.can_create_new_wallet():
@@ -172,18 +181,21 @@ class TradingBot:
                 # Invalidate cache after creating new wallet
                 self.invalidate_portfolio_cache()
                 
-                # Place initial buy order
-                order_id = self.trade_manager.place_buy_order(
-                    wallet_address=wallet['address'],
-                    stock_ticker=wallet['assigned_stock'],
-                    usdc_amount=wallet['balance'],
-                    dry_run=self.config.dry_run
-                )
-                
-                if order_id:
-                    logger.info(f"Initial buy order placed: {order_id}")
+                # Place initial buy order (skip in liquidation mode)
+                if not self.config.liquid_mode:
+                    order_id = self.trade_manager.place_buy_order(
+                        wallet_address=wallet['address'],
+                        stock_ticker=wallet['assigned_stock'],
+                        usdc_amount=wallet['balance'],
+                        dry_run=self.config.dry_run
+                    )
+                    
+                    if order_id:
+                        logger.info(f"Initial buy order placed: {order_id}")
+                    else:
+                        logger.error(f"Failed to place initial buy order for {wallet['address']}")
                 else:
-                    logger.error(f"Failed to place initial buy order for {wallet['address']}")
+                    logger.debug("Liquidation mode enabled - skipping buy order placement")
             
         except Exception as e:
             logger.error(f"Error creating new wallet: {e}", exc_info=True)
@@ -198,6 +210,13 @@ class TradingBot:
                 logger.info(f"Processed {processed} orders (filled or refunded)")
                 # Invalidate cache after order confirmations (balance changed)
                 self.invalidate_portfolio_cache()
+            
+            # In liquidation mode, check for empty wallets and collect funds
+            if self.config.liquid_mode:
+                cleaned = self.trade_manager.cleanup_empty_wallets(dry_run=self.config.dry_run)
+                if cleaned > 0:
+                    logger.info(f"Cleaned up {cleaned} empty wallet(s) in liquidation mode")
+                    self.invalidate_portfolio_cache()
             
             # Monitor positions (mainly for max hold time check)
             # Note: Sell orders are placed immediately after buy confirmation

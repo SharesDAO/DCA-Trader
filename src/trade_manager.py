@@ -171,25 +171,30 @@ class TradeManager:
                 logger.error(f"Wallet not found: {wallet_address}")
                 return None
             
-            # Check if holding time exceeds max_hold_days, if so force MARKET order
-            position = self.db.get_position(wallet_address)
-            if position and position.get('stock_ticker') == stock_ticker:
-                first_buy_date_str = position.get('first_buy_date')
-                if first_buy_date_str:
-                    try:
-                        first_buy_date = datetime.strptime(first_buy_date_str, '%Y-%m-%d').date()
-                        holding_days = (date.today() - first_buy_date).days
-                        
-                        if holding_days >= self.config.max_hold_days:
-                            logger.warning(
-                                f"Holding time ({holding_days} days) exceeds max_hold_days ({self.config.max_hold_days} days), "
-                                f"forcing MARKET order for immediate execution"
-                            )
-                            order_type = 'MARKET'  # Force MARKET order
-                        else:
-                            logger.debug(f"Holding time: {holding_days} days (max: {self.config.max_hold_days} days), using {order_type} order")
-                    except (ValueError, TypeError) as e:
-                        logger.warning(f"Failed to parse first_buy_date '{first_buy_date_str}': {e}, using provided order_type")
+            # In liquidation mode, always use MARKET orders
+            if self.config.liquid_mode:
+                order_type = 'MARKET'
+                logger.info(f"Liquidation mode enabled - using MARKET order type")
+            else:
+                # Check if holding time exceeds max_hold_days, if so force MARKET order
+                position = self.db.get_position(wallet_address)
+                if position and position.get('stock_ticker') == stock_ticker:
+                    first_buy_date_str = position.get('first_buy_date')
+                    if first_buy_date_str:
+                        try:
+                            first_buy_date = datetime.strptime(first_buy_date_str, '%Y-%m-%d').date()
+                            holding_days = (date.today() - first_buy_date).days
+                            
+                            if holding_days >= self.config.max_hold_days:
+                                logger.warning(
+                                    f"Holding time ({holding_days} days) exceeds max_hold_days ({self.config.max_hold_days} days), "
+                                    f"forcing MARKET order for immediate execution"
+                                )
+                                order_type = 'MARKET'  # Force MARKET order
+                            else:
+                                logger.debug(f"Holding time: {holding_days} days (max: {self.config.max_hold_days} days), using {order_type} order")
+                        except (ValueError, TypeError) as e:
+                            logger.warning(f"Failed to parse first_buy_date '{first_buy_date_str}': {e}, using provided order_type")
             
             # Ensure wallet has enough gas
             if not self.wallet_manager.ensure_wallet_has_gas(wallet_address, dry_run=dry_run):
@@ -356,6 +361,84 @@ class TradeManager:
             logger.info(f"Placed {sell_orders_placed} sell orders")
         
         return sell_orders_placed
+    
+    def cleanup_empty_wallets(self, dry_run: bool = False) -> int:
+        """
+        In liquidation mode, check all active wallets.
+        If a wallet has no pending orders and no stock tokens, collect USDC and ETH to vault and mark as abandoned.
+        
+        Args:
+            dry_run: If True, simulate only
+            
+        Returns:
+            Number of wallets cleaned up
+        """
+        logger.info("Checking for empty wallets to clean up...")
+        
+        # Get all active wallets
+        active_wallets = self.db.get_active_wallets(self.config.blockchain)
+        
+        if not active_wallets:
+            return 0
+        
+        cleaned_count = 0
+        native_token = self.blockchain.chain_config.get('native_token', 'ETH')
+        MIN_STOCK_BALANCE = 0.0001  # Minimum stock tokens to consider as having stocks
+        
+        for wallet in active_wallets:
+            wallet_address = wallet['address']
+            
+            try:
+                # Check if wallet has any pending orders
+                pending_orders = self.db.get_pending_orders()
+                wallet_pending_orders = [o for o in pending_orders if o['wallet_address'] == wallet_address]
+                
+                if wallet_pending_orders:
+                    logger.debug(f"{wallet_address}: has {len(wallet_pending_orders)} pending order(s), skipping")
+                    continue
+                
+                # Check if wallet has any stock tokens
+                # Get all positions for this wallet
+                position = self.db.get_position(wallet_address)
+                
+                has_stocks = False
+                if position:
+                    stock_ticker = position['stock_ticker']
+                    stock_token_address = self.config.get_stock_token_address(stock_ticker)
+                    stock_balance = self.blockchain.get_token_balance(stock_token_address, wallet_address)
+                    
+                    if stock_balance >= MIN_STOCK_BALANCE:
+                        has_stocks = True
+                        logger.debug(f"{wallet_address}: has {stock_balance:.6f} {stock_ticker}, skipping")
+                        continue
+                
+                # Wallet has no pending orders and no stocks - check if it has any funds
+                usdc_balance = self.blockchain.get_usdc_balance(wallet_address)
+                native_balance = self.blockchain.get_native_balance(wallet_address)
+                
+                MIN_USDC_TO_COLLECT = 0.01
+                MIN_NATIVE_TO_COLLECT = 0.0001
+                
+                if usdc_balance >= MIN_USDC_TO_COLLECT or native_balance >= MIN_NATIVE_TO_COLLECT:
+                    logger.info(
+                        f"{wallet_address}: empty wallet detected (no orders, no stocks). "
+                        f"Collecting funds: ${usdc_balance:.2f} USDC, {native_balance:.6f} {native_token}"
+                    )
+                    
+                    # Use abandon_wallet to collect funds and mark as abandoned
+                    if self.wallet_manager.abandon_wallet(wallet_address, dry_run=dry_run):
+                        cleaned_count += 1
+                        logger.info(f"Successfully cleaned up empty wallet {wallet_address}")
+                    else:
+                        logger.error(f"Failed to clean up empty wallet {wallet_address}")
+                else:
+                    logger.debug(f"{wallet_address}: empty wallet but no significant funds to collect")
+                    
+            except Exception as e:
+                logger.error(f"Error checking wallet {wallet_address}: {e}", exc_info=True)
+                continue
+        
+        return cleaned_count
     
     def check_order_confirmations(self, dry_run: bool = False) -> int:
         """

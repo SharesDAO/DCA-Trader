@@ -130,6 +130,11 @@ class TradingBot:
     async def create_new_wallet_if_needed(self):
         """Create new wallet if conditions are met, or retry pending funding wallets."""
         try:
+            # Skip wallet creation and funding in liquidation mode
+            if self.config.liquid_mode:
+                logger.debug("Liquidation mode enabled - skipping wallet creation and funding")
+                return
+            
             # First, retry any pending_funding wallets
             funded_count = self.wallet_manager.retry_pending_funding_wallets(dry_run=self.config.dry_run)
             
@@ -144,29 +149,46 @@ class TradingBot:
                     # Check if wallet has no orders yet (newly funded)
                     existing_orders = self.db.get_wallet_orders(wallet['address'])
                     if not existing_orders:
-                        # Skip placing buy orders in liquidation mode
-                        if self.config.liquid_mode:
-                            logger.debug(f"Liquidation mode enabled - skipping buy order for {wallet['address']}")
-                        else:
-                            usdc_balance = self.blockchain.get_usdc_balance(wallet['address'])
-                            if usdc_balance >= 5.0:  # Minimum trading amount
-                                logger.info(f"Placing initial buy order for newly funded wallet {wallet['address']}")
-                                order_id = self.trade_manager.place_buy_order(
-                                    wallet_address=wallet['address'],
-                                    stock_ticker=wallet['assigned_stock'],
-                                    usdc_amount=usdc_balance,
-                                    dry_run=self.config.dry_run
-                                )
-                                
-                                if order_id:
-                                    logger.info(f"Initial buy order placed: {order_id}")
-                                else:
-                                    logger.error(f"Failed to place initial buy order for {wallet['address']}")
+                        usdc_balance = self.blockchain.get_usdc_balance(wallet['address'])
+                        if usdc_balance >= 5.0:  # Minimum trading amount
+                            logger.info(f"Placing initial buy order for newly funded wallet {wallet['address']}")
+                            order_id = self.trade_manager.place_buy_order(
+                                wallet_address=wallet['address'],
+                                stock_ticker=wallet['assigned_stock'],
+                                usdc_amount=usdc_balance,
+                                dry_run=self.config.dry_run
+                            )
+                            
+                            if order_id:
+                                logger.info(f"Initial buy order placed: {order_id}")
+                            else:
+                                logger.error(f"Failed to place initial buy order for {wallet['address']}")
             
-            # Skip creating new wallets in liquidation mode
-            if self.config.liquid_mode:
-                logger.debug("Liquidation mode enabled - skipping new wallet creation")
+            # Then check if we can create a new wallet
+            if not self.wallet_manager.can_create_new_wallet():
+                logger.debug("Insufficient vault balance to create new wallet")
                 return
+            
+            # Create wallet (will be saved with 'pending_funding' status if funding fails)
+            wallet = self.wallet_manager.create_new_wallet(dry_run=self.config.dry_run)
+            
+            if wallet:
+                logger.info(f"New wallet created and funded: {wallet['address']}")
+                # Invalidate cache after creating new wallet
+                self.invalidate_portfolio_cache()
+                
+                # Place initial buy order
+                order_id = self.trade_manager.place_buy_order(
+                    wallet_address=wallet['address'],
+                    stock_ticker=wallet['assigned_stock'],
+                    usdc_amount=wallet['balance'],
+                    dry_run=self.config.dry_run
+                )
+                
+                if order_id:
+                    logger.info(f"Initial buy order placed: {order_id}")
+                else:
+                    logger.error(f"Failed to place initial buy order for {wallet['address']}")
             
             # Then check if we can create a new wallet
             if not self.wallet_manager.can_create_new_wallet():

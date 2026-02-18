@@ -135,6 +135,48 @@ async def collect_eth_command(args):
     return 0
 
 
+async def delete_unfunded_command(args):
+    """Delete all unfunded (pending_funding) wallets from the database."""
+    setup_logging(args.log_level)
+    
+    bot = _get_trading_bot(config_path=args.config)
+    
+    # Show what will be deleted
+    pending_wallets = bot.db.get_wallets_by_status(bot.config.blockchain, 'pending_funding')
+    
+    if not pending_wallets:
+        print("No unfunded wallets found.")
+        return 0
+    
+    native_token = bot.blockchain.chain_config.get('native_token', 'ETH')
+    
+    print(f"\nFound {len(pending_wallets)} unfunded wallet(s):")
+    for i, wallet in enumerate(pending_wallets, 1):
+        print(f"  {i}. {wallet['address']} ({wallet['assigned_stock']})")
+    
+    if not args.dry_run:
+        print(f"\nThis will permanently delete these wallets from the database.")
+        confirm = input("Proceed? [y/N] ").strip().lower()
+        if confirm != 'y':
+            print("Cancelled.")
+            return 0
+    
+    result = bot.wallet_manager.delete_unfunded_wallets(dry_run=args.dry_run)
+    
+    print("\n" + "=" * 60)
+    print("DELETE UNFUNDED WALLETS SUMMARY")
+    print("=" * 60)
+    print(f"Wallets found: {result['wallets_found']}")
+    print(f"Wallets deleted: {result['wallets_deleted']}")
+    if result['errors']:
+        print(f"Errors: {len(result['errors'])}")
+        for error in result['errors']:
+            print(f"  - {error}")
+    print("=" * 60)
+    
+    return 0
+
+
 async def wallets_command(args):
     """Display detailed wallet information."""
     setup_logging(args.log_level)

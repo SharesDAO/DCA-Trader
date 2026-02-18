@@ -528,6 +528,28 @@ class Database:
             cursor.execute("SELECT * FROM positions WHERE quantity > 0")
             return [dict(row) for row in cursor.fetchall()]
     
+    def delete_wallet(self, address: str) -> bool:
+        """
+        Delete a wallet and its associated orders and positions from the database.
+        
+        Args:
+            address: Wallet address
+            
+        Returns:
+            True if successful
+        """
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM positions WHERE wallet_address = ?", (address,))
+                cursor.execute("DELETE FROM orders WHERE wallet_address = ?", (address,))
+                cursor.execute("DELETE FROM wallets WHERE address = ?", (address,))
+            logger.info(f"Deleted wallet {address} and associated records")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to delete wallet {address}: {e}")
+            return False
+    
     def delete_position(self, wallet_address: str) -> bool:
         """
         Delete a position (after selling all stocks).

@@ -610,6 +610,51 @@ class WalletManager:
         
         return summary
     
+    def delete_unfunded_wallets(self, dry_run: bool = False) -> Dict[str, Any]:
+        """
+        Delete all wallets with 'pending_funding' status from the database.
+        
+        Args:
+            dry_run: If True, simulate only
+            
+        Returns:
+            Dict with deletion summary
+        """
+        pending_wallets = self.db.get_wallets_by_status(self.config.blockchain, 'pending_funding')
+        
+        if not pending_wallets:
+            logger.info("No unfunded wallets found")
+            return {'wallets_found': 0, 'wallets_deleted': 0, 'errors': []}
+        
+        logger.info(f"Found {len(pending_wallets)} unfunded wallet(s) to delete")
+        
+        deleted = 0
+        errors = []
+        
+        for wallet in pending_wallets:
+            address = wallet['address']
+            stock = wallet['assigned_stock']
+            
+            if dry_run:
+                logger.info(f"[DRY RUN] Would delete unfunded wallet {address} ({stock})")
+                deleted += 1
+                continue
+            
+            success = self.db.delete_wallet(address)
+            if success:
+                deleted += 1
+                logger.info(f"Deleted unfunded wallet {address} ({stock})")
+            else:
+                error_msg = f"Failed to delete wallet {address}"
+                logger.error(error_msg)
+                errors.append(error_msg)
+        
+        return {
+            'wallets_found': len(pending_wallets),
+            'wallets_deleted': deleted,
+            'errors': errors
+        }
+    
     def get_wallet_stats(self) -> Dict[str, Any]:
         """
         Get wallet statistics.

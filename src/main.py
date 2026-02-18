@@ -164,6 +164,12 @@ class TradingBot:
                             else:
                                 logger.error(f"Failed to place initial buy order for {wallet['address']}")
             
+            # Check if there are still unfunded wallets — skip creating new ones until all are funded
+            remaining_pending = self.db.get_wallets_by_status(self.config.blockchain, 'pending_funding')
+            if remaining_pending:
+                logger.info(f"Skipping new wallet creation — {len(remaining_pending)} unfunded wallet(s) still pending")
+                return
+            
             # Then check if we can create a new wallet
             if not self.wallet_manager.can_create_new_wallet():
                 logger.debug("Insufficient vault balance to create new wallet")
@@ -540,7 +546,8 @@ def main():
         liquidate_command,
         sweep_command,
         collect_eth_command,
-        wallets_command
+        wallets_command,
+        delete_unfunded_command
     )
     
     parser = argparse.ArgumentParser(description='DCA Trading Bot')
@@ -564,6 +571,8 @@ def main():
                        help='Show abandoned wallets in detail (use with --wallets)')
     parser.add_argument('--abandoned-only', action='store_true',
                        help='Show only abandoned wallets with their USDC and ETH balances')
+    parser.add_argument('--delete-unfunded', action='store_true',
+                       help='Delete all unfunded (pending_funding) wallets from the database')
     parser.add_argument('--dry-run', action='store_true',
                        help='Simulate liquidation/sweep without executing')
     
@@ -592,6 +601,12 @@ def main():
     elif args.wallets or args.abandoned_only:
         try:
             sys.exit(asyncio.run(wallets_command(args)))
+        except KeyboardInterrupt:
+            print("\nCancelled by user")
+            sys.exit(1)
+    elif args.delete_unfunded:
+        try:
+            sys.exit(asyncio.run(delete_unfunded_command(args)))
         except KeyboardInterrupt:
             print("\nCancelled by user")
             sys.exit(1)

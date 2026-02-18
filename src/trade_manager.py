@@ -564,15 +564,19 @@ class TradeManager:
         
         if order_type == 'buy':
             # Buy order refunded - received USDC back
-            # No position was created, wallet can place new order
-            logger.info(f"Buy order {order_id} refunded, wallet {wallet_address} can retry")
+            logger.info(f"Buy order {order_id} refunded, wallet {wallet_address}")
+            
+            if self.config.liquid_mode:
+                # Liquidation mode: don't retry buy, sweep funds back to vault
+                logger.info(f"Liquidation mode: sweeping funds from {wallet_address} to vault instead of retrying buy")
+                self.wallet_manager.abandon_wallet(wallet_address, dry_run=dry_run)
+                return
             
             # Get current USDC balance
             usdc_balance = self.blockchain.get_usdc_balance(wallet_address)
             
             MIN_ORDER_VALUE = 5.0
             if usdc_balance >= MIN_ORDER_VALUE:
-                # Automatically retry the buy order with current balance
                 logger.info(f"Retrying buy order for {stock_ticker} with {usdc_balance:.2f} USDC")
                 
                 customer_id = self.place_buy_order(
@@ -588,7 +592,6 @@ class TradeManager:
                     logger.error(f"Failed to place retry buy order for {wallet_address}")
             else:
                 logger.warning(f"Wallet {wallet_address} has insufficient balance to retry: {usdc_balance:.2f}")
-                # Return funds to vault and abandon wallet
                 self.wallet_manager.abandon_wallet(wallet_address, dry_run=dry_run)
         
         elif order_type == 'sell':
@@ -745,6 +748,12 @@ class TradeManager:
                 # Delete position
                 self.db.delete_position(wallet_address)
                 
+                if self.config.liquid_mode:
+                    # Liquidation mode: sweep funds back to vault, don't place new buy orders
+                    logger.info(f"Liquidation mode: sweeping funds from {wallet_address} to vault")
+                    self.wallet_manager.abandon_wallet(wallet_address, dry_run=dry_run)
+                    return
+                
                 # Handle wallet based on whether to treat as loss
                 should_abandon = False
                 
@@ -801,7 +810,6 @@ class TradeManager:
                                 logger.error(f"Failed to place immediate buy order for {wallet_address}")
                         else:
                             logger.warning(f"Wallet {wallet_address} has insufficient USDC for minimum order: {usdc_balance:.2f} < ${MIN_ORDER_VALUE}")
-                            # Transfer wallet to vault since it can't trade anymore
                             logger.info(f"Returning insufficient funds to vault and abandoning wallet")
                             self.wallet_manager.abandon_wallet(wallet_address, dry_run=dry_run)
                     else:

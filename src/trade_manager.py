@@ -494,75 +494,45 @@ class TradeManager:
                 
                 if order_type == 'buy':
                     # Buy order: sent USDC, expecting stock tokens or USDC refund
-                    # First check for stock tokens (expected outcome)
-                    
                     stock_balance = self.blockchain.get_token_balance(stock_token_address, wallet_address)
-                    logger.debug(f"Buy order {order_id}: checking stock balance = {stock_balance:.6f} {stock_ticker}")
+                    usdc_balance = self.blockchain.get_usdc_balance(wallet_address)
+                    logger.debug(f"Buy order {order_id}: stock={stock_balance:.6f} {stock_ticker}, USDC={usdc_balance:.2f}")
                     
                     if stock_balance >= MIN_STOCK_BALANCE:
-                        # Received stock tokens - order filled
-                        expected_quantity = quantity * 0.95  # Allow 5% slippage
-                        
-                        if stock_balance >= expected_quantity:
-                            logger.info(f"Buy order {order_id} FILLED: received {stock_balance:.6f} {stock_ticker}")
-                            self._handle_filled_order(order, dry_run)
-                            processed += 1
-                        else:
-                            logger.debug(f"Buy order {order_id}: stock balance too low ({stock_balance:.6f} < {expected_quantity:.6f}), waiting...")
+                        # Any meaningful stock token balance means the buy order was filled.
+                        # The exact amount may differ from expected due to slippage, fees,
+                        # or partial fills — accept it regardless.
+                        logger.info(f"Buy order {order_id} FILLED: received {stock_balance:.6f} {stock_ticker} (expected ~{quantity:.6f})")
+                        self._handle_filled_order(order, dry_run)
+                        processed += 1
+                    elif usdc_balance >= MIN_USDC_BALANCE:
+                        # No stock tokens but got USDC back — order was refunded/expired
+                        logger.info(f"Buy order {order_id} REFUNDED: received {usdc_balance:.2f} USDC back")
+                        self._handle_refunded_order(order, dry_run)
+                        processed += 1
                     else:
-                        # No stock tokens yet, check for USDC refund
-                        usdc_balance = self.blockchain.get_usdc_balance(wallet_address)
-                        logger.debug(f"Buy order {order_id}: no stock tokens, checking USDC balance = {usdc_balance:.2f}")
-                        
-                        if usdc_balance >= MIN_USDC_BALANCE:
-                            # Received USDC back - order refunded/expired
-                            expected_refund = amount_usdc * 0.95  # Allow 5% for fees
-                            
-                            if usdc_balance >= expected_refund:
-                                logger.info(f"Buy order {order_id} REFUNDED: received {usdc_balance:.2f} USDC back")
-                                self._handle_refunded_order(order, dry_run)
-                                processed += 1
-                            else:
-                                logger.debug(f"Buy order {order_id}: USDC balance too low ({usdc_balance:.2f} < {expected_refund:.2f}), waiting...")
-                        else:
-                            # No significant balance yet - order still pending
-                            logger.debug(f"Buy order {order_id}: still pending (no significant balance)")
+                        # Neither stock tokens nor USDC — order still pending on-chain
+                        logger.debug(f"Buy order {order_id}: still pending (no significant balance)")
                 
                 elif order_type == 'sell':
                     # Sell order: sent stock tokens, expecting USDC or stock token refund
-                    # First check for USDC (expected outcome)
-                    
                     usdc_balance = self.blockchain.get_usdc_balance(wallet_address)
-                    logger.debug(f"Sell order {order_id}: checking USDC balance = {usdc_balance:.2f}")
+                    stock_balance = self.blockchain.get_token_balance(stock_token_address, wallet_address)
+                    logger.debug(f"Sell order {order_id}: USDC={usdc_balance:.2f}, stock={stock_balance:.6f} {stock_ticker}")
                     
                     if usdc_balance >= MIN_USDC_BALANCE:
-                        # Received USDC - order filled
-                        expected_usdc = amount_usdc * 0.95  # Allow 5% slippage
-                        
-                        if usdc_balance >= expected_usdc:
-                            logger.info(f"Sell order {order_id} FILLED: received {usdc_balance:.2f} USDC")
-                            self._handle_filled_order(order, dry_run)
-                            processed += 1
-                        else:
-                            logger.debug(f"Sell order {order_id}: USDC balance too low ({usdc_balance:.2f} < {expected_usdc:.2f}), waiting...")
+                        # Any meaningful USDC balance means the sell order was filled.
+                        logger.info(f"Sell order {order_id} FILLED: received {usdc_balance:.2f} USDC (expected ~{amount_usdc:.2f})")
+                        self._handle_filled_order(order, dry_run)
+                        processed += 1
+                    elif stock_balance >= MIN_STOCK_BALANCE:
+                        # No USDC but got stock tokens back — order was refunded/expired
+                        logger.info(f"Sell order {order_id} REFUNDED: received {stock_balance:.6f} {stock_ticker} back")
+                        self._handle_refunded_order(order, dry_run)
+                        processed += 1
                     else:
-                        # No USDC yet, check for stock token refund
-                        stock_balance = self.blockchain.get_token_balance(stock_token_address, wallet_address)
-                        logger.debug(f"Sell order {order_id}: no USDC, checking stock balance = {stock_balance:.6f} {stock_ticker}")
-                        
-                        if stock_balance >= MIN_STOCK_BALANCE:
-                            # Received stock tokens back - order refunded/expired
-                            expected_quantity = quantity * 0.95  # Allow 5% for fees
-                            
-                            if stock_balance >= expected_quantity:
-                                logger.info(f"Sell order {order_id} REFUNDED: received {stock_balance:.6f} {stock_ticker} back")
-                                self._handle_refunded_order(order, dry_run)
-                                processed += 1
-                            else:
-                                logger.debug(f"Sell order {order_id}: stock balance too low ({stock_balance:.6f} < {expected_quantity:.6f}), waiting...")
-                        else:
-                            # No significant balance yet - order still pending
-                            logger.debug(f"Sell order {order_id}: still pending (no significant balance)")
+                        # Neither USDC nor stock tokens — order still pending on-chain
+                        logger.debug(f"Sell order {order_id}: still pending (no significant balance)")
                 
             except Exception as e:
                 logger.error(f"Error checking order {order_id}: {e}", exc_info=True)

@@ -283,11 +283,13 @@ async def wallets_command(args):
             # Format order info
             order_info = ""
             if pending_buy_orders:
-                buy_total = sum(o['amount_usdc'] for o in pending_buy_orders)
-                order_info += f" | {len(pending_buy_orders)} buy order(s): ${buy_total:.2f} USDC"
+                buy_usdc_total = sum(o['amount_usdc'] for o in pending_buy_orders)
+                buy_qty_total = sum(o['quantity'] for o in pending_buy_orders)
+                order_info += f" | {len(pending_buy_orders)} buy order(s): ${buy_usdc_total:.2f} USDC / {buy_qty_total:.4f} shares"
             if pending_sell_orders:
-                sell_total = sum(o['quantity'] for o in pending_sell_orders)
-                order_info += f" | {len(pending_sell_orders)} sell order(s): {sell_total:.4f} shares"
+                sell_qty_total = sum(o['quantity'] for o in pending_sell_orders)
+                sell_usdc_total = sum(o['amount_usdc'] for o in pending_sell_orders)
+                order_info += f" | {len(pending_sell_orders)} sell order(s): {sell_qty_total:.4f} shares / ${sell_usdc_total:.2f} USDC"
             
             print(f"\n{i}. {address}")
             print(f"   Stock: {stock} | Losses: {loss_count}/{bot.config.max_loss_traders}")

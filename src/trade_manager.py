@@ -503,7 +503,7 @@ class TradeManager:
                         # The exact amount may differ from expected due to slippage, fees,
                         # or partial fills — accept it regardless.
                         logger.info(f"Buy order {order_id} FILLED: received {stock_balance:.6f} {stock_ticker} (expected ~{quantity:.6f})")
-                        self._handle_filled_order(order, dry_run)
+                        self._handle_filled_order(order, dry_run, actual_quantity=stock_balance)
                         processed += 1
                     elif usdc_balance >= MIN_USDC_BALANCE:
                         # No stock tokens but got USDC back — order was refunded/expired
@@ -632,36 +632,45 @@ class TradeManager:
             else:
                 logger.warning(f"Position not found for {wallet_address} after sell refund")
     
-    def _handle_filled_order(self, order: Dict[str, Any], dry_run: bool = False):
+    def _handle_filled_order(self, order: Dict[str, Any], dry_run: bool = False,
+                            actual_quantity: float = None):
         """
         Handle a filled order (buy or sell).
         
         Args:
             order: Order dict
             dry_run: If True, simulate only
+            actual_quantity: Actual received quantity (from on-chain balance).
+                            For buy orders this is the actual stock tokens received.
+                            If None, falls back to the order's original quantity.
         """
         order_id = order['order_id']
         order_type = order['order_type']
         wallet_address = order['wallet_address']
         stock_ticker = order['stock_ticker']
         quantity = order['quantity']
+        amount_usdc = order['amount_usdc']
         limit_price = order['limit_price']
         
         logger.info(f"Processing filled {order_type} order: {order_id}")
         
-        # Get confirmation time (when order is filled)
         filled_at = datetime.now()
         
-        # Update order status
-        self.db.update_order_status(order_id, 'filled', filled_at=filled_at)
+        if order_type == 'buy' and actual_quantity is not None and actual_quantity != quantity:
+            logger.info(
+                f"Buy order {order_id}: adjusting quantity from {quantity:.6f} to "
+                f"{actual_quantity:.6f} (actual received)"
+            )
+            quantity = actual_quantity
+            # Recalculate effective buy price based on what we actually paid vs received
+            limit_price = amount_usdc / quantity if quantity > 0 else limit_price
+            logger.info(f"Effective buy price: ${limit_price:.4f} (paid ${amount_usdc:.2f} for {quantity:.6f} shares)")
+        
+        # Update order status (and quantity if it changed)
+        self.db.update_order_status(order_id, 'filled', filled_at=filled_at, quantity=quantity)
         
         if order_type == 'buy':
-            # Create or update position
-            total_cost = quantity * limit_price
-            
-            # Use buy order confirmation date (filled_at) as first_buy_date
-            # This ensures holding time is calculated from when the buy order was actually confirmed/filled
-            # Holding time starts from when we actually received the stocks, not when order was placed
+            total_cost = amount_usdc
             first_buy_date = filled_at.date()
             
             self.db.create_or_update_position(
@@ -672,19 +681,16 @@ class TradeManager:
                 total_cost_usdc=total_cost,
                 first_buy_date=first_buy_date
             )
-            logger.info(f"Position created: {wallet_address} - {quantity} {stock_ticker} (first_buy_date: {first_buy_date})")
+            logger.info(f"Position created: {wallet_address} - {quantity:.6f} {stock_ticker} @ ${limit_price:.4f} (first_buy_date: {first_buy_date})")
             
-            # Immediately place sell order with target profit
             logger.info(f"Placing immediate sell order with {self.config.min_profit}% target profit")
             
             try:
-                # Calculate target sell price
                 target_price = limit_price * (1 + self.config.min_profit / 100)
                 target_price = round(target_price, 2)
                 
-                logger.info(f"Target sell price: ${target_price:.2f} (buy: ${limit_price:.2f}, profit: {self.config.min_profit}%)")
+                logger.info(f"Target sell price: ${target_price:.2f} (buy: ${limit_price:.4f}, profit: {self.config.min_profit}%)")
                 
-                # Place sell order immediately
                 sell_customer_id = self.place_sell_order(
                     wallet_address=wallet_address,
                     stock_ticker=stock_ticker,
@@ -695,7 +701,7 @@ class TradeManager:
                 if sell_customer_id:
                     logger.info(f"Immediate sell order placed: {sell_customer_id}")
                 else:
-                        logger.error(f"Failed to place immediate sell order for {wallet_address}")
+                    logger.error(f"Failed to place immediate sell order for {wallet_address}")
                     
             except Exception as e:
                 logger.error(f"Error placing immediate sell order: {e}", exc_info=True)

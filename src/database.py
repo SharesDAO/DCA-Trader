@@ -384,7 +384,8 @@ class Database:
             return False
     
     def update_order_status(self, order_id: str, status: str, 
-                           filled_at: datetime = None, profit_loss: float = None) -> bool:
+                           filled_at: datetime = None, profit_loss: float = None,
+                           quantity: float = None) -> bool:
         """
         Update order status.
         
@@ -393,6 +394,7 @@ class Database:
             status: New status
             filled_at: Optional fill datetime
             profit_loss: Optional profit/loss amount
+            quantity: Optional updated quantity (actual filled amount)
             
         Returns:
             True if successful
@@ -400,11 +402,18 @@ class Database:
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
-                cursor.execute("""
-                    UPDATE orders 
-                    SET status = ?, filled_at = ?, profit_loss = ?
-                    WHERE order_id = ?
-                """, (status, filled_at, profit_loss, order_id))
+                if quantity is not None:
+                    cursor.execute("""
+                        UPDATE orders 
+                        SET status = ?, filled_at = ?, profit_loss = ?, quantity = ?
+                        WHERE order_id = ?
+                    """, (status, filled_at, profit_loss, quantity, order_id))
+                else:
+                    cursor.execute("""
+                        UPDATE orders 
+                        SET status = ?, filled_at = ?, profit_loss = ?
+                        WHERE order_id = ?
+                    """, (status, filled_at, profit_loss, order_id))
             
             logger.info(f"Updated order {order_id} status to {status}")
             return True

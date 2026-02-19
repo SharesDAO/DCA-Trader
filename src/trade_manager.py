@@ -171,10 +171,21 @@ class TradeManager:
                 logger.error(f"Wallet not found: {wallet_address}")
                 return None
             
-            # In liquidation mode, always use MARKET orders
+            # In liquidation mode, always use MARKET orders and sell actual on-chain balance
             if self.config.liquid_mode:
                 order_type = 'MARKET'
-                logger.info(f"Liquidation mode enabled - using MARKET order type")
+                stock_token_address = self.config.get_stock_token_address(stock_ticker)
+                actual_balance = self.blockchain.get_token_balance(stock_token_address, wallet_address)
+                if actual_balance <= 0:
+                    logger.warning(f"Liquidation mode: wallet {wallet_address} has no {stock_ticker} tokens on-chain, skipping sell")
+                    return None
+                if actual_balance != quantity:
+                    logger.info(
+                        f"Liquidation mode: using actual on-chain balance {actual_balance:.6f} "
+                        f"instead of DB quantity {quantity:.6f} {stock_ticker}"
+                    )
+                    quantity = actual_balance
+                logger.info(f"Liquidation mode enabled - using MARKET order with {quantity:.6f} {stock_ticker}")
             else:
                 # Check if holding time exceeds max_hold_days, if so force MARKET order
                 position = self.db.get_position(wallet_address)

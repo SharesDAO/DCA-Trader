@@ -10,14 +10,14 @@ pool:
 
 # Trading parameters
 trading:
-  max_usd_per_wallet: 40  # Maximum USDC per wallet
-  min_usd_per_wallet: 20   # Minimum USDC per wallet (should be >= $5 for valid orders)
+  max_usd_per_wallet: 100  # Maximum USDC per wallet
+  min_usd_per_wallet: 80   # Minimum USDC per wallet (should be >= $5 for valid orders)
   gas_per_wallet: 0.001    # Native token (ETH/BNB) per wallet for gas fees
   order_expiry_days: 1     # Order expiration in days
   min_profit: 0.3            # Minimum profit percentage to sell
   max_hold_days: 2        # Maximum holding days before selling
-  max_loss_traders: 3      # Max consecutive losses before abandoning wallet
-  sell_slippage: 0.005     # Sell order slippage (0.005 = 0.5% below market price for LIMIT orders)
+  max_loss_traders: 2      # Max consecutive losses before abandoning wallet
+  sell_slippage: 0.001     # Sell order slippage (0.001 = 0.1% below market price for LIMIT orders)
   
 # Trading pools (each pool represents a stock/ticker)
 # Leave empty to use all available pools from SharesDAO, or specify tickers to filter

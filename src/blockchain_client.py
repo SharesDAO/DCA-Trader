@@ -476,9 +476,10 @@ class BlockchainClient:
             sender_account = self.get_account(from_private_key)
             from_address = sender_account.address
             
-            # Stock tokens use 18 decimals
+            # Stock tokens use 18 decimals, truncate last 6 digits to avoid
+            # rounding dust that could exceed the wallet's actual balance
             # USDC uses self.usdc_decimals
-            offer_wei = int(stock_quantity * (10 ** 18))
+            offer_wei = int(stock_quantity * (10 ** 18)) // (10 ** 6) * (10 ** 6)
             request_wei = int(usdc_amount * (10 ** self.usdc_decimals))
             
             # Build memo

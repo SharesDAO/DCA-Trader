@@ -1,5 +1,19 @@
 # DCA Trading Bot
 
+The default configuration now runs the **FGV strategy**, using Backpack external
+stock data and SharesDAO **market orders** with the existing vault/multi-wallet
+infrastructure. It starts in paper mode (`dry_run: true`). See the
+[FGV setup, strategy parity, and migration guide](docs/fgv.md) for current usage.
+
+```bash
+python -m venv venv
+venv/bin/pip install -r requirements-dev.txt
+venv/bin/python -m src.main --check-config
+venv/bin/python -m src.main --dry-run
+```
+
+The material below describes the legacy `strategy: dca` workflow.
+
 An automated trading bot that creates multiple wallets, distributes funds, and executes buy/sell orders for stocks across different blockchains.
 
 ## Features
@@ -662,3 +676,9 @@ For issues, questions, or contributions:
 ---
 
 **Happy Trading! 🚀**
+# Read-only dashboard
+
+Run `venv/bin/python -m src.dashboard`, then open http://127.0.0.1:8080.
+Includes live/paper views, positions and exit levels, wallet balances, order
+history, realized P&L, and bot health. See [dashboard setup](docs/dashboard.md)
+for remote access and data definitions.

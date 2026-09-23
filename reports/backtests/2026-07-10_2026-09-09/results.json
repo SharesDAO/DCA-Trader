@@ -1,0 +1,272 @@
+[
+  {
+    "assumptions": {
+      "name": "wallet50_0bps_fee0_delay15",
+      "initial": 10000,
+      "wallet_fund": 50.0,
+      "slippage_bps": 0,
+      "fee_per_side": 0,
+      "buy_delay_seconds": 15,
+      "sell_delay_seconds": 10
+    },
+    "initial": 10000,
+    "ending_equity": 9999.471286999998,
+    "net_profit": -0.5287129999999891,
+    "roi_pct": -0.005287129999999891,
+    "trades": 60,
+    "wins": 19,
+    "losses": 41,
+    "win_rate_pct": 31.666666666666668,
+    "max_sampled_drawdown_pct": 0.08871901713194458,
+    "peak_deployed": 256.090705,
+    "average_deployed": 23.539233231581093,
+    "wallets_created": 22,
+    "wallets_retired": 19,
+    "exit_reasons": {
+      "STOP_LOSS": 38,
+      "FORCE_EXIT": 16,
+      "TAKE_PROFIT": 6
+    },
+    "stop_subtypes": {
+      "confirmed_buffered": 34,
+      "emergency": 4
+    },
+    "rejection_counts": {
+      "ENTRY_REWARD_RISK_TOO_LOW": 144,
+      "ABOVE_TRIGGER_RETRY_TICKS": 305,
+      "ENTRY_AT_OR_BELOW_STOP": 19,
+      "ENTRY_EXPIRED": 27
+    },
+    "data_gap_ticks": {
+      "open_missing_quote_ticks": 11308,
+      "pending_entry_missing_quote_ticks": 16
+    },
+    "after_training_period_profit": 2.6397150000000025,
+    "after_training_period_trades": 10
+  },
+  {
+    "assumptions": {
+      "name": "wallet50_5bps_fee0_delay15",
+      "initial": 10000,
+      "wallet_fund": 50.0,
+      "slippage_bps": 5,
+      "fee_per_side": 0,
+      "buy_delay_seconds": 15,
+      "sell_delay_seconds": 10
+    },
+    "initial": 10000,
+    "ending_equity": 9996.155170999995,
+    "net_profit": -3.8448290000000114,
+    "roi_pct": -0.038448290000000114,
+    "trades": 60,
+    "wins": 16,
+    "losses": 44,
+    "win_rate_pct": 26.666666666666668,
+    "max_sampled_drawdown_pct": 0.1033448887240038,
+    "peak_deployed": 252.622086,
+    "average_deployed": 22.642490154218823,
+    "wallets_created": 24,
+    "wallets_retired": 21,
+    "exit_reasons": {
+      "STOP_LOSS": 39,
+      "FORCE_EXIT": 15,
+      "TAKE_PROFIT": 6
+    },
+    "stop_subtypes": {
+      "confirmed_buffered": 35,
+      "emergency": 4
+    },
+    "rejection_counts": {
+      "ENTRY_REWARD_RISK_TOO_LOW": 128,
+      "ABOVE_TRIGGER_RETRY_TICKS": 464,
+      "ENTRY_EXPIRED": 45,
+      "ENTRY_AT_OR_BELOW_STOP": 17
+    },
+    "data_gap_ticks": {
+      "open_missing_quote_ticks": 11504,
+      "pending_entry_missing_quote_ticks": 36
+    },
+    "after_training_period_profit": 2.057719000000006,
+    "after_training_period_trades": 10
+  },
+  {
+    "assumptions": {
+      "name": "wallet50_25bps_fee0_delay15",
+      "initial": 10000,
+      "wallet_fund": 50.0,
+      "slippage_bps": 25,
+      "fee_per_side": 0,
+      "buy_delay_seconds": 15,
+      "sell_delay_seconds": 10
+    },
+    "initial": 10000,
+    "ending_equity": 9989.965544,
+    "net_profit": -10.034455999999999,
+    "roi_pct": -0.10034456,
+    "trades": 48,
+    "wins": 11,
+    "losses": 37,
+    "win_rate_pct": 22.916666666666668,
+    "max_sampled_drawdown_pct": 0.1392948728032427,
+    "peak_deployed": 152.9914,
+    "average_deployed": 14.86924162710603,
+    "wallets_created": 20,
+    "wallets_retired": 18,
+    "exit_reasons": {
+      "STOP_LOSS": 35,
+      "FORCE_EXIT": 10,
+      "TAKE_PROFIT": 3
+    },
+    "stop_subtypes": {
+      "confirmed_buffered": 32,
+      "emergency": 3
+    },
+    "rejection_counts": {
+      "ABOVE_TRIGGER_RETRY_TICKS": 1045,
+      "ENTRY_EXPIRED": 108,
+      "ENTRY_REWARD_RISK_TOO_LOW": 83,
+      "ENTRY_AT_OR_BELOW_STOP": 11
+    },
+    "data_gap_ticks": {
+      "pending_entry_missing_quote_ticks": 80,
+      "open_missing_quote_ticks": 6459
+    },
+    "after_training_period_profit": 1.1246680000000069,
+    "after_training_period_trades": 8
+  },
+  {
+    "assumptions": {
+      "name": "wallet50_50bps_fee0_delay15",
+      "initial": 10000,
+      "wallet_fund": 50.0,
+      "slippage_bps": 50,
+      "fee_per_side": 0,
+      "buy_delay_seconds": 15,
+      "sell_delay_seconds": 10
+    },
+    "initial": 10000,
+    "ending_equity": 9985.046028,
+    "net_profit": -14.953972,
+    "roi_pct": -0.14953972,
+    "trades": 34,
+    "wins": 5,
+    "losses": 29,
+    "win_rate_pct": 14.705882352941176,
+    "max_sampled_drawdown_pct": 0.15806408615325146,
+    "peak_deployed": 148.661059,
+    "average_deployed": 8.141702994909181,
+    "wallets_created": 16,
+    "wallets_retired": 14,
+    "exit_reasons": {
+      "STOP_LOSS": 26,
+      "FORCE_EXIT": 6,
+      "TAKE_PROFIT": 2
+    },
+    "stop_subtypes": {
+      "confirmed_buffered": 24,
+      "emergency": 2
+    },
+    "rejection_counts": {
+      "ENTRY_REWARD_RISK_TOO_LOW": 47,
+      "ABOVE_TRIGGER_RETRY_TICKS": 1395,
+      "ENTRY_EXPIRED": 159,
+      "ENTRY_AT_OR_BELOW_STOP": 10
+    },
+    "data_gap_ticks": {
+      "pending_entry_missing_quote_ticks": 94,
+      "open_missing_quote_ticks": 3466
+    },
+    "after_training_period_profit": -1.2283789999999968,
+    "after_training_period_trades": 3
+  },
+  {
+    "assumptions": {
+      "name": "wallet50_5bps_fee0.05_delay15",
+      "initial": 10000,
+      "wallet_fund": 50.0,
+      "slippage_bps": 5,
+      "fee_per_side": 0.05,
+      "buy_delay_seconds": 15,
+      "sell_delay_seconds": 10
+    },
+    "initial": 10000,
+    "ending_equity": 9990.155171000082,
+    "net_profit": -9.844828999999995,
+    "roi_pct": -0.09844828999999995,
+    "trades": 60,
+    "wins": 16,
+    "losses": 44,
+    "win_rate_pct": 26.666666666666668,
+    "max_sampled_drawdown_pct": 0.1433426863047803,
+    "peak_deployed": 252.622086,
+    "average_deployed": 22.642490154218823,
+    "wallets_created": 24,
+    "wallets_retired": 21,
+    "exit_reasons": {
+      "STOP_LOSS": 39,
+      "FORCE_EXIT": 15,
+      "TAKE_PROFIT": 6
+    },
+    "stop_subtypes": {
+      "confirmed_buffered": 35,
+      "emergency": 4
+    },
+    "rejection_counts": {
+      "ENTRY_REWARD_RISK_TOO_LOW": 128,
+      "ABOVE_TRIGGER_RETRY_TICKS": 464,
+      "ENTRY_EXPIRED": 45,
+      "ENTRY_AT_OR_BELOW_STOP": 17
+    },
+    "data_gap_ticks": {
+      "open_missing_quote_ticks": 11504,
+      "pending_entry_missing_quote_ticks": 36
+    },
+    "after_training_period_profit": 1.057719000000005,
+    "after_training_period_trades": 10
+  },
+  {
+    "assumptions": {
+      "name": "wallet50_5bps_fee0_delay30",
+      "initial": 10000,
+      "wallet_fund": 50.0,
+      "slippage_bps": 5,
+      "fee_per_side": 0,
+      "buy_delay_seconds": 30,
+      "sell_delay_seconds": 10
+    },
+    "initial": 10000,
+    "ending_equity": 9997.469445999997,
+    "net_profit": -2.530553999999995,
+    "roi_pct": -0.02530553999999995,
+    "trades": 54,
+    "wins": 15,
+    "losses": 39,
+    "win_rate_pct": 27.77777777777778,
+    "max_sampled_drawdown_pct": 0.10195111901395097,
+    "peak_deployed": 251.97954099999998,
+    "average_deployed": 21.06377736768966,
+    "wallets_created": 22,
+    "wallets_retired": 18,
+    "exit_reasons": {
+      "STOP_LOSS": 35,
+      "FORCE_EXIT": 14,
+      "TAKE_PROFIT": 5
+    },
+    "stop_subtypes": {
+      "confirmed_buffered": 33,
+      "emergency": 2
+    },
+    "rejection_counts": {
+      "ENTRY_REWARD_RISK_TOO_LOW": 116,
+      "ABOVE_TRIGGER_RETRY_TICKS": 351,
+      "ENTRY_EXPIRED": 63,
+      "ENTRY_AT_OR_BELOW_STOP": 17
+    },
+    "data_gap_ticks": {
+      "pending_entry_missing_quote_ticks": 82,
+      "open_missing_quote_ticks": 8644
+    },
+    "after_training_period_profit": 2.4192390000000046,
+    "after_training_period_trades": 9
+  }
+]

@@ -219,6 +219,8 @@ class TradeManager:
                 return None
             
             # Set price based on order type
+            if getattr(self.config, 'strategy_name', 'dca') == 'fgv':
+                order_type = 'MARKET'
             if order_type == 'MARKET':
                 # Market order: use current market price
                 limit_price = current_price
@@ -306,6 +308,8 @@ class TradeManager:
         
         for position in positions:
             wallet_address = position['wallet_address']
+            if self._fgv_wallet(wallet_address):
+                continue
             stock_ticker = position['stock_ticker']
             quantity = position['quantity']
             first_buy_date = datetime.strptime(position['first_buy_date'], '%Y-%m-%d').date()
@@ -478,6 +482,8 @@ class TradeManager:
         MIN_USDC_BALANCE = 0.01    # Minimum USDC to consider as received
         
         for order in pending_orders:
+            if order['order_id'].startswith('FGV_'):
+                continue
             order_id = order['order_id']
             order_type = order['order_type']
             wallet_address = order['wallet_address']
@@ -563,6 +569,9 @@ class TradeManager:
             dry_run: If True, simulate only
         """
         order_id = order['order_id']
+        if getattr(self.config, 'strategy_name', 'dca') == 'fgv' and order['order_type'] == 'buy':
+            self.db.update_order_status(order_id, 'refunded')
+            return
         order_type = order['order_type']
         wallet_address = order['wallet_address']
         stock_ticker = order['stock_ticker']
@@ -758,6 +767,10 @@ class TradeManager:
                 
                 # Delete position
                 self.db.delete_position(wallet_address)
+                if getattr(self.config, 'strategy_name', 'dca') == 'fgv':
+                    # Existing DCA positions can wind down, but never start another
+                    # random allocation after migration to FGV.
+                    return
                 
                 if self.config.liquid_mode:
                     # Liquidation mode: sweep funds back to vault, don't place new buy orders
@@ -862,6 +875,8 @@ class TradeManager:
         # Step 1: Place sell orders for all positions at market price
         for position in positions:
             wallet_address = position['wallet_address']
+            if self._fgv_wallet(wallet_address):
+                continue
             stock_ticker = position['stock_ticker']
             quantity = position['quantity']
             
@@ -874,8 +889,9 @@ class TradeManager:
             ]
             
             for old_order in pending_sells:
-                logger.info(f"Marking old sell order as cancelled: {old_order['order_id']}")
-                self.db.update_order_status(old_order['order_id'], 'cancelled')
+                logger.info(f"Awaiting settlement/refund of existing sell: {old_order['order_id']}")
+            if pending_sells:
+                continue
             
             # Place market sell order (MARKET type for immediate execution)
             customer_id = self.place_sell_order(
@@ -913,6 +929,14 @@ class TradeManager:
         
         return summary
     
+    def _fgv_wallet(self, wallet_address):
+        with self.db.get_connection() as conn:
+            exists = conn.execute("SELECT 1 FROM sqlite_master WHERE name='fgv_trades'").fetchone()
+            if not exists:
+                return False
+            return conn.execute("SELECT 1 FROM fgv_trades WHERE wallet=? AND state NOT IN ('CLOSED','FAILED')",
+                                (wallet_address,)).fetchone() is not None
+
     def sweep_wallets_to_vault(self, dry_run: bool = False) -> Dict[str, Any]:
         """
         Sweep all USDC from all wallets back to vault.
@@ -949,6 +973,10 @@ class TradeManager:
         
         for wallet in all_wallets:
             wallet_address = wallet['address']
+            if self._fgv_wallet(wallet_address):
+                continue
+            if any(o['status'] == 'pending' for o in self.db.get_wallet_orders(wallet_address)):
+                continue
             
             try:
                 # Check USDC balance

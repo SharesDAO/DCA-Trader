@@ -121,6 +121,7 @@ class SharesDAOClient:
                 
                 pools[symbol] = {
                     "blockchain": pool.get("blockchain"),
+                    "mint_mode": pool.get("mint_mode"),
                     "asset_id": asset_id,
                     "mint_address": pool.get("mint_address"),
                     "burn_address": pool.get("burn_address"),

@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-09-11T16:57:02.229880-07:00",
+  "data_period": [
+    "2026-07-10T13:30:00+00:00",
+    "2026-09-09T20:00:00+00:00"
+  ],
+  "examples": 47,
+  "wins": 18,
+  "rejected": {
+    "ENTRY_EXPIRED": 58,
+    "NO_ACTIONABLE_PULLBACK": 491,
+    "ENTRY_REWARD_RISK_TOO_LOW": 282,
+    "ENTRY_AT_OR_BELOW_STOP": 7,
+    "MISSING_EXIT_QUOTE": 1
+  },
+  "minimum_examples": 100,
+  "gate_passed": false,
+  "deployed": false,
+  "reason": "INSUFFICIENT_CURRENT_STRATEGY_EXAMPLES"
+}

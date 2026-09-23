@@ -1,0 +1,6715 @@
+[
+  {
+    "session": "2026-07-10",
+    "symbol": "ACMR",
+    "rows": 1036,
+    "first": 1783690201,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "AEIS",
+    "rows": 1092,
+    "first": 1783690202,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "AMAT",
+    "rows": 9395,
+    "first": 1783690201,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "BRBR",
+    "rows": 3637,
+    "first": 1783690201,
+    "last": 1783713599
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "BROS",
+    "rows": 2541,
+    "first": 1783690202,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "CBRS",
+    "rows": 5590,
+    "first": 1783690201,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "CRWV",
+    "rows": 9331,
+    "first": 1783690201,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "DRAM",
+    "rows": 17512,
+    "first": 1783690201,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "DY",
+    "rows": 938,
+    "first": 1783690201,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "FOXA",
+    "rows": 3403,
+    "first": 1783690201,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "MUU",
+    "rows": 1938,
+    "first": 1783690201,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-10",
+    "symbol": "SMCI",
+    "rows": 12323,
+    "first": 1783690201,
+    "last": 1783713600
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "AEHR",
+    "rows": 1966,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "AMAT",
+    "rows": 9666,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "AMC",
+    "rows": 5953,
+    "first": 1783949402,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "AMD",
+    "rows": 15612,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "AMDL",
+    "rows": 3419,
+    "first": 1783949401,
+    "last": 1783972798
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "AMKR",
+    "rows": 3202,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "BFLY",
+    "rows": 4258,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "BOT",
+    "rows": 468,
+    "first": 1783949401,
+    "last": 1783972798
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "CHTR",
+    "rows": 2092,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "CIEN",
+    "rows": 3405,
+    "first": 1783949402,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "COHU",
+    "rows": 768,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "CRWV",
+    "rows": 12680,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "DDOG",
+    "rows": 3003,
+    "first": 1783949402,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "DRAM",
+    "rows": 19006,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "FIG",
+    "rows": 12370,
+    "first": 1783949402,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "FN",
+    "rows": 2009,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "FPS",
+    "rows": 5463,
+    "first": 1783949402,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "GLW",
+    "rows": 7064,
+    "first": 1783949402,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "ISRG",
+    "rows": 3652,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "KLAC",
+    "rows": 17598,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "LRCX",
+    "rows": 7089,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "MSTU",
+    "rows": 6162,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "MUU",
+    "rows": 1752,
+    "first": 1783949402,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "NBIS",
+    "rows": 8980,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "NET",
+    "rows": 2320,
+    "first": 1783949465,
+    "last": 1783972796
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "PATH",
+    "rows": 11782,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "QCOM",
+    "rows": 7356,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "RDDT",
+    "rows": 4261,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "SOXL",
+    "rows": 18538,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "TEAM",
+    "rows": 5579,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-13",
+    "symbol": "TER",
+    "rows": 5234,
+    "first": 1783949401,
+    "last": 1783972800
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "AAOI",
+    "rows": 8430,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "ACLS",
+    "rows": 522,
+    "first": 1784035801,
+    "last": 1784059198
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "AEVA",
+    "rows": 1134,
+    "first": 1784035801,
+    "last": 1784059199
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "AGQ",
+    "rows": 1893,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "ASTS",
+    "rows": 7742,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "ATI",
+    "rows": 1721,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "AVAV",
+    "rows": 1584,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "BAND",
+    "rows": 841,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "CBOE",
+    "rows": 1955,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "CORT",
+    "rows": 1386,
+    "first": 1784035802,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "CRCL",
+    "rows": 9942,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "CRML",
+    "rows": 3125,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "DELL",
+    "rows": 7319,
+    "first": 1784035803,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "DOCN",
+    "rows": 3063,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "ENPH",
+    "rows": 2954,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "ERAS",
+    "rows": 6677,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "FAST",
+    "rows": 9032,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "JPM",
+    "rows": 12510,
+    "first": 1784035808,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "MSTR",
+    "rows": 11673,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "MSTU",
+    "rows": 6495,
+    "first": 1784035801,
+    "last": 1784059199
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "ONDS",
+    "rows": 14498,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "SKHY",
+    "rows": 20961,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "SNPS",
+    "rows": 3077,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "SOXS",
+    "rows": 17130,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "SQQQ",
+    "rows": 13946,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "TEAM",
+    "rows": 4399,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-14",
+    "symbol": "WDAY",
+    "rows": 4048,
+    "first": 1784035801,
+    "last": 1784059200
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "AKAM",
+    "rows": 3185,
+    "first": 1784122201,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "BLDR",
+    "rows": 1560,
+    "first": 1784122201,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "CAVA",
+    "rows": 3073,
+    "first": 1784122203,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "CELC",
+    "rows": 6698,
+    "first": 1784122202,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "CHTR",
+    "rows": 1379,
+    "first": 1784122202,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "CHWY",
+    "rows": 6115,
+    "first": 1784122201,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "DXYZ",
+    "rows": 1599,
+    "first": 1784122202,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "EOSE",
+    "rows": 7874,
+    "first": 1784122201,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "FICO",
+    "rows": 1875,
+    "first": 1784122350,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "SKHY",
+    "rows": 20626,
+    "first": 1784122201,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "SPOT",
+    "rows": 2254,
+    "first": 1784122202,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-15",
+    "symbol": "YINN",
+    "rows": 2325,
+    "first": 1784122201,
+    "last": 1784145600
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "ABVX",
+    "rows": 1965,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "AEHR",
+    "rows": 4251,
+    "first": 1784208602,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "ALK",
+    "rows": 2440,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "AMAT",
+    "rows": 10196,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "AMBA",
+    "rows": 2497,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "ARWR",
+    "rows": 1733,
+    "first": 1784208602,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "ATI",
+    "rows": 1992,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "BURL",
+    "rows": 1892,
+    "first": 1784208625,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "COHR",
+    "rows": 9528,
+    "first": 1784208602,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "CVNA",
+    "rows": 7420,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "DG",
+    "rows": 4770,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "DOCN",
+    "rows": 2734,
+    "first": 1784208602,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "ENTG",
+    "rows": 2643,
+    "first": 1784208602,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "FORM",
+    "rows": 1324,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "GEV",
+    "rows": 7861,
+    "first": 1784208608,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "KLAC",
+    "rows": 17145,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "LRCX",
+    "rows": 8327,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "NET",
+    "rows": 2626,
+    "first": 1784208621,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "PYPL",
+    "rows": 14418,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "SOXL",
+    "rows": 20904,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "SOXS",
+    "rows": 18689,
+    "first": 1784208601,
+    "last": 1784232000
+  },
+  {
+    "session": "2026-07-16",
+    "symbol": "TSLL",
+    "rows": 10936,
+    "first": 1784208601,
+    "last": 1784231998
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AAOI",
+    "rows": 8230,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "ACMR",
+    "rows": 1478,
+    "first": 1784295002,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AEHR",
+    "rows": 5068,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AEIS",
+    "rows": 1677,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AEVA",
+    "rows": 1636,
+    "first": 1784295001,
+    "last": 1784318399
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AGQ",
+    "rows": 2011,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AKAM",
+    "rows": 3643,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "ALAB",
+    "rows": 7082,
+    "first": 1784295002,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "ALHC",
+    "rows": 1970,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AMBQ",
+    "rows": 1026,
+    "first": 1784295002,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AMD",
+    "rows": 17030,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AMDL",
+    "rows": 3646,
+    "first": 1784295001,
+    "last": 1784318398
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AMKR",
+    "rows": 4881,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AMZN",
+    "rows": 16854,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "ANET",
+    "rows": 6449,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AOSL",
+    "rows": 1264,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "APH",
+    "rows": 5667,
+    "first": 1784295002,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "ARM",
+    "rows": 7420,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "ASX",
+    "rows": 11098,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "ATI",
+    "rows": 1578,
+    "first": 1784295002,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AVAV",
+    "rows": 1772,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AVGO",
+    "rows": 16601,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "AXTI",
+    "rows": 7326,
+    "first": 1784295002,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "BAI",
+    "rows": 4858,
+    "first": 1784295001,
+    "last": 1784318399
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "BAND",
+    "rows": 1295,
+    "first": 1784295001,
+    "last": 1784318396
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "BE",
+    "rows": 11584,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "BITX",
+    "rows": 3398,
+    "first": 1784295001,
+    "last": 1784318399
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "BMNR",
+    "rows": 10891,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "BMNU",
+    "rows": 2475,
+    "first": 1784295001,
+    "last": 1784318399
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "BOT",
+    "rows": 688,
+    "first": 1784295002,
+    "last": 1784318391
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "BRBR",
+    "rows": 3198,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "BW",
+    "rows": 2941,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CDE",
+    "rows": 9854,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CEG",
+    "rows": 4940,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CELC",
+    "rows": 1443,
+    "first": 1784295001,
+    "last": 1784318398
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CIEN",
+    "rows": 5555,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CIFR",
+    "rows": 12165,
+    "first": 1784295001,
+    "last": 1784318399
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CLS",
+    "rows": 4700,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CLSK",
+    "rows": 9888,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "COHR",
+    "rows": 8220,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "COHU",
+    "rows": 1303,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CONL",
+    "rows": 5407,
+    "first": 1784295001,
+    "last": 1784318398
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CORT",
+    "rows": 1207,
+    "first": 1784295002,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CORZ",
+    "rows": 6383,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CRDO",
+    "rows": 7670,
+    "first": 1784295001,
+    "last": 1784318399
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CRS",
+    "rows": 2484,
+    "first": 1784295038,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "CRWV",
+    "rows": 14902,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "DGXX",
+    "rows": 3586,
+    "first": 1784295002,
+    "last": 1784318399
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "DRAM",
+    "rows": 21468,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "ENPH",
+    "rows": 4052,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "EROC",
+    "rows": 992,
+    "first": 1784295002,
+    "last": 1784318396
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "EWY",
+    "rows": 17431,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "FIX",
+    "rows": 5721,
+    "first": 1784295005,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "FLEX",
+    "rows": 4738,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "FLNC",
+    "rows": 7627,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "FLY",
+    "rows": 5082,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "FNGU",
+    "rows": 3006,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "FORM",
+    "rows": 2537,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "FPS",
+    "rows": 8845,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "FRVO",
+    "rows": 2798,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "GLW",
+    "rows": 10914,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "HPE",
+    "rows": 10646,
+    "first": 1784295024,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "INTC",
+    "rows": 22731,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "IREN",
+    "rows": 17273,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "KLAC",
+    "rows": 18077,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "LITE",
+    "rows": 12502,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "LRCX",
+    "rows": 9490,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "MKSI",
+    "rows": 2428,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "MRVL",
+    "rows": 16931,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "MU",
+    "rows": 23167,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "MUU",
+    "rows": 17172,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "NFLX",
+    "rows": 21590,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "NVDL",
+    "rows": 7719,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "OKLO",
+    "rows": 8309,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "ONDS",
+    "rows": 17816,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "PATH",
+    "rows": 12887,
+    "first": 1784295002,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "RIOT",
+    "rows": 11171,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "RKLB",
+    "rows": 14867,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "SKHY",
+    "rows": 21487,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "SMH",
+    "rows": 16299,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "SMR",
+    "rows": 9199,
+    "first": 1784295002,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "SMTC",
+    "rows": 4533,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "SNDK",
+    "rows": 19746,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "SNXX",
+    "rows": 19853,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "SOFI",
+    "rows": 16265,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "SOXL",
+    "rows": 21755,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "SOXX",
+    "rows": 15519,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "STX",
+    "rows": 13061,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "TER",
+    "rows": 7745,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "TQQQ",
+    "rows": 20089,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "TTMI",
+    "rows": 2623,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "VRT",
+    "rows": 9476,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-17",
+    "symbol": "WDC",
+    "rows": 15215,
+    "first": 1784295001,
+    "last": 1784318400
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "ACHR",
+    "rows": 14814,
+    "first": 1784554206,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "ADEA",
+    "rows": 1487,
+    "first": 1784554202,
+    "last": 1784577596
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "ALK",
+    "rows": 3188,
+    "first": 1784554202,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "AMC",
+    "rows": 17144,
+    "first": 1784554206,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "AVAV",
+    "rows": 1811,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "BMNU",
+    "rows": 3146,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "BRBR",
+    "rows": 2072,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "BTDR",
+    "rows": 5028,
+    "first": 1784554202,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "CBRS",
+    "rows": 5030,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "CELC",
+    "rows": 1226,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "CIFR",
+    "rows": 14449,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "CLSK",
+    "rows": 12929,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "CONL",
+    "rows": 5041,
+    "first": 1784554201,
+    "last": 1784577598
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "CSGP",
+    "rows": 4698,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "EPAM",
+    "rows": 1543,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "FIG",
+    "rows": 10560,
+    "first": 1784554202,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "FLUT",
+    "rows": 1381,
+    "first": 1784554202,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "FLY",
+    "rows": 3227,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "IBM",
+    "rows": 9264,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "IREN",
+    "rows": 21607,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "LITE",
+    "rows": 8590,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "MARA",
+    "rows": 15038,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "MRVL",
+    "rows": 15878,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "MSTU",
+    "rows": 8277,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "PATH",
+    "rows": 14504,
+    "first": 1784554202,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "SNXX",
+    "rows": 16626,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "SQQQ",
+    "rows": 15563,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-20",
+    "symbol": "TEAM",
+    "rows": 3458,
+    "first": 1784554201,
+    "last": 1784577600
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "AAOI",
+    "rows": 8783,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "AMD",
+    "rows": 16304,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "AMDL",
+    "rows": 3424,
+    "first": 1784640601,
+    "last": 1784663999
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "AMPX",
+    "rows": 3876,
+    "first": 1784640602,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "AOSL",
+    "rows": 791,
+    "first": 1784640602,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "ATI",
+    "rows": 2069,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "AXTI",
+    "rows": 7274,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "BE",
+    "rows": 11465,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "BMNU",
+    "rows": 2615,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "BOT",
+    "rows": 368,
+    "first": 1784640602,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "CLSK",
+    "rows": 11602,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "CRWV",
+    "rows": 13387,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "DHR",
+    "rows": 12028,
+    "first": 1784640603,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "DXYZ",
+    "rows": 1120,
+    "first": 1784640603,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "EROC",
+    "rows": 1286,
+    "first": 1784640602,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "FCEL",
+    "rows": 6608,
+    "first": 1784640602,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "FRVO",
+    "rows": 2103,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "FSLY",
+    "rows": 3221,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "HOOD",
+    "rows": 12554,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "INTC",
+    "rows": 22187,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "IREN",
+    "rows": 18271,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "LITE",
+    "rows": 9593,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "MUU",
+    "rows": 16891,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "RIOT",
+    "rows": 9517,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "SKHY",
+    "rows": 17054,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "SMTC",
+    "rows": 2246,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "SOXL",
+    "rows": 18441,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "STX",
+    "rows": 14724,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "TER",
+    "rows": 7908,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-21",
+    "symbol": "WDC",
+    "rows": 11192,
+    "first": 1784640601,
+    "last": 1784664000
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "AEVA",
+    "rows": 1081,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "ALAB",
+    "rows": 3259,
+    "first": 1784727002,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "AMD",
+    "rows": 15122,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "AMDL",
+    "rows": 3370,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "AVAV",
+    "rows": 2331,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "BBAI",
+    "rows": 5774,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "CIEN",
+    "rows": 3475,
+    "first": 1784727002,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "CIFR",
+    "rows": 11733,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "CLS",
+    "rows": 2964,
+    "first": 1784727002,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "CRDO",
+    "rows": 4893,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "CRWV",
+    "rows": 12426,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "DOCN",
+    "rows": 3363,
+    "first": 1784727002,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "EQT",
+    "rows": 8923,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "FCEL",
+    "rows": 5806,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "FPS",
+    "rows": 3976,
+    "first": 1784727002,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "HPE",
+    "rows": 9915,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "INTU",
+    "rows": 5818,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "LITE",
+    "rows": 8209,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "MSTU",
+    "rows": 6774,
+    "first": 1784727001,
+    "last": 1784750399
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "ONDS",
+    "rows": 18982,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-22",
+    "symbol": "TTMI",
+    "rows": 2225,
+    "first": 1784727001,
+    "last": 1784750400
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "AEHR",
+    "rows": 2437,
+    "first": 1784813402,
+    "last": 1784836799
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "AMPX",
+    "rows": 3855,
+    "first": 1784813402,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "ARGX",
+    "rows": 2129,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "BE",
+    "rows": 8536,
+    "first": 1784813402,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "BOIL",
+    "rows": 2792,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "CBRS",
+    "rows": 8352,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "CLF",
+    "rows": 13542,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "CRWV",
+    "rows": 12072,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "CYTK",
+    "rows": 1086,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "DELL",
+    "rows": 6758,
+    "first": 1784813402,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "ERAS",
+    "rows": 2606,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "FCEL",
+    "rows": 7916,
+    "first": 1784813402,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "FLY",
+    "rows": 2623,
+    "first": 1784813402,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "FROG",
+    "rows": 2122,
+    "first": 1784813402,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "NBIS",
+    "rows": 11756,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "RDDT",
+    "rows": 4615,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-23",
+    "symbol": "SOXS",
+    "rows": 18540,
+    "first": 1784813401,
+    "last": 1784836800
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "AAL",
+    "rows": 12871,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "AG",
+    "rows": 5026,
+    "first": 1784899801,
+    "last": 1784923199
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "AMC",
+    "rows": 11802,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "BAND",
+    "rows": 1380,
+    "first": 1784899802,
+    "last": 1784923199
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "BTDR",
+    "rows": 5238,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "CDE",
+    "rows": 8273,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "CRCL",
+    "rows": 7281,
+    "first": 1784899802,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "EOSE",
+    "rows": 10550,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "FIG",
+    "rows": 8122,
+    "first": 1784899802,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "FTAI",
+    "rows": 2642,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "GDX",
+    "rows": 10681,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "GDXJ",
+    "rows": 4853,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "HL",
+    "rows": 10469,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "MSTU",
+    "rows": 6950,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "NEM",
+    "rows": 7322,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "ONDS",
+    "rows": 15879,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "SOXS",
+    "rows": 19087,
+    "first": 1784899801,
+    "last": 1784923200
+  },
+  {
+    "session": "2026-07-24",
+    "symbol": "VXX",
+    "rows": 5450,
+    "first": 1784899801,
+    "last": 1784923199
+  },
+  {
+    "session": "2026-07-27",
+    "symbol": "AMC",
+    "rows": 11913,
+    "first": 1785159002,
+    "last": 1785182400
+  },
+  {
+    "session": "2026-07-27",
+    "symbol": "CHTR",
+    "rows": 3802,
+    "first": 1785159001,
+    "last": 1785182400
+  },
+  {
+    "session": "2026-07-27",
+    "symbol": "COGT",
+    "rows": 1556,
+    "first": 1785159001,
+    "last": 1785182400
+  },
+  {
+    "session": "2026-07-27",
+    "symbol": "SOXS",
+    "rows": 18387,
+    "first": 1785159001,
+    "last": 1785182400
+  },
+  {
+    "session": "2026-07-27",
+    "symbol": "SQQQ",
+    "rows": 17109,
+    "first": 1785159001,
+    "last": 1785182400
+  },
+  {
+    "session": "2026-07-27",
+    "symbol": "TSLQ",
+    "rows": 6173,
+    "first": 1785159001,
+    "last": 1785182400
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "AAL",
+    "rows": 13426,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "ACHR",
+    "rows": 6651,
+    "first": 1785245402,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "AMC",
+    "rows": 11674,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "APLD",
+    "rows": 14649,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "BBAI",
+    "rows": 6758,
+    "first": 1785245402,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "BMNR",
+    "rows": 11577,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "BMNU",
+    "rows": 2295,
+    "first": 1785245401,
+    "last": 1785268792
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "BOT",
+    "rows": 991,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "BRBR",
+    "rows": 2955,
+    "first": 1785245402,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "CBRS",
+    "rows": 5730,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "CEG",
+    "rows": 5520,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "CHTR",
+    "rows": 3295,
+    "first": 1785245402,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "CHYM",
+    "rows": 3627,
+    "first": 1785245402,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "CLSK",
+    "rows": 10704,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "CNC",
+    "rows": 7299,
+    "first": 1785245403,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "CONL",
+    "rows": 4565,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "DAL",
+    "rows": 6416,
+    "first": 1785245402,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "DGXX",
+    "rows": 2538,
+    "first": 1785245401,
+    "last": 1785268799
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "FFIV",
+    "rows": 3691,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "FIG",
+    "rows": 8923,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "FLUT",
+    "rows": 2544,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "FLY",
+    "rows": 3167,
+    "first": 1785245402,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "FSLY",
+    "rows": 3588,
+    "first": 1785245401,
+    "last": 1785268799
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "GDXJ",
+    "rows": 5425,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "HPQ",
+    "rows": 9633,
+    "first": 1785245402,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "IBM",
+    "rows": 10387,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "MARA",
+    "rows": 13715,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "MSTR",
+    "rows": 10554,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "MSTU",
+    "rows": 7135,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "NOW",
+    "rows": 16322,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "NVDL",
+    "rows": 7768,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "ONDS",
+    "rows": 13097,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "ORCL",
+    "rows": 15278,
+    "first": 1785245405,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "RIOT",
+    "rows": 9928,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "SMR",
+    "rows": 8836,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "SPCX",
+    "rows": 21119,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-28",
+    "symbol": "TSLQ",
+    "rows": 6189,
+    "first": 1785245401,
+    "last": 1785268800
+  },
+  {
+    "session": "2026-07-29",
+    "symbol": "AMP",
+    "rows": 1141,
+    "first": 1785331802,
+    "last": 1785355200
+  },
+  {
+    "session": "2026-07-29",
+    "symbol": "DAR",
+    "rows": 3030,
+    "first": 1785331801,
+    "last": 1785355200
+  },
+  {
+    "session": "2026-07-29",
+    "symbol": "FIG",
+    "rows": 10169,
+    "first": 1785331802,
+    "last": 1785355200
+  },
+  {
+    "session": "2026-07-29",
+    "symbol": "GLW",
+    "rows": 15133,
+    "first": 1785331801,
+    "last": 1785355200
+  },
+  {
+    "session": "2026-07-29",
+    "symbol": "SKHY",
+    "rows": 19983,
+    "first": 1785331801,
+    "last": 1785355200
+  },
+  {
+    "session": "2026-07-29",
+    "symbol": "SOXS",
+    "rows": 20306,
+    "first": 1785331801,
+    "last": 1785355200
+  },
+  {
+    "session": "2026-07-29",
+    "symbol": "TSLQ",
+    "rows": 6030,
+    "first": 1785331801,
+    "last": 1785355200
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "ACHR",
+    "rows": 7944,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "AEIS",
+    "rows": 2439,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "AKAM",
+    "rows": 2537,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "ALAB",
+    "rows": 5724,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "ALHC",
+    "rows": 2899,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "ATI",
+    "rows": 1998,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "AXTI",
+    "rows": 10335,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "BLDR",
+    "rows": 3911,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "BRBR",
+    "rows": 2437,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "BTDR",
+    "rows": 8292,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "CAR",
+    "rows": 593,
+    "first": 1785418202,
+    "last": 1785441599
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "CIEN",
+    "rows": 4826,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "COHR",
+    "rows": 9212,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "COHU",
+    "rows": 2328,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "CORT",
+    "rows": 3298,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "CRWV",
+    "rows": 17025,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "CYTK",
+    "rows": 1703,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "DDOG",
+    "rows": 4483,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "DGXX",
+    "rows": 2117,
+    "first": 1785418202,
+    "last": 1785441598
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "DNTH",
+    "rows": 1110,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "DXYZ",
+    "rows": 1842,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "EL",
+    "rows": 2193,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "EME",
+    "rows": 2127,
+    "first": 1785418253,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "ENPH",
+    "rows": 4109,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "EROC",
+    "rows": 1983,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "FIX",
+    "rows": 5545,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "FLEX",
+    "rows": 6305,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "FORM",
+    "rows": 2815,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "FROG",
+    "rows": 3069,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "FSLY",
+    "rows": 2765,
+    "first": 1785418202,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "FTAI",
+    "rows": 6843,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "GLW",
+    "rows": 13076,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "MKSI",
+    "rows": 3733,
+    "first": 1785418201,
+    "last": 1785441598
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "NET",
+    "rows": 2960,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "NVDL",
+    "rows": 8158,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "ONDS",
+    "rows": 12563,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "SMR",
+    "rows": 10567,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "SMTC",
+    "rows": 2535,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "TSLL",
+    "rows": 13170,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-30",
+    "symbol": "TTMI",
+    "rows": 3634,
+    "first": 1785418201,
+    "last": 1785441600
+  },
+  {
+    "session": "2026-07-31",
+    "symbol": "ALHC",
+    "rows": 8436,
+    "first": 1785504602,
+    "last": 1785528000
+  },
+  {
+    "session": "2026-07-31",
+    "symbol": "BLDR",
+    "rows": 2928,
+    "first": 1785504675,
+    "last": 1785528000
+  },
+  {
+    "session": "2026-07-31",
+    "symbol": "MSFT",
+    "rows": 21884,
+    "first": 1785504601,
+    "last": 1785528000
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ACHR",
+    "rows": 8237,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ACLS",
+    "rows": 568,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "AEHR",
+    "rows": 2939,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ALAB",
+    "rows": 4716,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "AMAT",
+    "rows": 9996,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "AMBQ",
+    "rows": 762,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "AMD",
+    "rows": 16260,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "AMDL",
+    "rows": 3432,
+    "first": 1785763801,
+    "last": 1785787195
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "AMKR",
+    "rows": 5572,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "AOSL",
+    "rows": 562,
+    "first": 1785763802,
+    "last": 1785787198
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "APLD",
+    "rows": 12690,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ARM",
+    "rows": 6028,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ARWR",
+    "rows": 1661,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ASX",
+    "rows": 8959,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "AVAV",
+    "rows": 1440,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "BBAI",
+    "rows": 9391,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "BFLY",
+    "rows": 7998,
+    "first": 1785763802,
+    "last": 1785787198
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "BMNR",
+    "rows": 10234,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "BMNU",
+    "rows": 1408,
+    "first": 1785763801,
+    "last": 1785787199
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "BOT",
+    "rows": 638,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "BTDR",
+    "rows": 5829,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "BTSG",
+    "rows": 4392,
+    "first": 1785763802,
+    "last": 1785787199
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "CCJ",
+    "rows": 3577,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "CELC",
+    "rows": 854,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "CLSK",
+    "rows": 9513,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "COGT",
+    "rows": 1655,
+    "first": 1785763803,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "COHU",
+    "rows": 1549,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "COIN",
+    "rows": 8768,
+    "first": 1785763801,
+    "last": 1785787199
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "CONL",
+    "rows": 5769,
+    "first": 1785763801,
+    "last": 1785787198
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "CORZ",
+    "rows": 9138,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "CRCL",
+    "rows": 10422,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "CRDO",
+    "rows": 5271,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "CRML",
+    "rows": 4577,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "CRSP",
+    "rows": 1541,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "DELL",
+    "rows": 6426,
+    "first": 1785763803,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "DGXX",
+    "rows": 1971,
+    "first": 1785763801,
+    "last": 1785787198
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "DNTH",
+    "rows": 940,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "DRAM",
+    "rows": 17509,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ELVN",
+    "rows": 2575,
+    "first": 1785763802,
+    "last": 1785787199
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "EME",
+    "rows": 1266,
+    "first": 1785763801,
+    "last": 1785787198
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ENPH",
+    "rows": 4068,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ENTG",
+    "rows": 3225,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "EOSE",
+    "rows": 13248,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "EROC",
+    "rows": 1199,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ETN",
+    "rows": 6040,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "FCEL",
+    "rows": 7033,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "FIX",
+    "rows": 3890,
+    "first": 1785763807,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "FLY",
+    "rows": 3652,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "FORM",
+    "rows": 1933,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "FPS",
+    "rows": 5708,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "HPE",
+    "rows": 11033,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "KLAC",
+    "rows": 18150,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "LRCX",
+    "rows": 8612,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "MARA",
+    "rows": 10835,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "MP",
+    "rows": 5858,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "MRNA",
+    "rows": 4002,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "MRVL",
+    "rows": 13854,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "MSTR",
+    "rows": 10820,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "MSTU",
+    "rows": 6403,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "MU",
+    "rows": 22427,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "MUU",
+    "rows": 15862,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "OKLO",
+    "rows": 8188,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "ONDS",
+    "rows": 14152,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "QBTS",
+    "rows": 13113,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "RIOT",
+    "rows": 9996,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "SKHY",
+    "rows": 16121,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "SMCI",
+    "rows": 14168,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "SMR",
+    "rows": 13541,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "SMTC",
+    "rows": 2153,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "SNDK",
+    "rows": 18919,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "SNXX",
+    "rows": 17602,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "SOXL",
+    "rows": 20653,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "STX",
+    "rows": 12317,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "TER",
+    "rows": 5629,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "TSLL",
+    "rows": 14287,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "TTMI",
+    "rows": 2310,
+    "first": 1785763802,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "VRT",
+    "rows": 13239,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-03",
+    "symbol": "WDC",
+    "rows": 13599,
+    "first": 1785763801,
+    "last": 1785787200
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "AAOI",
+    "rows": 12147,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "ALAB",
+    "rows": 7474,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "AMDL",
+    "rows": 5861,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "APLD",
+    "rows": 12552,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "ARM",
+    "rows": 9790,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "AVAV",
+    "rows": 1959,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "AXTI",
+    "rows": 11135,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "BAND",
+    "rows": 934,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "BE",
+    "rows": 12256,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "BFLY",
+    "rows": 6020,
+    "first": 1785850202,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "CDW",
+    "rows": 2159,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "CHTR",
+    "rows": 2312,
+    "first": 1785850202,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "CVNA",
+    "rows": 8896,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "DELL",
+    "rows": 8191,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "DUOL",
+    "rows": 1977,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "DVA",
+    "rows": 1993,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "DXYZ",
+    "rows": 1254,
+    "first": 1785850202,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "ELVN",
+    "rows": 1818,
+    "first": 1785850202,
+    "last": 1785873597
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "FCEL",
+    "rows": 6043,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "FIG",
+    "rows": 10456,
+    "first": 1785850202,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "FSLY",
+    "rows": 5029,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "IREN",
+    "rows": 16623,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "MPC",
+    "rows": 2748,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "NET",
+    "rows": 4775,
+    "first": 1785850202,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "ORCL",
+    "rows": 17348,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "PLTR",
+    "rows": 23159,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "RDDT",
+    "rows": 6010,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "SMCI",
+    "rows": 17448,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "SNXX",
+    "rows": 16824,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-04",
+    "symbol": "TTMI",
+    "rows": 4185,
+    "first": 1785850201,
+    "last": 1785873600
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "AGQ",
+    "rows": 3106,
+    "first": 1785936601,
+    "last": 1785959998
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "ALHC",
+    "rows": 3890,
+    "first": 1785936602,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "APP",
+    "rows": 13030,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "ASTS",
+    "rows": 8407,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "AXTI",
+    "rows": 9311,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "BLDR",
+    "rows": 1755,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "BMNR",
+    "rows": 11292,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "BMNU",
+    "rows": 2470,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "CDE",
+    "rows": 12475,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "CRCL",
+    "rows": 10149,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "CVS",
+    "rows": 10028,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "ENPH",
+    "rows": 4970,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "EOSE",
+    "rows": 11258,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "FORM",
+    "rows": 1666,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "MSTU",
+    "rows": 8152,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "SOXS",
+    "rows": 17499,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-05",
+    "symbol": "VRT",
+    "rows": 8507,
+    "first": 1785936601,
+    "last": 1785960000
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "ADEA",
+    "rows": 823,
+    "first": 1786023002,
+    "last": 1786046398
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "AEVA",
+    "rows": 5752,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "ALAB",
+    "rows": 5676,
+    "first": 1786023002,
+    "last": 1786046399
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "AMBA",
+    "rows": 1580,
+    "first": 1786023001,
+    "last": 1786046399
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "AMDL",
+    "rows": 3958,
+    "first": 1786023001,
+    "last": 1786046399
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "AMPX",
+    "rows": 6302,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "APPS",
+    "rows": 5110,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "ASTS",
+    "rows": 9767,
+    "first": 1786023001,
+    "last": 1786046399
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "AVAV",
+    "rows": 1415,
+    "first": 1786023001,
+    "last": 1786046397
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "AXTI",
+    "rows": 8806,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "BBAI",
+    "rows": 5388,
+    "first": 1786023002,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "BFLY",
+    "rows": 3216,
+    "first": 1786023101,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "BTDR",
+    "rows": 5537,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "CBRS",
+    "rows": 3439,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "CLF",
+    "rows": 7443,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "CLSK",
+    "rows": 9152,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "COHU",
+    "rows": 710,
+    "first": 1786023002,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "COKE",
+    "rows": 1479,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "CORZ",
+    "rows": 5548,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "CRWV",
+    "rows": 11686,
+    "first": 1786023002,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "DELL",
+    "rows": 6276,
+    "first": 1786023002,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "ERAS",
+    "rows": 2048,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "FLY",
+    "rows": 3082,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "FROG",
+    "rows": 3091,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "HL",
+    "rows": 10670,
+    "first": 1786023002,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "IREN",
+    "rows": 16102,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "MARA",
+    "rows": 11823,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "MKSI",
+    "rows": 3544,
+    "first": 1786023002,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "MSTU",
+    "rows": 8790,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "NBIS",
+    "rows": 16490,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "RKLB",
+    "rows": 13049,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "SMCI",
+    "rows": 14206,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-06",
+    "symbol": "SPCX",
+    "rows": 22991,
+    "first": 1786023001,
+    "last": 1786046400
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "AEVA",
+    "rows": 2850,
+    "first": 1786109402,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "ALGN",
+    "rows": 860,
+    "first": 1786109402,
+    "last": 1786132796
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "AMBA",
+    "rows": 1780,
+    "first": 1786109401,
+    "last": 1786132797
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "APA",
+    "rows": 6303,
+    "first": 1786109402,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "BOT",
+    "rows": 657,
+    "first": 1786109402,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "CAR",
+    "rows": 389,
+    "first": 1786109402,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "CBRS",
+    "rows": 4798,
+    "first": 1786109402,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "CELH",
+    "rows": 14158,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "COIN",
+    "rows": 7463,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "CONL",
+    "rows": 6154,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "CRCL",
+    "rows": 8646,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "DKNG",
+    "rows": 11298,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "DOCU",
+    "rows": 3872,
+    "first": 1786109402,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "DUOL",
+    "rows": 1921,
+    "first": 1786109402,
+    "last": 1786132798
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "EPAM",
+    "rows": 1891,
+    "first": 1786109401,
+    "last": 1786132798
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "FIG",
+    "rows": 12234,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "FRVO",
+    "rows": 2597,
+    "first": 1786109402,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "FSLY",
+    "rows": 5702,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "HOOD",
+    "rows": 10505,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "MCK",
+    "rows": 2593,
+    "first": 1786109402,
+    "last": 1786132799
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "MP",
+    "rows": 9438,
+    "first": 1786109403,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "MSTR",
+    "rows": 16262,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "MSTU",
+    "rows": 9656,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "NET",
+    "rows": 7927,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "OKLO",
+    "rows": 12425,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "SOXS",
+    "rows": 17624,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "SQQQ",
+    "rows": 14796,
+    "first": 1786109401,
+    "last": 1786132800
+  },
+  {
+    "session": "2026-08-07",
+    "symbol": "TSLL",
+    "rows": 13235,
+    "first": 1786109401,
+    "last": 1786132799
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "AGQ",
+    "rows": 4096,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "AMDL",
+    "rows": 2375,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "ANET",
+    "rows": 5421,
+    "first": 1786368602,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "AXON",
+    "rows": 2743,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "BW",
+    "rows": 2681,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "CBRS",
+    "rows": 4755,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "DELL",
+    "rows": 6286,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "DXYZ",
+    "rows": 1194,
+    "first": 1786368602,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "FIG",
+    "rows": 11536,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "FLEX",
+    "rows": 2988,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "MSTU",
+    "rows": 8322,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "NET",
+    "rows": 6872,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "SKHY",
+    "rows": 12146,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "SNXX",
+    "rows": 13056,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "SOXS",
+    "rows": 14889,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-10",
+    "symbol": "STX",
+    "rows": 12366,
+    "first": 1786368601,
+    "last": 1786392000
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "ACHR",
+    "rows": 15658,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "AEHR",
+    "rows": 3564,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "AEIS",
+    "rows": 1484,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "AEVA",
+    "rows": 1655,
+    "first": 1786455001,
+    "last": 1786478397
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "AMBA",
+    "rows": 969,
+    "first": 1786455002,
+    "last": 1786478397
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "BMNU",
+    "rows": 2010,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "BOT",
+    "rows": 571,
+    "first": 1786455001,
+    "last": 1786478398
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "COHR",
+    "rows": 9192,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "CONL",
+    "rows": 3838,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "CRDO",
+    "rows": 2782,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "DASH",
+    "rows": 3721,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "DKS",
+    "rows": 1709,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "DUOL",
+    "rows": 996,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "EOSE",
+    "rows": 8897,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "FIG",
+    "rows": 9890,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "FLY",
+    "rows": 3127,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "FORM",
+    "rows": 1668,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "FSLY",
+    "rows": 5495,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "INTC",
+    "rows": 21653,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "INTU",
+    "rows": 5552,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "KLAC",
+    "rows": 15938,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "OKLO",
+    "rows": 9006,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "OKTA",
+    "rows": 2217,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "PATH",
+    "rows": 12603,
+    "first": 1786455010,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "RDDT",
+    "rows": 2981,
+    "first": 1786455030,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "SPOT",
+    "rows": 3499,
+    "first": 1786455002,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-11",
+    "symbol": "TSLL",
+    "rows": 10409,
+    "first": 1786455001,
+    "last": 1786478400
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "AKAM",
+    "rows": 3427,
+    "first": 1786541402,
+    "last": 1786564800
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "AMDL",
+    "rows": 2896,
+    "first": 1786541401,
+    "last": 1786564791
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "CBRL",
+    "rows": 1068,
+    "first": 1786541402,
+    "last": 1786564800
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "DGXX",
+    "rows": 2792,
+    "first": 1786541402,
+    "last": 1786564799
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "EROC",
+    "rows": 4621,
+    "first": 1786541401,
+    "last": 1786564800
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "FCEL",
+    "rows": 8640,
+    "first": 1786541401,
+    "last": 1786564800
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "FSLY",
+    "rows": 5250,
+    "first": 1786541402,
+    "last": 1786564800
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "NBIS",
+    "rows": 20026,
+    "first": 1786541401,
+    "last": 1786564800
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "RKLB",
+    "rows": 11566,
+    "first": 1786541401,
+    "last": 1786564800
+  },
+  {
+    "session": "2026-08-12",
+    "symbol": "SNXX",
+    "rows": 14667,
+    "first": 1786541401,
+    "last": 1786564800
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "AAOI",
+    "rows": 9063,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "ACHR",
+    "rows": 13273,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "AEHR",
+    "rows": 3451,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "AEVA",
+    "rows": 1766,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "AFRM",
+    "rows": 3573,
+    "first": 1786627802,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "AMDL",
+    "rows": 2657,
+    "first": 1786627801,
+    "last": 1786651199
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "BFLY",
+    "rows": 3886,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "BLDR",
+    "rows": 1675,
+    "first": 1786627801,
+    "last": 1786651199
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "BRBR",
+    "rows": 2050,
+    "first": 1786627802,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "CAVA",
+    "rows": 4403,
+    "first": 1786627802,
+    "last": 1786651199
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "CLS",
+    "rows": 5366,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "CLSK",
+    "rows": 9596,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "FIG",
+    "rows": 9750,
+    "first": 1786627807,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "IREN",
+    "rows": 19060,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "MRNA",
+    "rows": 4179,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "MSTU",
+    "rows": 7533,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "NBIS",
+    "rows": 18309,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "ONDS",
+    "rows": 17923,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "SMCI",
+    "rows": 21195,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-13",
+    "symbol": "TSLL",
+    "rows": 13385,
+    "first": 1786627801,
+    "last": 1786651200
+  },
+  {
+    "session": "2026-08-14",
+    "symbol": "AEVA",
+    "rows": 1767,
+    "first": 1786714201,
+    "last": 1786737598
+  },
+  {
+    "session": "2026-08-14",
+    "symbol": "AOSL",
+    "rows": 812,
+    "first": 1786714201,
+    "last": 1786737599
+  },
+  {
+    "session": "2026-08-14",
+    "symbol": "BW",
+    "rows": 4211,
+    "first": 1786714201,
+    "last": 1786737600
+  },
+  {
+    "session": "2026-08-14",
+    "symbol": "CELC",
+    "rows": 1567,
+    "first": 1786714201,
+    "last": 1786737600
+  },
+  {
+    "session": "2026-08-14",
+    "symbol": "DXYZ",
+    "rows": 2740,
+    "first": 1786714201,
+    "last": 1786737600
+  },
+  {
+    "session": "2026-08-14",
+    "symbol": "EROC",
+    "rows": 4120,
+    "first": 1786714201,
+    "last": 1786737597
+  },
+  {
+    "session": "2026-08-14",
+    "symbol": "NBIS",
+    "rows": 17073,
+    "first": 1786714201,
+    "last": 1786737600
+  },
+  {
+    "session": "2026-08-14",
+    "symbol": "SNDK",
+    "rows": 18398,
+    "first": 1786714201,
+    "last": 1786737600
+  },
+  {
+    "session": "2026-08-14",
+    "symbol": "SNXX",
+    "rows": 17623,
+    "first": 1786714201,
+    "last": 1786737600
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "AAOI",
+    "rows": 10023,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "BMNU",
+    "rows": 2802,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "CBRS",
+    "rows": 9090,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "CCJ",
+    "rows": 2485,
+    "first": 1786973402,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "CELH",
+    "rows": 8427,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "CIEN",
+    "rows": 5615,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "COKE",
+    "rows": 485,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "CONL",
+    "rows": 4240,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "DGXX",
+    "rows": 1970,
+    "first": 1786973402,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "EROC",
+    "rows": 4225,
+    "first": 1786973404,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "LITE",
+    "rows": 11475,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "MSTU",
+    "rows": 7011,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "MUU",
+    "rows": 14809,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-17",
+    "symbol": "NBIS",
+    "rows": 13380,
+    "first": 1786973401,
+    "last": 1786996800
+  },
+  {
+    "session": "2026-08-18",
+    "symbol": "BMNR",
+    "rows": 8476,
+    "first": 1787059801,
+    "last": 1787083200
+  },
+  {
+    "session": "2026-08-18",
+    "symbol": "BMNU",
+    "rows": 2338,
+    "first": 1787059801,
+    "last": 1787083196
+  },
+  {
+    "session": "2026-08-18",
+    "symbol": "CONL",
+    "rows": 4897,
+    "first": 1787059801,
+    "last": 1787083200
+  },
+  {
+    "session": "2026-08-18",
+    "symbol": "CRCL",
+    "rows": 6697,
+    "first": 1787059801,
+    "last": 1787083200
+  },
+  {
+    "session": "2026-08-18",
+    "symbol": "DUOL",
+    "rows": 1915,
+    "first": 1787059801,
+    "last": 1787083200
+  },
+  {
+    "session": "2026-08-18",
+    "symbol": "FRVO",
+    "rows": 4168,
+    "first": 1787059801,
+    "last": 1787083200
+  },
+  {
+    "session": "2026-08-18",
+    "symbol": "MSTR",
+    "rows": 11673,
+    "first": 1787059801,
+    "last": 1787083200
+  },
+  {
+    "session": "2026-08-18",
+    "symbol": "MSTU",
+    "rows": 7554,
+    "first": 1787059801,
+    "last": 1787083200
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "ACHR",
+    "rows": 8606,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "AGQ",
+    "rows": 4165,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "BMNU",
+    "rows": 4994,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "BTDR",
+    "rows": 9690,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "CIFR",
+    "rows": 14607,
+    "first": 1787146202,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "COIN",
+    "rows": 12401,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "CONL",
+    "rows": 8846,
+    "first": 1787146201,
+    "last": 1787169599
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "CORZ",
+    "rows": 6705,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "CRCL",
+    "rows": 12886,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "CRSP",
+    "rows": 3012,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "ENPH",
+    "rows": 2961,
+    "first": 1787146202,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "FCX",
+    "rows": 9635,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "FIG",
+    "rows": 8859,
+    "first": 1787146202,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "HL",
+    "rows": 14005,
+    "first": 1787146202,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "MARA",
+    "rows": 15008,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "RIOT",
+    "rows": 11215,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "TEAM",
+    "rows": 5813,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-19",
+    "symbol": "TSLL",
+    "rows": 13007,
+    "first": 1787146201,
+    "last": 1787169600
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "AAOI",
+    "rows": 9065,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "AXTI",
+    "rows": 7160,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "BABA",
+    "rows": 11257,
+    "first": 1787232602,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "BMNR",
+    "rows": 15891,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "BMNU",
+    "rows": 4374,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "COHU",
+    "rows": 961,
+    "first": 1787232602,
+    "last": 1787255995
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "CONL",
+    "rows": 7395,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "CRSP",
+    "rows": 2278,
+    "first": 1787232602,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "DE",
+    "rows": 5909,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "DXYZ",
+    "rows": 1996,
+    "first": 1787232602,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "FORM",
+    "rows": 857,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "LITE",
+    "rows": 10365,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "MARA",
+    "rows": 16608,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "MKSI",
+    "rows": 1131,
+    "first": 1787232602,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "RIOT",
+    "rows": 11548,
+    "first": 1787232602,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "SNDK",
+    "rows": 16030,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "SNXX",
+    "rows": 15647,
+    "first": 1787232601,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-20",
+    "symbol": "TTMI",
+    "rows": 2502,
+    "first": 1787232602,
+    "last": 1787256000
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "ACHR",
+    "rows": 8718,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "ACN",
+    "rows": 3919,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "APTV",
+    "rows": 2971,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "ARKG",
+    "rows": 6235,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "BFLY",
+    "rows": 3929,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "BMNU",
+    "rows": 4351,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "CELH",
+    "rows": 5391,
+    "first": 1787319001,
+    "last": 1787342399
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "COIN",
+    "rows": 12901,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "CONL",
+    "rows": 8960,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "CRML",
+    "rows": 8020,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "CRSP",
+    "rows": 2817,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "ERAS",
+    "rows": 2178,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "EROC",
+    "rows": 2562,
+    "first": 1787319002,
+    "last": 1787342397
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "FCEL",
+    "rows": 5924,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "FICO",
+    "rows": 3125,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "FLY",
+    "rows": 2360,
+    "first": 1787319002,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "FSLY",
+    "rows": 3816,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "MSTR",
+    "rows": 17485,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "MSTU",
+    "rows": 10722,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "SOXS",
+    "rows": 15054,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-21",
+    "symbol": "TSLL",
+    "rows": 16165,
+    "first": 1787319001,
+    "last": 1787342400
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "AAOI",
+    "rows": 11232,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "ACHR",
+    "rows": 8659,
+    "first": 1787578202,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "BE",
+    "rows": 12678,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "BTDR",
+    "rows": 7701,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "CHWY",
+    "rows": 4486,
+    "first": 1787578202,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "CLSK",
+    "rows": 9709,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "ELVN",
+    "rows": 714,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "MARA",
+    "rows": 15362,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "MSTU",
+    "rows": 8565,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "RDDT",
+    "rows": 3667,
+    "first": 1787578203,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "RIOT",
+    "rows": 8845,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "SMR",
+    "rows": 9715,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-24",
+    "symbol": "SNXX",
+    "rows": 16420,
+    "first": 1787578201,
+    "last": 1787601600
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "AAOI",
+    "rows": 6540,
+    "first": 1787664601,
+    "last": 1787687998
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "AG",
+    "rows": 5902,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "AMDL",
+    "rows": 2489,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "AMPX",
+    "rows": 3164,
+    "first": 1787664602,
+    "last": 1787687999
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "BFLY",
+    "rows": 3377,
+    "first": 1787664601,
+    "last": 1787687999
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "BTDR",
+    "rows": 5152,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "CLSK",
+    "rows": 9180,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "COIN",
+    "rows": 9136,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "CONL",
+    "rows": 6884,
+    "first": 1787664601,
+    "last": 1787687998
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "CORZ",
+    "rows": 5942,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "CRCL",
+    "rows": 11449,
+    "first": 1787664602,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "DAR",
+    "rows": 5152,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "FSLY",
+    "rows": 2424,
+    "first": 1787664602,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "HL",
+    "rows": 9448,
+    "first": 1787664602,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "IREN",
+    "rows": 15055,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "MSTR",
+    "rows": 15969,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "MSTU",
+    "rows": 4271,
+    "first": 1787664601,
+    "last": 1787687994
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "OKLO",
+    "rows": 10236,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "PDD",
+    "rows": 4742,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "RDDT",
+    "rows": 4424,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "RIOT",
+    "rows": 9554,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "SMR",
+    "rows": 11717,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "SNPS",
+    "rows": 3482,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "SOXS",
+    "rows": 14150,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-25",
+    "symbol": "SPCX",
+    "rows": 19496,
+    "first": 1787664601,
+    "last": 1787688000
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "AGX",
+    "rows": 841,
+    "first": 1787751001,
+    "last": 1787774400
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "CELC",
+    "rows": 695,
+    "first": 1787751002,
+    "last": 1787774400
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "CIFR",
+    "rows": 9889,
+    "first": 1787751001,
+    "last": 1787774400
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "DOCN",
+    "rows": 1226,
+    "first": 1787751002,
+    "last": 1787774397
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "DXYZ",
+    "rows": 890,
+    "first": 1787751002,
+    "last": 1787774399
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "ERAS",
+    "rows": 3551,
+    "first": 1787751002,
+    "last": 1787774400
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "EXTR",
+    "rows": 1056,
+    "first": 1787751002,
+    "last": 1787774400
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "FIX",
+    "rows": 3504,
+    "first": 1787751001,
+    "last": 1787774400
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "RVMD",
+    "rows": 3575,
+    "first": 1787751002,
+    "last": 1787774397
+  },
+  {
+    "session": "2026-08-26",
+    "symbol": "SOXS",
+    "rows": 15294,
+    "first": 1787751001,
+    "last": 1787774400
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "AKAM",
+    "rows": 2346,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "APLD",
+    "rows": 9507,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "BAND",
+    "rows": 814,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "BBAI",
+    "rows": 10237,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "BFLY",
+    "rows": 3708,
+    "first": 1787837530,
+    "last": 1787860797
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "BMNU",
+    "rows": 4057,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "CIFR",
+    "rows": 12040,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "CLSK",
+    "rows": 9617,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "CORZ",
+    "rows": 5955,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "CRCL",
+    "rows": 9974,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "CRWD",
+    "rows": 18829,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "DXYZ",
+    "rows": 1104,
+    "first": 1787837402,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "FRVO",
+    "rows": 3590,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "NET",
+    "rows": 4432,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "OKLO",
+    "rows": 7738,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "OKTA",
+    "rows": 11103,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "ONDS",
+    "rows": 14348,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "RIOT",
+    "rows": 10132,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-27",
+    "symbol": "SMR",
+    "rows": 10264,
+    "first": 1787837401,
+    "last": 1787860800
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "APP",
+    "rows": 10287,
+    "first": 1787923801,
+    "last": 1787947200
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "BITX",
+    "rows": 7100,
+    "first": 1787923801,
+    "last": 1787947198
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "COHR",
+    "rows": 10310,
+    "first": 1787923803,
+    "last": 1787947200
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "CRDO",
+    "rows": 3353,
+    "first": 1787923801,
+    "last": 1787947200
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "DXYZ",
+    "rows": 1453,
+    "first": 1787923802,
+    "last": 1787947199
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "SKHY",
+    "rows": 11345,
+    "first": 1787923801,
+    "last": 1787947200
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "SNDK",
+    "rows": 13603,
+    "first": 1787923801,
+    "last": 1787947200
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "SNXX",
+    "rows": 12995,
+    "first": 1787923801,
+    "last": 1787947200
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "SOXS",
+    "rows": 18037,
+    "first": 1787923801,
+    "last": 1787947200
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "SPCX",
+    "rows": 20109,
+    "first": 1787923801,
+    "last": 1787947200
+  },
+  {
+    "session": "2026-08-28",
+    "symbol": "WDC",
+    "rows": 8808,
+    "first": 1787923801,
+    "last": 1787947200
+  },
+  {
+    "session": "2026-08-31",
+    "symbol": "AEHR",
+    "rows": 2603,
+    "first": 1788183002,
+    "last": 1788206400
+  },
+  {
+    "session": "2026-08-31",
+    "symbol": "ALGN",
+    "rows": 809,
+    "first": 1788183002,
+    "last": 1788206400
+  },
+  {
+    "session": "2026-08-31",
+    "symbol": "BRBR",
+    "rows": 2186,
+    "first": 1788183001,
+    "last": 1788206397
+  },
+  {
+    "session": "2026-08-31",
+    "symbol": "CAR",
+    "rows": 668,
+    "first": 1788183002,
+    "last": 1788206400
+  },
+  {
+    "session": "2026-08-31",
+    "symbol": "CONL",
+    "rows": 5672,
+    "first": 1788183002,
+    "last": 1788206399
+  },
+  {
+    "session": "2026-08-31",
+    "symbol": "DKS",
+    "rows": 4091,
+    "first": 1788183001,
+    "last": 1788206400
+  },
+  {
+    "session": "2026-08-31",
+    "symbol": "FLUT",
+    "rows": 2143,
+    "first": 1788183001,
+    "last": 1788206397
+  },
+  {
+    "session": "2026-08-31",
+    "symbol": "MSTU",
+    "rows": 3500,
+    "first": 1788183001,
+    "last": 1788206400
+  },
+  {
+    "session": "2026-08-31",
+    "symbol": "MUU",
+    "rows": 9977,
+    "first": 1788183001,
+    "last": 1788206400
+  },
+  {
+    "session": "2026-09-01",
+    "symbol": "BE",
+    "rows": 9584,
+    "first": 1788269402,
+    "last": 1788292800
+  },
+  {
+    "session": "2026-09-01",
+    "symbol": "CRML",
+    "rows": 4019,
+    "first": 1788269401,
+    "last": 1788292800
+  },
+  {
+    "session": "2026-09-01",
+    "symbol": "FIG",
+    "rows": 8172,
+    "first": 1788269402,
+    "last": 1788292800
+  },
+  {
+    "session": "2026-09-01",
+    "symbol": "FRVO",
+    "rows": 13494,
+    "first": 1788269401,
+    "last": 1788292800
+  },
+  {
+    "session": "2026-09-01",
+    "symbol": "MP",
+    "rows": 3855,
+    "first": 1788269402,
+    "last": 1788292800
+  },
+  {
+    "session": "2026-09-01",
+    "symbol": "MUU",
+    "rows": 11076,
+    "first": 1788269401,
+    "last": 1788292799
+  },
+  {
+    "session": "2026-09-01",
+    "symbol": "SMR",
+    "rows": 7441,
+    "first": 1788269402,
+    "last": 1788292800
+  },
+  {
+    "session": "2026-09-01",
+    "symbol": "SMTC",
+    "rows": 2839,
+    "first": 1788269401,
+    "last": 1788292800
+  },
+  {
+    "session": "2026-09-01",
+    "symbol": "WDAY",
+    "rows": 3990,
+    "first": 1788269401,
+    "last": 1788292800
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "AEHR",
+    "rows": 3894,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "AEVA",
+    "rows": 1345,
+    "first": 1788355802,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "AFRM",
+    "rows": 5758,
+    "first": 1788355802,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "ALNY",
+    "rows": 4485,
+    "first": 1788355802,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "AMBQ",
+    "rows": 603,
+    "first": 1788355802,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "AOSL",
+    "rows": 571,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "ASTS",
+    "rows": 10329,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "AVAV",
+    "rows": 1879,
+    "first": 1788355801,
+    "last": 1788379199
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "BE",
+    "rows": 8040,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "BW",
+    "rows": 2624,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "CAVA",
+    "rows": 2358,
+    "first": 1788355802,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "CBRS",
+    "rows": 6450,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "CCJ",
+    "rows": 2716,
+    "first": 1788355802,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "CEG",
+    "rows": 4682,
+    "first": 1788355802,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "CRML",
+    "rows": 3355,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "DXYZ",
+    "rows": 1233,
+    "first": 1788355802,
+    "last": 1788379199
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "EOSE",
+    "rows": 12921,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "FLY",
+    "rows": 1876,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "FORM",
+    "rows": 1689,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "IONQ",
+    "rows": 10112,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "MARA",
+    "rows": 9014,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "MDT",
+    "rows": 7030,
+    "first": 1788355802,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "OKLO",
+    "rows": 6216,
+    "first": 1788355801,
+    "last": 1788379199
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "RKLB",
+    "rows": 11767,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-02",
+    "symbol": "SOXL",
+    "rows": 16515,
+    "first": 1788355801,
+    "last": 1788379200
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "ACMR",
+    "rows": 846,
+    "first": 1788442202,
+    "last": 1788465599
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "AMDL",
+    "rows": 1935,
+    "first": 1788442201,
+    "last": 1788465598
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "AMKR",
+    "rows": 3760,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "APLD",
+    "rows": 10372,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "AXTI",
+    "rows": 5849,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "BMNR",
+    "rows": 17726,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "BMNU",
+    "rows": 4422,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "COKE",
+    "rows": 357,
+    "first": 1788442202,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "CONL",
+    "rows": 7305,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "CORT",
+    "rows": 520,
+    "first": 1788442202,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "CORZ",
+    "rows": 7443,
+    "first": 1788442202,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "CRCL",
+    "rows": 13245,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "CRML",
+    "rows": 2960,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "DELL",
+    "rows": 15415,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "DGXX",
+    "rows": 1176,
+    "first": 1788442202,
+    "last": 1788465597
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "DOCN",
+    "rows": 1909,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "EIX",
+    "rows": 6050,
+    "first": 1788442202,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "EROC",
+    "rows": 2710,
+    "first": 1788442202,
+    "last": 1788465599
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "FORM",
+    "rows": 1122,
+    "first": 1788442202,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "LRCX",
+    "rows": 6039,
+    "first": 1788442202,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "MKSI",
+    "rows": 1396,
+    "first": 1788442202,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "MSTU",
+    "rows": 6182,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "PLTR",
+    "rows": 16538,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "RIOT",
+    "rows": 11393,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "SOXL",
+    "rows": 18327,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "STX",
+    "rows": 7796,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "TEAM",
+    "rows": 4326,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "TQQQ",
+    "rows": 16324,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "TSLL",
+    "rows": 15592,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-03",
+    "symbol": "WDC",
+    "rows": 9614,
+    "first": 1788442201,
+    "last": 1788465600
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "AEVA",
+    "rows": 1297,
+    "first": 1788528601,
+    "last": 1788551997
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "AGX",
+    "rows": 715,
+    "first": 1788528609,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "ALAB",
+    "rows": 5910,
+    "first": 1788528602,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "BOT",
+    "rows": 229,
+    "first": 1788528602,
+    "last": 1788551997
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "BTCZ",
+    "rows": 1182,
+    "first": 1788528601,
+    "last": 1788551997
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "CRDO",
+    "rows": 8542,
+    "first": 1788528601,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "DY",
+    "rows": 1910,
+    "first": 1788528601,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "EOSE",
+    "rows": 7513,
+    "first": 1788528601,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "FICO",
+    "rows": 7650,
+    "first": 1788528603,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "MSTU",
+    "rows": 3608,
+    "first": 1788528601,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "MUU",
+    "rows": 12235,
+    "first": 1788528601,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "SNDK",
+    "rows": 18104,
+    "first": 1788528601,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "SNXX",
+    "rows": 16278,
+    "first": 1788528601,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "TSLQ",
+    "rows": 4336,
+    "first": 1788528601,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-04",
+    "symbol": "TTMI",
+    "rows": 2544,
+    "first": 1788528602,
+    "last": 1788552000
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "AMBA",
+    "rows": 2565,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "AMDL",
+    "rows": 3703,
+    "first": 1788874201,
+    "last": 1788897599
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "AMPX",
+    "rows": 4047,
+    "first": 1788874202,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "ARM",
+    "rows": 5660,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "AXTI",
+    "rows": 9861,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "BE",
+    "rows": 15607,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "BMNU",
+    "rows": 2812,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "BTDR",
+    "rows": 6135,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "CIFR",
+    "rows": 14564,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "CLS",
+    "rows": 5926,
+    "first": 1788874204,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "CONL",
+    "rows": 4491,
+    "first": 1788874201,
+    "last": 1788897599
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "ENPH",
+    "rows": 5413,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "ERAS",
+    "rows": 2240,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "FRVO",
+    "rows": 5050,
+    "first": 1788874202,
+    "last": 1788897598
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "GLW",
+    "rows": 10577,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "INTC",
+    "rows": 22719,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "MP",
+    "rows": 5522,
+    "first": 1788874207,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "MSTU",
+    "rows": 3179,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "ONDS",
+    "rows": 11452,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "SKHY",
+    "rows": 14329,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "SMTC",
+    "rows": 5459,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "SNOW",
+    "rows": 5327,
+    "first": 1788874210,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "STX",
+    "rows": 10953,
+    "first": 1788874201,
+    "last": 1788897600
+  },
+  {
+    "session": "2026-09-08",
+    "symbol": "TSLL",
+    "rows": 13560,
+    "first": 1788874201,
+    "last": 1788897599
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "AEHR",
+    "rows": 4451,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "AEVA",
+    "rows": 1525,
+    "first": 1788960601,
+    "last": 1788983998
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "AGQ",
+    "rows": 3625,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "ALAB",
+    "rows": 3766,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "AMC",
+    "rows": 9186,
+    "first": 1788960602,
+    "last": 1788983999
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "BLDR",
+    "rows": 2029,
+    "first": 1788960602,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "BOIL",
+    "rows": 4676,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "COHU",
+    "rows": 1443,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "CRDO",
+    "rows": 6926,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "EFX",
+    "rows": 1777,
+    "first": 1788960601,
+    "last": 1788983998
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "ERAS",
+    "rows": 1978,
+    "first": 1788960602,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "EXPE",
+    "rows": 2989,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "FSLY",
+    "rows": 5835,
+    "first": 1788960602,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "SMCI",
+    "rows": 13506,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "SNDK",
+    "rows": 14820,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "SNXX",
+    "rows": 14495,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "SOXL",
+    "rows": 16525,
+    "first": 1788960601,
+    "last": 1788984000
+  },
+  {
+    "session": "2026-09-09",
+    "symbol": "STX",
+    "rows": 9444,
+    "first": 1788960601,
+    "last": 1788984000
+  }
+]

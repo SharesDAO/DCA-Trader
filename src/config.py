@@ -33,6 +33,7 @@ class Config:
             config_path = project_root / "config" / "config.yaml"
         
         self.config_path = Path(config_path)
+        self.project_root = Path(__file__).resolve().parent.parent
         self.chains_path = self.config_path.parent / "chains.yaml"
         
         # Load configurations
@@ -44,6 +45,8 @@ class Config:
         """Load main configuration from config.yaml."""
         with open(self.config_path, 'r') as f:
             config = yaml.safe_load(f)
+        self.raw = config
+        self.strategy_name = config.get('strategy', 'dca')
         
         # Blockchain
         self.blockchain = config.get('blockchain', 'arbitrum')
@@ -88,6 +91,14 @@ class Config:
         
         # Liquidation mode
         self.liquid_mode = config.get('liquid_mode', False)
+        self.fgv = config.get('fgv', {})
+        self.market_data = config.get('market_data', {})
+        self.session_time = config.get('time', {})
+        self.execution = config.get('execution', {})
+        self.stop_policy = config.get('stop_policy', {})
+        self.paper = config.get('paper', {})
+        self.database_path = self.project_root / config.get('database_path', 'data/wallets.db')
+        self.paper_database_path = self.project_root / self.paper.get('database_path', 'data/fgv-paper.db')
         
     def _load_chains(self):
         """Load chain configurations from chains.yaml."""
@@ -193,6 +204,13 @@ class Config:
             List of validation error messages (empty if valid)
         """
         errors = []
+        if self.strategy_name not in ('dca', 'fgv'):
+            errors.append('strategy must be dca or fgv')
+        if self.strategy_name == 'fgv':
+            from fgv_trader.settings import validate_settings
+            errors.extend(validate_settings(self))
+            if self.dry_run:
+                return errors
         
         # Check required fields
         if not self.vault_private_key:
@@ -230,14 +248,19 @@ class Config:
         Args:
             stocks: Dict of pool info from SharesDAO API (ticker -> pool_info)
         """
-        # Apply filter if specified
+        # Preserve the client's complete pool catalog for existing-position
+        # settlement, but permit new allocations only to mint mode 3 pools.
+        eligible = {ticker: pool for ticker, pool in stocks.items()
+                    if pool.get('mint_mode') in (3, '3')}
+        logger.info("Mint mode filter: %s eligible pools out of %s", len(eligible), len(stocks))
+        # Apply the optional ticker allowlist after the mint mode restriction.
         if self.stock_filter:
-            filtered_stocks = {k: v for k, v in stocks.items() if k in self.stock_filter}
+            filtered_stocks = {k: v for k, v in eligible.items() if k in self.stock_filter}
             self.trading_stocks = filtered_stocks
             logger.info(f"Filtered pools: {len(filtered_stocks)} out of {len(stocks)}")
         else:
-            self.trading_stocks = stocks
-            logger.info(f"Using all available pools: {len(stocks)}")
+            self.trading_stocks = eligible
+            logger.info(f"Using all mint mode 3 pools: {len(eligible)}")
     
     def get_pool_by_ticker(self, ticker: str) -> Dict[str, Any]:
         """

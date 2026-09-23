@@ -2,6 +2,8 @@
 
 # Blockchain selection: ethereum, arbitrum, base, bnb
 blockchain: arbitrum
+strategy: fgv
+database_path: data/wallets.db
 
 # SharesDAO Pool addresses (auto-populated from API, optional fallback)
 pool:
@@ -16,22 +18,13 @@ trading:
   order_expiry_days: 1     # Order expiration in days
   min_profit: 0.3            # Minimum profit percentage to sell
   max_hold_days: 2        # Maximum holding days before selling
-  max_loss_traders: 2      # Max consecutive losses before abandoning wallet
+  max_loss_traders: 2      # Cumulative closed losing trades before wallet retirement (FGV too)
   sell_slippage: 0.001     # Sell order slippage (0.001 = 0.1% below market price for LIMIT orders)
   
 # Trading pools (each pool represents a stock/ticker)
-# Leave empty to use all available pools from SharesDAO, or specify tickers to filter
-stocks:
-  # Example: Specify pool tickers you want to trade (optional)
-  - TQQQ
-  - GOOGL
-  - TSLA
-  - NVDA
-  - COIN
-  - IAU
-  - IBIT
-  - ETHE
-  # Or leave as empty list [] to trade all available pools
+# Only mint_mode 3 pools are eligible for new trades.
+# Leave empty to use all eligible pools from SharesDAO, or specify tickers to filter
+stocks: []
 
 # Monitoring settings
 monitoring:
@@ -43,3 +36,84 @@ dry_run: false
 
 # Liquidation mode (true = no new buy orders, all sell orders are MARKET type, collect empty wallets)
 liquid_mode: false
+
+# Parameters copied from ../fgv-trader/config/config.yaml.
+fgv:
+  initial_usdc_per_wallet: 50  # Base order size; confidence sizing applies 0.5x–1.5x
+  prefund_wallets: true  # New ready wallets hold the maximum allocation; reused wallets are never topped up
+  confidence_sizing:
+    enabled: true
+    min_multiplier: 0.50  # Applied at min_win_probability
+    max_multiplier: 1.50  # Applied at max_probability; values between are linear
+    max_probability: 0.95  # The probability estimator's hard upper bound
+  allocation_pct_per_trade: 0.50  # Retained source setting; not used by fixed-wallet funding
+  risk_pct_per_trade: 0.01       # Retained source setting; not used by fixed-wallet funding
+  max_concurrent_positions: 10
+  one_trade_per_symbol_per_day: true
+  min_order_usdc: 5
+  reserve_usdc: 5
+  risk_reward_ratio: 1.5
+  signal_c2_min_range_pct: 1.0
+  signal_c3_min_close_position: 0.0
+  signal_c2_min_relative_volume: 0.0
+  early_entry_filter_minutes: 60
+  early_entry_stop_risk_min_pct: 1.0
+  early_entry_stop_risk_max_pct: 2.0
+  min_win_probability: 0.45
+  win_probability_features: [stop_risk_pct, entry_minutes, signal_minutes]
+  win_probability_model_path: config/win_probability_model.json
+
+time:
+  exchange_timezone: America/New_York
+  local_timezone: America/Los_Angeles
+  market_open: '09:30'
+  first_15m_complete: '09:45'
+  scan_end: '11:30'
+  force_exit: '15:45'
+  market_close: '16:00'
+
+market_data:
+  provider: backpack
+  base_url: https://api.backpack.exchange
+  websocket_url: wss://ws.backpack.exchange
+  bar_poll_interval_seconds: 30
+  candle_workers: 8
+  max_candle_snapshot_age_seconds: 120
+  price_poll_interval_seconds: 5
+  max_price_age_seconds: 30
+  request_timeout_seconds: 10
+  # Optional full-session candle fallback; install alpaca-py and set its keys.
+  alpaca_fallback: false
+  symbol_map: {}  # Example: BRK.B: BRK.B.US_USDC
+
+stop_policy:
+  exits_enabled: false  # Disables ALL stop exits, including emergency and legacy stops
+  enabled: true  # Frozen for new entries only; pre-upgrade positions retain original stops
+  confirmation_observations: 2
+  confirmation_seconds: 5  # Distinct fresh quotes, at least this far apart
+  confirmation_max_gap_seconds: 15
+  atr_period: 14  # Simple mean of completed 5-minute true ranges, same session
+  atr_min_periods: 3  # Use available history early in the session
+  atr_multiplier: 0.25
+  max_buffer_r: 0.25  # R = original trigger minus original stop
+  emergency_extra_r: 0.25  # Immediate exit below buffered stop minus 0.25 R
+  record_observations: true  # Reference-price samples through 15:45, including after sale
+
+execution:
+  entry_max_age_seconds: 300  # Retry unsigned entries for up to 5 minutes, capped by the session cutoff
+  losing_time_exit_max_sessions: 3  # Carry a normal losing 15:45 exit for at most this many additional weekdays
+  allow_entry_below_original_stop: true  # Permit deeper pullbacks only above the frozen emergency floor
+  max_entry_above_trigger_r: 0.05  # Hard ceiling above the signal; the reward/risk gate may be tighter
+  min_entry_reward_risk: 1.4
+  max_execution_quote_age_seconds: 5
+  stuck_order_alert_seconds: 60
+  chain_settlement_detection: true  # Alchemy delivery monitoring; API fallback for final/ambiguous buy completion
+  reconcile_interval_seconds: 5
+  confirmations: 2
+  transaction_history_limit: 1000
+  # Every FGV entry/exit is MARKET, including liquidation and retries.
+
+paper:
+  database_path: data/fgv-paper.db
+  initial_usdc: 1000
+  slippage_bps: 5

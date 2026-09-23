@@ -8,6 +8,11 @@ import logging
 import signal
 import sys
 import argparse
+from pathlib import Path
+
+# Support both documented `python -m src.main` and `python src/main.py`.
+if __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 # Import modules
 from config import load_config
@@ -195,35 +200,6 @@ class TradingBot:
                     logger.info(f"Initial buy order placed: {order_id}")
                 else:
                     logger.error(f"Failed to place initial buy order for {wallet['address']}")
-            
-            # Then check if we can create a new wallet
-            if not self.wallet_manager.can_create_new_wallet():
-                logger.debug("Insufficient vault balance to create new wallet")
-                return
-            
-            # Create wallet (will be saved with 'pending_funding' status if funding fails)
-            wallet = self.wallet_manager.create_new_wallet(dry_run=self.config.dry_run)
-            
-            if wallet:
-                logger.info(f"New wallet created and funded: {wallet['address']}")
-                # Invalidate cache after creating new wallet
-                self.invalidate_portfolio_cache()
-                
-                # Place initial buy order (skip in liquidation mode)
-                if not self.config.liquid_mode:
-                    order_id = self.trade_manager.place_buy_order(
-                        wallet_address=wallet['address'],
-                        stock_ticker=wallet['assigned_stock'],
-                        usdc_amount=wallet['balance'],
-                        dry_run=self.config.dry_run
-                    )
-                    
-                    if order_id:
-                        logger.info(f"Initial buy order placed: {order_id}")
-                    else:
-                        logger.error(f"Failed to place initial buy order for {wallet['address']}")
-                else:
-                    logger.debug("Liquidation mode enabled - skipping buy order placement")
             
         except Exception as e:
             logger.error(f"Error creating new wallet: {e}", exc_info=True)
@@ -574,9 +550,16 @@ def main():
     parser.add_argument('--delete-unfunded', action='store_true',
                        help='Delete all unfunded (pending_funding) wallets from the database')
     parser.add_argument('--dry-run', action='store_true',
-                       help='Simulate liquidation/sweep without executing')
+                       help='Use the FGV paper ledger or simulate legacy maintenance')
+    parser.add_argument('--once', action='store_true', help='Run one FGV cycle')
+    parser.add_argument('--status', action='store_true', help='Show persisted FGV state')
+    parser.add_argument('--resume-entries', action='store_true', help='Clear FGV liquidation mode after all positions settle')
     
     args = parser.parse_args()
+    config = load_config(args.config)
+    if config.strategy_name == 'fgv':
+        from fgv_trader.runtime import run_cli
+        sys.exit(asyncio.run(run_cli(args, config)))
     
     if args.check_config:
         sys.exit(check_config_command(args))

@@ -45,6 +45,11 @@ logs/*.log.*
 # Database
 *.db
 *.db-journal
+*.db.lock
+*.sqlite3
+*.sqlite3-journal
+.pytest_cache/
+reports/backtests/**/historical.sqlite3*
 
 # OS
 .DS_Store

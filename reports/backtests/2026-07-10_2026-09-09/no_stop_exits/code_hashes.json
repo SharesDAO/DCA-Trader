@@ -1,0 +1,5 @@
+{
+  "scripts/backtest_current.py": "6e61dd79346baf4ed7188441e72ca9f686bb0e6063fb7e9f2a58cdfce851cff5",
+  "scripts/backtest_data.py": "d6f4dee68fe0070b3dc6cb21d36bb4441196d0027a53347d329e0447cfcb9d5b",
+  "scripts/report_no_stop.py": "cba4ad38fc201f09cf913e7a616e5edaafa48b3010d13180b052de49767590df"
+}

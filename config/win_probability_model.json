@@ -1,0 +1,37 @@
+{
+  "bias": -0.2342071667345225,
+  "feature_names": [
+    "stop_risk_pct",
+    "entry_minutes",
+    "signal_minutes"
+  ],
+  "l2": 0.001,
+  "learning_rate": 0.05,
+  "model_version": 2,
+  "normalization": {
+    "entry_minutes": {
+      "count": 1646,
+      "m2": 2956380.9993924634,
+      "mean": 79.00060753341447
+    },
+    "signal_minutes": {
+      "count": 1646,
+      "m2": 1029101.6403402195,
+      "mean": 53.63912515188333
+    },
+    "stop_risk_pct": {
+      "count": 1646,
+      "m2": 2375.3722635262484,
+      "mean": 2.051399288937892
+    }
+  },
+  "total": {
+    "total": 1646,
+    "wins": 727
+  },
+  "weights": {
+    "entry_minutes": 0.07174921740890419,
+    "signal_minutes": -0.12123267340025164,
+    "stop_risk_pct": 0.06591872749322755
+  }
+}

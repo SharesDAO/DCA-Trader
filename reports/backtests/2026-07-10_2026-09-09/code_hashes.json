@@ -1,0 +1,8 @@
+{
+  "scripts/backtest_data.py": "d6f4dee68fe0070b3dc6cb21d36bb4441196d0027a53347d329e0447cfcb9d5b",
+  "scripts/backtest_current.py": "81a613d02967717f846009dab0c6bdc5ed6ff64e5cf070e1c97fea35959d96b3",
+  "src/fgv_trader/strategy/fgv.py": "6577eba56dc80e92e811bb79d6cb8a13e13487bfef4eb89bad1a516846b43b5a",
+  "src/fgv_trader/stops.py": "b97d7073e51cd08905877a4f0a361f74987b54950234cf574321749a1d133bc8",
+  "src/fgv_trader/entry_safety.py": "bccb1f5a2620504c12b78d720fd2c8c528a259a6095c794cec09d321f915d146",
+  "src/fgv_trader/prediction.py": "b814c048a11ced81cfc0705212980d9f47cf51dc211eb59b5aa005ed79d56550"
+}

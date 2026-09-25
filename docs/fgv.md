@@ -49,10 +49,24 @@ symbol trade per session. Candidates are sorted by descending probability,
 then symbol. Stops and targets retain the original signal anchors after fills;
 they are not recalculated from execution prices.
 
+Every stock that reaches the probability model is recorded in
+`fgv_candidate_evaluations`, including predictions below the entry threshold and
+candidates that cannot be selected because position capacity is full. Each row
+contains the complete calculated feature vector, probability, model version,
+qualification flag, and selection flag. Repeated polling updates one row per
+symbol/session/entry-minute instead of storing duplicate five-second samples.
+Telemetry write failure is logged but does not block trading. For example:
+
+```sql
+SELECT session, symbol, entry_minute, probability, qualified, selected, features
+FROM fgv_candidate_evaluations
+ORDER BY session DESC, entry_minute, probability DESC;
+```
+
 Sizing intentionally differs from the source: `fgv.initial_usdc_per_wallet`
 (currently 50) is the base order size. Confidence sizing linearly maps the
 configured minimum qualified probability (currently 45%) to the configured
-minimum multiplier (0.50x) and `confidence_sizing.max_probability` (currently
+minimum multiplier (0.80x) and `confidence_sizing.max_probability` (currently
 the model's 95% hard ceiling) to the configured maximum multiplier (1.50x), then
 rounds to the nearest whole USDC. No dollar allocation is hardcoded. With
 `fgv.prefund_wallets: true`, the bot
@@ -82,10 +96,11 @@ unready wallet. Set `prefund_wallets: false` to restore on-demand funding.
 Execution safety intentionally extends the original strategy: unsigned entries
 expire 300 seconds after selection or at the session cutoff, whichever comes
 first. With `execution.allow_entry_below_original_stop: true`, buy quotes may be
-below the original stop but must remain strictly above the frozen emergency risk
-floor and meet `execution.min_entry_reward_risk` (currently 1.4). If stop-policy
-history is unusable, the emergency floor falls back to the original stop, so no
-deeper entry is allowed. Quotes older than
+below the original stop. With `execution.allow_entry_at_or_below_risk_stop: true`,
+quotes at or below the frozen emergency risk floor are also admitted. The normal
+`execution.min_entry_reward_risk` check (currently 1.4) continues above that
+floor, but is skipped at/below it because the stop distance is not positive.
+Quotes older than
 `execution.max_execution_quote_age_seconds` (default 5) are rejected. These checks
 also run after funding. `ENTRY_ABOVE_TRIGGER` keeps the same unsigned buy pending
 and retries a fresh quote on the normal reconciliation cycle (configured 5 seconds,
@@ -165,12 +180,14 @@ Backpack event timestamps identify fresh messages, not necessarily new underlyin
 exchange trades. Moves between samples can be missed.
 
 When `execution.allow_entry_below_original_stop` is enabled, the frozen emergency
-stop replaces the original stop as the entry-price floor. The execution
-reward-to-risk gate also measures risk to that emergency floor. This can admit a
-deeper pullback that the original setup considered broken. Because stop exits may
-be disabled, the floor is an entry check, not a post-entry loss bound. Wallet
-spending is unchanged, but deeper entries can increase realized losses. The
-parameters are starting settings, not demonstrated improvements.
+stop replaces the original stop as the normal entry-price floor. The execution
+reward-to-risk gate also measures risk to that emergency floor. The additional
+`allow_entry_at_or_below_risk_stop` override removes the floor for deeper quotes
+and skips the stop-based ratio only for those quotes. This can admit a pullback
+that the original setup considered broken. With stop exits disabled, there is no
+loss bound at that reference level. Wallet spending is unchanged, but deeper
+entries can increase realized losses. The parameters are starting settings, not
+demonstrated improvements.
 
 ### Stop comparison data
 

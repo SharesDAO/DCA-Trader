@@ -100,6 +100,8 @@ def validate_settings(config):
             raise ValueError('reconcile interval must be positive')
         if not isinstance(config.execution.get('allow_entry_below_original_stop', False), bool):
             raise ValueError('allow_entry_below_original_stop must be boolean')
+        if not isinstance(config.execution.get('allow_entry_at_or_below_risk_stop', False), bool):
+            raise ValueError('allow_entry_at_or_below_risk_stop must be boolean')
         entry_buffer = config.execution.get('max_entry_above_trigger_r', 0)
         if (isinstance(entry_buffer, bool) or not math.isfinite(float(entry_buffer))
                 or not 0 <= float(entry_buffer) <= 0.25):

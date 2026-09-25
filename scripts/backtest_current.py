@@ -222,6 +222,8 @@ class Replay:
                    max_entry_above_trigger_r=entry_buffer_r,
                    allow_entry_below_original_stop=self.inputs['execution'].get(
                        'allow_entry_below_original_stop', False),
+                   allow_entry_at_or_below_risk_stop=self.inputs['execution'].get(
+                       'allow_entry_at_or_below_risk_stop', False),
                    expires_at=min(now.timestamp()+self.inputs['execution']['entry_max_age_seconds'],cutoff.timestamp()),
                    min_reward_risk=self.inputs['execution']['min_entry_reward_risk'])
         self.active[symbol]=dict(symbol=symbol,session=now.date().isoformat(),state='BUY_PENDING',

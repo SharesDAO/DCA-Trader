@@ -278,15 +278,17 @@ def test_disabling_stops_preserves_already_pending_exit(system):
     assert [o['id'] for o in store.operations() if o['kind']=='sell']==[sell['id']]
 
 
-def test_below_stop_entry_rejects_when_at_fallback_emergency_floor(system):
+def test_configured_entry_at_fallback_emergency_floor_is_filled(system):
     engine, store, broker, market = system
+    engine.stop_settings['exits_enabled'] = False
     market.price = 97
     assert engine.strategy.should_market_buy(signal(), market.price)
     engine.enter(signal(), 100, .6)
     asyncio.run(cycles(engine, count=12))
-    assert store.trades()[0]['state'] == 'FAILED'
+    assert store.trades()[0]['state'] == 'OPEN'
     buy = next(o for o in store.operations() if o['kind'] == 'buy')
-    assert buy['error'] == 'ENTRY_AT_OR_BELOW_STOP'
+    assert buy['state'] == 'SETTLED'
+    assert buy['entry_guard']['allow_entry_at_or_below_risk_stop'] is True
 
 
 def test_enabled_policy_allows_entry_below_original_stop(system):
@@ -418,25 +420,30 @@ def test_ranked_candidates_use_original_sizing_and_pending_slot_limit(system):
         engine.bars[symbol_name] = [Candle(symbol_name, start + timedelta(minutes=i * 5), 100, 101, 98, 100)
                                     for i in range(12)]
     engine.strategy.build_signal = lambda symbol_name, *args: signal(symbol_name)
-    engine.model.predict = MagicMock(side_effect=[.6, .8, .7])
+    engine.model.predict = MagicMock(side_effect=[.4, .8, .7])
     engine.scan(now)
     trades = store.trades()
     assert [t['symbol'] for t in trades] == ['BBB', 'CCC']
     assert [t['amount'] for t in trades] == [100, 100]
     assert all(t['state'] == 'FUNDING' for t in trades)
     assert store.has_traded('BBB', '2026-09-04')
+    evaluations = store.candidate_evaluations('2026-09-04')
+    assert [row['symbol'] for row in evaluations] == ['AAA', 'BBB', 'CCC']
+    assert [row['qualified'] for row in evaluations] == [False, True, True]
+    assert [row['selected'] for row in evaluations] == [False, True, True]
+    assert evaluations[0]['features']['entry_minutes'] == 60
 
 
 def test_linear_confidence_sizing_and_prefund_maximum(system):
     engine, *_ = system
     engine.config.fgv['confidence_sizing']['enabled'] = True
     expected = [
-        (.45, 50),
-        (.50, 60),
-        (.60, 80),
-        (.70, 100),
-        (.80, 120),
-        (.90, 140),
+        (.45, 80),
+        (.50, 87),
+        (.60, 101),
+        (.70, 115),
+        (.80, 129),
+        (.90, 143),
         (.95, 150),
         (1.00, 150),
     ]
@@ -464,15 +471,15 @@ def test_confidence_sized_buy_spends_exact_allocation_and_keeps_remainder(system
     asyncio.run(cycles(engine, count=4))
     assert engine.enter(signal(), 999, .45)
     trade = next(t for t in store.trades(active=True))
-    assert trade['amount'] == 50
-    assert trade['desired_amount'] == 50
-    assert trade['allocation_multiplier'] == .5
+    assert trade['amount'] == 80
+    assert trade['desired_amount'] == 80
+    assert trade['allocation_multiplier'] == .8
     buy = next(o for o in store.operations(trade['id']) if o['kind'] == 'buy')
     assert buy['spend_exact'] is True
     asyncio.run(cycles(engine))
     trade = next(t for t in store.trades() if not t.get('maintenance'))
-    assert trade['cost'] == 50
-    assert broker.balance(trade['wallet'], 'USDC') == 100
+    assert trade['cost'] == 80
+    assert broker.balance(trade['wallet'], 'USDC') == 70
 
 
 def test_liquidation_cancels_unsigned_entry_and_never_buys(system):

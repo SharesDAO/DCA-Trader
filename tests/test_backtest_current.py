@@ -151,6 +151,7 @@ def test_no_stop_exits_ignores_emergency_but_preserves_other_exits(replay,exit_k
 
 def test_no_stop_exits_does_not_change_entry_filters(replay):
     replay.a.stop_exits_enabled=False
+    replay.inputs['execution']['allow_entry_at_or_below_risk_stop']=False
     now=setup(replay)+timedelta(seconds=15)
     replay.progress(now,quotes(now,97))
     assert replay.rejections['ENTRY_AT_OR_BELOW_STOP']==1

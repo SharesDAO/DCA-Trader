@@ -102,6 +102,9 @@ def simulate(symbol, day, bars, tape, spy_bars, inputs, assumptions):
             "allow_entry_below_original_stop": inputs["execution"].get(
                 "allow_entry_below_original_stop", False
             ),
+            "allow_entry_at_or_below_risk_stop": inputs["execution"].get(
+                "allow_entry_at_or_below_risk_stop", False
+            ),
             "expires_at": min(
                 now.timestamp() + inputs["execution"]["entry_max_age_seconds"],
                 (opening + timedelta(minutes=120)).timestamp(),
@@ -323,6 +326,9 @@ def main():
         inputs["execution"],
         entry_max_age_seconds=config.execution["entry_max_age_seconds"],
         allow_entry_below_original_stop=config.execution.get("allow_entry_below_original_stop", False),
+        allow_entry_at_or_below_risk_stop=config.execution.get(
+            "allow_entry_at_or_below_risk_stop", False
+        ),
         max_entry_above_trigger_r=config.execution.get("max_entry_above_trigger_r", 0),
         min_entry_reward_risk=config.execution["min_entry_reward_risk"],
     )

@@ -39,11 +39,11 @@ liquid_mode: false
 
 # Parameters copied from ../fgv-trader/config/config.yaml.
 fgv:
-  initial_usdc_per_wallet: 50  # Base order size; confidence sizing applies 0.5x–1.5x
+  initial_usdc_per_wallet: 50  # Base order size; confidence sizing applies 0.8x–1.5x
   prefund_wallets: true  # New ready wallets hold the maximum allocation; reused wallets are never topped up
   confidence_sizing:
     enabled: true
-    min_multiplier: 0.50  # Applied at min_win_probability
+    min_multiplier: 0.80  # Applied at min_win_probability: $40 with the current $50 base
     max_multiplier: 1.50  # Applied at max_probability; values between are linear
     max_probability: 0.95  # The probability estimator's hard upper bound
   allocation_pct_per_trade: 0.50  # Retained source setting; not used by fixed-wallet funding
@@ -103,6 +103,7 @@ execution:
   entry_max_age_seconds: 300  # Retry unsigned entries for up to 5 minutes, capped by the session cutoff
   losing_time_exit_max_sessions: 3  # Carry a normal losing 15:45 exit for at most this many additional weekdays
   allow_entry_below_original_stop: true  # Permit deeper pullbacks only above the frozen emergency floor
+  allow_entry_at_or_below_risk_stop: true  # Include deep entries at/below that floor; stop-based reward/risk is undefined there
   max_entry_above_trigger_r: 0.05  # Hard ceiling above the signal; the reward/risk gate may be tighter
   min_entry_reward_risk: 1.4
   max_execution_quote_age_seconds: 5

@@ -28,6 +28,23 @@ def test_configured_deep_pullback_uses_emergency_floor():
     assert rejection(op,97,now=90)=='ENTRY_AT_OR_BELOW_STOP'
 
 
+@pytest.mark.parametrize('price', [97, 96])
+def test_explicit_override_allows_entry_at_or_below_emergency_floor(price):
+    op=guarded()
+    op['entry_guard'].update(allow_entry_below_original_stop=True,
+                             allow_entry_at_or_below_risk_stop=True,
+                             risk_stop=97,min_reward_risk=100)
+    assert rejection(op,price,now=90) is None
+
+
+def test_deep_entry_override_does_not_bypass_reward_risk_above_floor():
+    op=guarded()
+    op['entry_guard'].update(allow_entry_below_original_stop=True,
+                             allow_entry_at_or_below_risk_stop=True,
+                             risk_stop=97,min_reward_risk=100)
+    assert rejection(op,97.1,now=90)=='ENTRY_REWARD_RISK_TOO_LOW'
+
+
 def test_above_trigger_buffer_and_reward_risk_both_apply():
     op=guarded()
     op['entry_guard'].update(risk_stop=97,reward_risk_stop=98,

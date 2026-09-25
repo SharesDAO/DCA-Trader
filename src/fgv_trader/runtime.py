@@ -272,6 +272,8 @@ class Engine:
         prices = self.market.get_latest_prices(self.symbols)
         entry_minutes = int((now - session.market_open).total_seconds() // 60)
         actionable = []
+        evaluations = []
+        model_version = self.model.to_dict()['model_version']
         for symbol in self.symbols:
             if self.store.has_traded(symbol, session_date):
                 reasons['already_traded'] += 1
@@ -304,10 +306,22 @@ class Engine:
             features = self.features.calculate(signal, first, history, self.bars.get('SPY', []),
                                                entry_minutes, session.market_open)
             probability = self.model.predict(features)
-            if probability >= self.config.fgv['min_win_probability']:
+            qualified = probability >= self.config.fgv['min_win_probability']
+            evaluations.append(dict(session=session_date, symbol=symbol, entry_minute=entry_minutes,
+                                    observed_at=now.isoformat(), probability=probability,
+                                    qualified=qualified, selected=False, model_version=model_version,
+                                    features=features.values))
+            if qualified:
                 actionable.append((probability, symbol, signal))
             else:
                 reasons['low_probability'] += 1
+        evaluations_recorded = False
+        if evaluations:
+            try:
+                self.store.record_candidate_evaluations(evaluations)
+                evaluations_recorded = True
+            except Exception:
+                log.exception('FGV candidate telemetry persistence failed; trading continues')
         reasons['qualified'] = len(actionable)
         actionable.sort(key=lambda item: (-item[0], item[1]))
         for probability, symbol, signal in actionable:
@@ -324,6 +338,11 @@ class Engine:
                 continue
             if not self.enter(signal, amount, probability, now=now):
                 reasons['prefunded_wallet_unavailable'] += 1
+            elif evaluations_recorded:
+                try:
+                    self.store.mark_candidate_selected(session_date, symbol, entry_minutes)
+                except Exception:
+                    log.exception('FGV candidate selection telemetry update failed; trading continues')
         self.scan_diagnostics = {'status': 'scanned', 'snapshot_age_seconds': round((now - asof).total_seconds(), 1), **reasons}
 
     def enter(self, signal, amount, probability, now=None):
@@ -378,6 +397,8 @@ class Engine:
                      max_entry_above_trigger_r=entry_buffer_r,
                      allow_entry_below_original_stop=self.config.execution.get(
                          'allow_entry_below_original_stop', False),
+                     allow_entry_at_or_below_risk_stop=self.config.execution.get(
+                         'allow_entry_at_or_below_risk_stop', False),
                      min_reward_risk=self.config.execution.get('min_entry_reward_risk', 1.5))
         state = 'BUY_PENDING' if self.prefund_enabled else 'FUNDING'
         trade = dict(id=uuid4().hex, symbol=signal.symbol, session=signal.session_date,

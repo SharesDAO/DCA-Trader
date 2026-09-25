@@ -125,6 +125,12 @@ def test_invalid_entry_floor_config_rejected():
     assert validate_settings(config)
 
 
+def test_invalid_at_or_below_risk_stop_config_rejected():
+    config = Config()
+    config.execution['allow_entry_at_or_below_risk_stop'] = 'yes'
+    assert validate_settings(config)
+
+
 @pytest.mark.parametrize('value', [True, -0.01, 0.26, float('nan')])
 def test_invalid_above_trigger_buffer_rejected(value):
     config = Config()

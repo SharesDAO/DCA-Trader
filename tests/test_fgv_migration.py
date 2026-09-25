@@ -18,6 +18,25 @@ def test_migration_preserves_existing_wallets_and_positions(tmp_path):
     assert db.get_position('existing')['quantity'] == 1
 
 
+def test_candidate_evaluations_are_durable_and_deduplicated_per_minute(tmp_path):
+    db = Database(str(tmp_path / 'candidates.db'), PAPER_KEY)
+    store = Store(db, 'arbitrum')
+    record = dict(session='2026-09-23', symbol='AAA', entry_minute=60,
+                  observed_at='2026-09-23T10:30:01-04:00', probability=.44,
+                  qualified=False, selected=False, model_version=2,
+                  features={'entry_minutes': 60, 'stop_risk_pct': 1.2})
+    store.record_candidate_evaluations([record])
+    store.record_candidate_evaluations([dict(record, observed_at='2026-09-23T10:30:30-04:00',
+                                             probability=.46, qualified=True)])
+    store.mark_candidate_selected('2026-09-23', 'AAA', 60)
+    rows = store.candidate_evaluations('2026-09-23')
+    assert len(rows) == 1
+    assert rows[0]['probability'] == .46
+    assert rows[0]['qualified'] is True
+    assert rows[0]['selected'] is True
+    assert rows[0]['features']['stop_risk_pct'] == 1.2
+
+
 def test_legacy_callbacks_ignore_fgv_positions_and_orders(tmp_path):
     db = Database(str(tmp_path / 'old.db'), PAPER_KEY)
     db.create_wallet('fgv-wallet', 'paper-key', 'arbitrum', 'TSLA')

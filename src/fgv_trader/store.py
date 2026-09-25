@@ -35,6 +35,16 @@ class Store:
                     price REAL NOT NULL, payload TEXT NOT NULL,
                     PRIMARY KEY(trade_id, quote_at)
                 );
+                CREATE TABLE IF NOT EXISTS fgv_candidate_evaluations (
+                    chain TEXT NOT NULL, session TEXT NOT NULL, symbol TEXT NOT NULL,
+                    entry_minute INTEGER NOT NULL, observed_at TEXT NOT NULL,
+                    probability REAL NOT NULL, qualified INTEGER NOT NULL,
+                    selected INTEGER NOT NULL DEFAULT 0, model_version INTEGER NOT NULL,
+                    features TEXT NOT NULL,
+                    PRIMARY KEY(chain, session, symbol, entry_minute)
+                );
+                CREATE INDEX IF NOT EXISTS idx_fgv_candidates_session
+                    ON fgv_candidate_evaluations(chain, session, probability DESC);
             ''')
 
     def trades(self, active=False):
@@ -63,6 +73,48 @@ class Store:
                                provisional=trade.get('cost_provisional', False))
                 conn.execute('INSERT OR IGNORE INTO fgv_stop_observations VALUES(?,?,?,?,?)',
                              (trade['id'], now.isoformat(), quote_at, price, json.dumps(payload)))
+
+    def record_candidate_evaluations(self, records):
+        """Persist one model-stage observation per symbol and entry minute."""
+        if not records:
+            return
+        with self.db.get_connection() as conn:
+            conn.executemany('''INSERT INTO fgv_candidate_evaluations
+                (chain,session,symbol,entry_minute,observed_at,probability,qualified,selected,model_version,features)
+                VALUES(?,?,?,?,?,?,?,?,?,?)
+                ON CONFLICT(chain,session,symbol,entry_minute) DO UPDATE SET
+                    observed_at=excluded.observed_at,
+                    probability=excluded.probability,
+                    qualified=excluded.qualified,
+                    selected=MAX(fgv_candidate_evaluations.selected,excluded.selected),
+                    model_version=excluded.model_version,
+                    features=excluded.features''', [
+                (self.chain, record['session'], record['symbol'], record['entry_minute'],
+                 record['observed_at'], record['probability'], int(record['qualified']),
+                 int(record.get('selected', False)), record['model_version'],
+                 json.dumps(record['features'], sort_keys=True))
+                for record in records
+            ])
+
+    def mark_candidate_selected(self, session, symbol, entry_minute):
+        with self.db.get_connection() as conn:
+            conn.execute('''UPDATE fgv_candidate_evaluations SET selected=1
+                            WHERE chain=? AND session=? AND symbol=? AND entry_minute=?''',
+                         (self.chain, session, symbol, entry_minute))
+
+    def candidate_evaluations(self, session=None):
+        query = '''SELECT session,symbol,entry_minute,observed_at,probability,qualified,
+                          selected,model_version,features
+                   FROM fgv_candidate_evaluations WHERE chain=?'''
+        params = [self.chain]
+        if session is not None:
+            query += ' AND session=?'
+            params.append(session)
+        query += ' ORDER BY session,entry_minute,symbol'
+        with self.db.get_connection() as conn:
+            rows = conn.execute(query, params).fetchall()
+        return [dict(dict(row), features=json.loads(row['features']),
+                     qualified=bool(row['qualified']), selected=bool(row['selected'])) for row in rows]
 
     def record_closed_losses(self, limit):
         """Count each closed FGV trade once, including pre-upgrade history."""

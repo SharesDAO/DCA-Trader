@@ -51,6 +51,7 @@ def live(tmp_path):
     chain.get_nonce.return_value = 0
     chain.build_eip1559_transaction.side_effect = lambda tx: dict(tx, gasPrice=1000000000)
     chain.w3.eth.estimate_gas.return_value = 100000
+    chain.w3.eth.get_balance.return_value = 10 ** 18
     chain.w3.eth.get_transaction_receipt.side_effect = TransactionNotFound('not mined')
     api = MagicMock()
     api.get_stock_price.return_value = 100
@@ -58,8 +59,40 @@ def live(tmp_path):
     return LiveBroker(store, chain, config, api), store, trade
 
 
+def test_insufficient_native_balance_does_not_allocate_nonce(live):
+    broker, store, trade = live
+    broker.w3.eth.get_balance.return_value = 0
+    op = store.new_operation(trade, 'sell', 1, expiry_days=1)
+    result = broker.step(op)
+    assert result['state'] == 'PREPARED'
+    assert result['error'] == 'INSUFFICIENT_NATIVE_GAS'
+    broker.blockchain.get_nonce.assert_not_called()
+    broker.w3.eth.send_raw_transaction.assert_not_called()
+
+
+def test_broadcast_insufficient_funds_persisted_and_backed_off(live, monkeypatch):
+    broker, store, trade = live
+    op = store.new_operation(trade, 'sell', 1, expiry_days=1)
+    broker.w3.eth.send_raw_transaction.side_effect = ValueError('insufficient funds for gas * price + value')
+    broker.step(op)
+    saved = store.operations()[0]
+    assert saved['broadcast_error_code'] == 'INSUFFICIENT_NATIVE_GAS'
+    assert 'insufficient funds' in saved['broadcast_error']
+    original_raw = saved['raw_tx']
+    broker.step(saved)
+    assert broker.w3.eth.send_raw_transaction.call_count == 1
+    monkeypatch.setattr('fgv_trader.execution.time.time', lambda: saved['broadcast_retry_at'] + 1)
+    broker.w3.eth.send_raw_transaction.side_effect = None
+    broker.step(saved)
+    assert broker.w3.eth.send_raw_transaction.call_count == 2
+    recovered = store.operations()[0]
+    assert recovered['raw_tx'] == original_raw
+    assert recovered['broadcast_error'] is None
+    broker.blockchain.get_nonce.assert_called_once()
+
+
 @pytest.mark.parametrize('side,amount', [('buy', 100), ('sell', 1)])
-def test_market_memo_and_signed_journal_precede_broadcast(live, side, amount):
+def test_market_memo_and_signed_journal_precede_broadcast(live, side, amount, monkeypatch):
     broker, store, trade = live
     op = store.new_operation(trade, side, amount, expiry_days=1)
     broadcasts = []
@@ -75,6 +108,7 @@ def test_market_memo_and_signed_journal_precede_broadcast(live, side, amount):
     broker.w3.eth.send_raw_transaction.side_effect = broadcast
     broker.step(op)
     recovered = store.operations()[0]
+    monkeypatch.setattr('fgv_trader.execution.time.time', lambda: recovered['broadcast_retry_at'] + 1)
     broker.step(recovered)
     assert len(broadcasts) == 2
     assert broadcasts[0] == broadcasts[1]

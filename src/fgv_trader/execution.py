@@ -167,6 +167,12 @@ class LiveBroker:
             error = 'EXECUTION_QUOTE_STALE'
         if error:
             return dict(state='FAILED', error=error)
+        maximum_native_cost = tx['value'] + tx['gas'] * tx.get('maxFeePerGas', tx.get('gasPrice', 0))
+        native_balance = self.balance_units(source, 'NATIVE')
+        if native_balance < maximum_native_cost:
+            return dict(state='PREPARED', error='INSUFFICIENT_NATIVE_GAS',
+                        required_native_units=maximum_native_cost,
+                        available_native_units=native_balance)
         tx['nonce'] = self.blockchain.get_nonce(source)
         if kind == 'buy':
             error = rejection(op, price)
@@ -256,13 +262,24 @@ class LiveBroker:
                 return result
         receipt = self._confirmed_receipt(op['tx_hash'])
         if receipt is None:
+            if time.time() < op.get('broadcast_retry_at', 0):
+                return dict(state='SIGNED')
             # Resubmitting the same signed bytes is idempotent, including after restart.
             try:
                 op.setdefault('broadcast_attempt_at', datetime.now(timezone.utc).isoformat())
                 self.w3.eth.send_raw_transaction(bytes.fromhex(op['raw_tx'].removeprefix('0x')))
                 op.setdefault('broadcast_acknowledged_at', datetime.now(timezone.utc).isoformat())
-            except Exception:
-                log.warning('Broadcast uncertain for %s; retaining signed transaction', op['id'])
+                op.update(broadcast_error=None, broadcast_error_code=None, broadcast_retry_at=0)
+            except Exception as exc:
+                message = str(exc)
+                code = ('INSUFFICIENT_NATIVE_GAS' if 'insufficient funds' in message.lower()
+                        else 'BROADCAST_ERROR')
+                op.update(broadcast_error=message, broadcast_error_code=code,
+                          broadcast_error_at=datetime.now(timezone.utc).isoformat(),
+                          broadcast_retry_at=time.time() + (60 if code == 'INSUFFICIENT_NATIVE_GAS' else 5))
+                log.warning('Broadcast rejected/unconfirmed for %s (%s): %s; retaining identical signed transaction',
+                            op['id'], code, message)
+            self.store.save_operation(op)
             return dict(state='SIGNED', **{k: op[k] for k in ('tx_hash', 'raw_tx', 'transferred')})
         fee_native = receipt['gasUsed'] * receipt.get('effectiveGasPrice', 0) / 1e18
         if not op.get('submission_at'):

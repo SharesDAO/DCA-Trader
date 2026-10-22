@@ -208,3 +208,51 @@ def test_daily_performance_without_balance_still_reports_profit_bars():
     ], None, None, 'America/New_York', today=date(2026, 9, 4))
     assert result['points'][0]['daily_profit'] == 1.25
     assert result['points'][0]['total_value'] is None
+
+
+def test_live_share_valuation_respects_splits_and_cash_cost_basis():
+    trades = [dict(symbol='MSTU', state='OPEN', quantity=10, cost=40, realized_pnl=3),
+              dict(symbol='SPLIT', state='SELL_PENDING', quantity=1, cost=40)]
+    result = value_trades(trades, {'MSTU':44, 'SPLIT':4}, {'MSTU':'10', 'SPLIT':'0.1'})
+    assert result['unrealized_pnl'] == 4
+    assert trades[0]['quantity'] == 10 and trades[0]['actual_shares'] == 1
+    assert trades[0]['market_value'] == 44 and trades[0]['unrealized_pnl'] == 4
+    assert trades[0]['cost'] == 40 and trades[0]['realized_pnl'] == 3
+    assert trades[1]['actual_shares'] == 10 and trades[1]['market_value'] == 40
+
+
+def test_ratio_update_changes_shares_without_mutating_persisted_token_quantity():
+    trade = dict(symbol='MSTU', state='OPEN', quantity=10, cost=40)
+    assert value_trades([trade], {'MSTU':4}, {'MSTU':'1'})['unrealized_pnl'] == 0
+    assert value_trades([trade], {'MSTU':40}, {'MSTU':'10'})['unrealized_pnl'] == 0
+    assert trade['quantity'] == 10 and trade['actual_shares'] == 1
+
+
+def test_unavailable_conversion_suppresses_totals_instead_of_inflating_profit():
+    for conversion in [{}, {'MSTU':'0'}, {'MSTU':'NaN'}]:
+        trade = dict(symbol='MSTU', state='OPEN', quantity=10, cost=40)
+        value = value_trades([trade], {'MSTU':40}, conversion)
+        assert value['unrealized_pnl'] is None and value['missing_symbols'] == ['MSTU']
+        assert trade['market_value'] is None and trade['actual_shares'] is None
+
+
+def test_live_snapshot_fetches_pool_ratio_but_paper_does_not(tmp_path, monkeypatch):
+    from unittest.mock import AsyncMock
+    cfg = SimpleNamespace(database_path=tmp_path/'live.db', paper_database_path=tmp_path/'paper.db',
+                          blockchain='arbitrum', project_root=tmp_path, vault_address=None, session_time={}, dry_run=False)
+    monkeypatch.setattr('dashboard.read_database', lambda *args: dict(database_available=True,
+        trades=[dict(symbol='MSTU', state='OPEN', quantity=10, cost=40)], orders=[], wallets=[], paper_balances=[], execution=[]))
+    async def unavailable(*args, **kwargs):
+        raise OSError('No systemd in test')
+    monkeypatch.setattr('dashboard.asyncio.create_subprocess_exec', unavailable)
+    dashboard = Dashboard(cfg)
+    dashboard.reference_prices = AsyncMock(return_value=({'MSTU':40}, 'now'))
+    dashboard.pool_ratios = AsyncMock(return_value={'MSTU':'10'})
+    live = asyncio.run(dashboard.snapshot('live'))
+    assert live['trades'][0]['market_value'] == 40
+    assert live['valuation']['unrealized_pnl'] == 0
+    dashboard.pool_ratios.assert_awaited_once()
+    paper = asyncio.run(dashboard.snapshot('paper'))
+    assert paper['trades'][0]['actual_shares'] == 10
+    assert paper['trades'][0]['market_value'] == 400
+    dashboard.pool_ratios.assert_awaited_once()

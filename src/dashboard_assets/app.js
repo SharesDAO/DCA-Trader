@@ -25,6 +25,7 @@ function rows(id, records, columns){
 }
 function badge(text){const span=document.createElement('span');span.className='badge';span.textContent=text;return span;}
 function gain(value){const span=document.createElement('span');span.className=value==null?'':value<0?'negative':'positive';span.textContent=money(value);return span;}
+function shareQuantity(t){const span=document.createElement('span');span.textContent=qty(t.actual_shares);if(t.quantity_units==='tokens'&&t.token_per_share!=null)span.title=`${qty(t.token_quantity)} wallet tokens ÷ ${t.token_per_share} tokens/share. Stock splits change the shares represented by each token.`;return span;}
 function stopLevel(t,enabled=true){const div=document.createElement('div');if(!enabled){div.textContent='Disabled';return div;}div.textContent=money(t.stop_loss);if(t.emergency_stop!=null){const small=document.createElement('small');small.textContent=t.stop_observations+' observations · emergency '+money(t.emergency_stop);div.append(small);}return div;}
 const svg=(name,attrs={})=>{const node=document.createElementNS('http://www.w3.org/2000/svg',name);for(const [key,value] of Object.entries(attrs))node.setAttribute(key,value);return node;};
 function renderChart(performance){
@@ -68,7 +69,7 @@ function render(data){
   $('service').textContent=`${data.mode.toUpperCase()} · ${data.chain} · ${data.mode==='live'?'Service: '+data.service:'Simulation ledger'}`;
   $('updated').textContent='Snapshot: '+date(data.generated_at);
   $('warning').textContent=[...data.warnings,...(!data.database_available?['No database exists for this mode yet.']:[])].join(' ');
-  rows('positions',active,[t=>t.symbol,t=>badge(t.state),t=>qty(t.quantity),t=>money(t.cost),t=>money(t.reference_price),t=>money(t.market_value),t=>gain(t.unrealized_pnl),t=>t.unrealized_pct==null?'—':t.unrealized_pct.toFixed(2)+'%',t=>stopLevel(t,data.stop_exits_enabled!==false),t=>money(t.take_profit),t=>t.session]);
+  rows('positions',active,[t=>t.symbol,t=>badge(t.state),t=>shareQuantity(t),t=>money(t.cost),t=>money(t.reference_price),t=>money(t.market_value),t=>gain(t.unrealized_pnl),t=>t.unrealized_pct==null?'—':t.unrealized_pct.toFixed(2)+'%',t=>stopLevel(t,data.stop_exits_enabled!==false),t=>money(t.take_profit),t=>t.session]);
   rows('wallets',data.balances.filter(b=>b.status!=='abandoned'),[b=>{const div=document.createElement('div');div.textContent=b.label+' · '+b.status+(b.status==='vault'?'':' · losses: '+b.loss_count);const small=document.createElement('small');small.textContent=b.address;div.append(small);return div;},b=>money(b.usdc),b=>qty(b.native)]);
   rows('orders',data.orders,[o=>date(o.created_at),o=>o.stock_ticker,o=>o.order_type.toUpperCase(),o=>money(o.amount_usdc),o=>qty(o.quantity),o=>badge(o.status),o=>money(o.profit_loss)]);
   rows('execution',data.execution||[],[o=>o.symbol+' '+o.kind,o=>o.rejection||(o.delivery_at&&o.state!=='SETTLED'?'DELIVERED / RECONCILING':o.state),o=>money(o.decision_price),o=>money(o.execution_quote),o=>date(o.submission_at),o=>date(o.settlement_at||o.delivery_at),o=>{const lag=o.recognition_delay_seconds??o.delivery_recognition_delay_seconds;return lag==null?'—':lag.toFixed(1)+'s';}]);

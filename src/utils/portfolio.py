@@ -113,6 +113,8 @@ class PortfolioCalculator:
                         stock_balance = available_stock_quantity
                         # Get current stock price
                         stock_price = self.api.get_stock_price(stock_ticker)
+                        if stock_price:
+                            stock_price /= float(self.api.get_token_per_share(stock_ticker))
                         if stock_price and stock_price > 0:
                             stock_value = stock_balance * stock_price
                         else:

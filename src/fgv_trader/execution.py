@@ -12,6 +12,7 @@ from eth_account import Account
 from web3 import Web3
 from web3.exceptions import TransactionNotFound
 from fgv_trader.entry_safety import rejection, now_timestamp
+from utils.stock_units import tokens_to_shares, shares_to_tokens
 
 log = logging.getLogger(__name__)
 
@@ -57,6 +58,9 @@ class LiveBroker:
         wallets = self.store.db.get_active_wallets(self.config.blockchain)
         wallets += self.store.db.get_wallets_by_status(self.config.blockchain, 'pending_funding')
         return {address: self.balance(address) for address in [self.vault] + [w['address'] for w in wallets]}
+
+    def stock_shares(self, symbol, token_quantity):
+        return float(tokens_to_shares(token_quantity, self.api.get_token_per_share(symbol, refresh=True)))
 
     def balance_units(self, address, asset):
         address = Web3.to_checksum_address(address)
@@ -133,11 +137,16 @@ class LiveBroker:
                 amount = float(Decimal(amount_units) / 10 ** decimals)
                 op.update(amount=amount, amount_units=amount_units, token_decimals=decimals)
             stock_decimals = self.contract(op['symbol']).functions.decimals().call()
-            quantity = amount / price if kind == 'buy' else amount
-            usdc = amount if kind == 'buy' else Decimal(amount_units) * Decimal(str(price)) / 10 ** decimals
+            conversion = self.api.get_token_per_share(op['symbol'])
+            share_quantity = (Decimal(str(amount)) / Decimal(str(price)) if kind == 'buy' else
+                              tokens_to_shares(Decimal(amount_units) / 10 ** decimals, conversion))
+            quantity = float(shares_to_tokens(share_quantity, conversion)) if kind == 'buy' else amount
+            usdc = Decimal(str(amount)) if kind == 'buy' else share_quantity * Decimal(str(price))
+            request_tokens = shares_to_tokens(share_quantity, conversion) if kind == 'buy' else None
+            op.update(token_per_share_snapshot=str(conversion), estimated_shares=float(share_quantity))
             memo = dict(customer_id=op['id'], type='MARKET',
                         offer=amount_units,
-                        request=units(quantity, stock_decimals) if kind == 'buy' else units(usdc, self.blockchain.usdc_decimals),
+                        request=units(request_tokens, stock_decimals) if kind == 'buy' else units(usdc, self.blockchain.usdc_decimals),
                         token_address=self.config.get_stock_token_address(op['symbol']),
                         expiry_days=op['expiry_days'], did_id=source)
             op.update(estimated_price=price, estimated_quantity=quantity, order_type='MARKET')
@@ -443,6 +452,10 @@ class PaperBroker:
         self.store, self.config, self.prices = store, config, prices
         self.vault = 'paper-vault'
         store.initialize_paper(self.vault, config.paper.get('initial_usdc', 1000))
+
+    def stock_shares(self, symbol, quantity):
+        # Simulation fills and balances are already in share units.
+        return quantity
 
     def balance(self, address, asset='USDC'):
         return self.store.balance(address, asset)

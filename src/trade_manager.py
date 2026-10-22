@@ -84,6 +84,10 @@ class TradeManager:
             
             # Get current stock price
             current_price = self.api.get_stock_price(stock_ticker)
+            if current_price:
+                # Legacy order/position quantities and average prices are per token.
+                conversion = float(self.api.get_token_per_share(stock_ticker))
+                current_price /= conversion
             if not current_price:
                 logger.error(f"Failed to get price for {stock_ticker}")
                 return None
@@ -94,7 +98,7 @@ class TradeManager:
             
             # Set limit price (slightly above market for faster fill)
             limit_price = current_price * 1.005  # +0.5%
-            limit_price = round(limit_price, 2)
+            limit_price = round(limit_price * conversion, 2) / conversion
             
             # Recalculate quantity at limit price
             quantity_at_limit = usdc_amount / limit_price
@@ -214,6 +218,10 @@ class TradeManager:
             
             # Get current stock price
             current_price = self.api.get_stock_price(stock_ticker)
+            if current_price:
+                # Legacy order/position quantities and average prices are per token.
+                conversion = float(self.api.get_token_per_share(stock_ticker))
+                current_price /= conversion
             if not current_price:
                 logger.error(f"Failed to get price for {stock_ticker}")
                 return None
@@ -228,7 +236,7 @@ class TradeManager:
                 # Limit order: apply slippage below market for faster fill
                 limit_price = current_price * (1 - self.config.sell_slippage)
             
-            limit_price = round(limit_price, 2)
+            limit_price = round(limit_price * conversion, 2) / conversion
             
             # Calculate expected USDC amount
             usdc_amount = quantity * limit_price

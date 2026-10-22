@@ -6,6 +6,7 @@ Handles stock price fetching and order status monitoring via blockchain transact
 import json
 import logging
 import requests
+from utils.stock_units import pool_ratio
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 
@@ -72,14 +73,16 @@ class SharesDAOClient:
             pools = {}
             
             # Determine blockchain type
-            blockchain_type = BLOCKCHAIN_TYPES.get('evm') if self.blockchain in ['ethereum', 'arbitrum', 'base', 'bnb'] else None
+            blockchain_type = BLOCKCHAIN_TYPES.get('evm') if self.blockchain in ['ethereum', 'arbitrum', 'base', 'bnb', 'injective', 'monad', 'robinhood'] else None
             logger.debug(f"Blockchain type for {self.blockchain}: {blockchain_type}")
             
             filtered_count = 0
             for pool in pools_data:
                 # Filter by blockchain type
                 pool_blockchain = pool.get("blockchain")
-                if blockchain_type and pool_blockchain != blockchain_type:
+                chain_code = {'ethereum': 5, 'arbitrum': 3, 'base': 4, 'bnb': 7,
+                              'injective': 8, 'robinhood': 9, 'monad': 10}.get(self.blockchain)
+                if blockchain_type and pool_blockchain not in (blockchain_type, chain_code):
                     filtered_count += 1
                     continue
                 
@@ -101,7 +104,10 @@ class SharesDAOClient:
                             'bnb': ['bnb', 'bsc'],
                             'ethereum': ['ethereum', 'eth'],
                             'arbitrum': ['arbitrum', 'arb'],
-                            'base': ['base']
+                            'base': ['base'],
+                            'injective': ['injective'],
+                            'monad': ['monad'],
+                            'robinhood': ['robinhood']
                         }
                         
                         # Try to find address for current chain
@@ -110,10 +116,8 @@ class SharesDAOClient:
                                 asset_id = token_id_dict[chain_key]
                                 break
                         else:
-                            # Fallback: use first available address
-                            if token_id_dict:
-                                asset_id = list(token_id_dict.values())[0]
-                                logger.warning(f"Using fallback address for {symbol}: {asset_id}")
+                            logger.debug("No %s token address for %s", self.blockchain, symbol)
+                            continue
                     
                     except (json.JSONDecodeError, TypeError) as e:
                         logger.warning(f"Failed to parse token_id for {symbol}: {e}")
@@ -125,7 +129,9 @@ class SharesDAOClient:
                     "asset_id": asset_id,
                     "mint_address": pool.get("mint_address"),
                     "burn_address": pool.get("burn_address"),
-                    "pool_id": pool.get("pool_id")
+                    "pool_id": pool.get("pool_id"),
+                    "token_per_share": pool.get("token_per_share", 1),
+                    "token_per_share_exact": pool.get("token_per_share_exact"),
                 }
                 logger.debug(f"Added pool: {symbol} (pool_id={pool.get('pool_id')}, asset_id={asset_id})")
             
@@ -145,6 +151,21 @@ class SharesDAOClient:
             logger.error(f"Error fetching pool list: {e}", exc_info=True)
             return {}
     
+    def get_token_per_share(self, ticker, refresh=False):
+        """Use catalog metadata, refreshed together with each execution price."""
+        if ticker not in self.stock_pools:
+            raise ValueError(f'Pool ratio unavailable for {ticker}')
+        if refresh:
+            response = self.session.get(f'{self.api_url}/pool/{self.stock_pools[ticker]["pool_id"]}', timeout=10)
+            response.raise_for_status()
+            self._update_conversion(ticker, response.json())
+        return pool_ratio(self.stock_pools[ticker])
+
+    def _update_conversion(self, ticker, pool_data):
+        conversion = pool_ratio(pool_data)
+        self.stock_pools[ticker].update(token_per_share=str(conversion),
+                                       token_per_share_exact=str(conversion))
+
     def get_stock_price(self, ticker: str, slippage: float = 0.005) -> Optional[float]:
         """
         Get current price for a pool/stock from SharesDAO API.
@@ -173,6 +194,7 @@ class SharesDAOClient:
             
             if response.status_code == 200:
                 pool_data = response.json()
+                self._update_conversion(ticker, pool_data)
                 
                 # Get buy price (price to buy the stock) with slippage
                 buy_price = float(pool_data.get("buy_price", 0))
@@ -214,6 +236,7 @@ class SharesDAOClient:
             
             if response.status_code == 200:
                 pool_data = response.json()
+                self._update_conversion(ticker, pool_data)
                 
                 # Get sell price (price to sell the stock) with slippage
                 sell_price = float(pool_data.get("sell_price", 0))

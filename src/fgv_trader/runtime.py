@@ -564,7 +564,7 @@ class Engine:
                             and opened.date() == entry_date and opened <= entry_cutoff)
         carry = trade.get('time_exit_carry')
         losing = bool(price is not None and trade.get('quantity', 0) > 0
-                      and price * trade['quantity'] < trade.get('cost', 0))
+                      and price * self.broker.stock_shares(trade['symbol'], trade['quantity']) < trade.get('cost', 0))
         elapsed = self.weekday_sessions_after(entry_date, now.date())
         if now.date() == entry_date:
             if normal_entry and losing:

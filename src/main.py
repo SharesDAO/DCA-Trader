@@ -331,6 +331,8 @@ class TradingBot:
                 usdc_value = actual_usdc_balance
                 if actual_stock_balance > 0:
                     stock_price = self.api.get_stock_price(stock_ticker)
+                    if stock_price:
+                        stock_price /= float(self.api.get_token_per_share(stock_ticker))
                     if stock_price and stock_price > 0:
                         stock_value = actual_stock_balance * stock_price
                     else:
@@ -348,6 +350,8 @@ class TradingBot:
                 pending_sell_quantity = sum(sell_order['quantity'] for sell_order in pending_sell_orders)
                 if pending_sell_quantity > 0:
                     stock_price = self.api.get_stock_price(stock_ticker)
+                    if stock_price:
+                        stock_price /= float(self.api.get_token_per_share(stock_ticker))
                     if stock_price and stock_price > 0:
                         pending_sell_value = pending_sell_quantity * stock_price
                         stock_value += pending_sell_value

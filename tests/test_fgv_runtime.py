@@ -888,3 +888,16 @@ def test_partial_onchain_delivery_is_protected_and_late_delivery_not_reused(syst
     assert trade['state']=='CLOSED'
     assert trade['realized_pnl']==-4
     assert not trade['cost_provisional']
+
+
+def test_losing_time_exit_values_actual_shares_not_wallet_tokens(system, monkeypatch):
+    engine, store, broker, market = system
+    engine.enter(signal(), 100, .6)
+    asyncio.run(cycles(engine))
+    trade = store.trades()[0]
+    trade.update(quantity=10, cost=100)
+    monkeypatch.setattr(broker, 'stock_shares', lambda symbol, tokens: tokens / 10)
+    cutoff = engine.clock.session_for(datetime(2026, 9, 4).date()).force_exit
+    operations = [op for op in store.operations() if op['trade_id'] == trade['id']]
+    assert engine.time_exit_reason(trade, operations, 99, cutoff) is None
+    assert trade['time_exit_carry']['max_additional_sessions'] == 3

@@ -20,6 +20,8 @@ from aiohttp import web
 if __package__:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
 from config import Config
+from sharesdao_client import SharesDAOClient
+from utils.stock_units import pool_ratio, tokens_to_shares
 
 ALLOW_REMOTE = web.AppKey('allow_remote', bool)
 
@@ -121,6 +123,23 @@ class Dashboard:
         self.config = config
         self.cache = {}
         self.lock = asyncio.Lock()
+
+    async def pool_ratios(self, symbols):
+        if not symbols:
+            return {}
+        api = SharesDAOClient(self.config.sharesdao_api_url, self.config.blockchain)
+        try:
+            pools = await asyncio.to_thread(api.get_pool_list)
+            result = {}
+            for symbol in symbols:
+                if symbol in pools:
+                    try:
+                        result[symbol] = str(pool_ratio(pools[symbol]))
+                    except (ValueError, ArithmeticError):
+                        continue
+            return result
+        finally:
+            api.session.close()
 
     async def reference_prices(self, symbols):
         if not symbols:
@@ -240,7 +259,18 @@ class Dashboard:
                 prices, fetched_at = await self.reference_prices(symbols)
             except Exception:
                 prices, fetched_at = {}, None
-            data['valuation'] = value_trades(data['trades'], prices)
+            # Live journals contain wallet token quantities. Paper fills already
+            # contain actual shares and must not inherit a live pool's ratio.
+            conversions = None
+            if mode == 'live':
+                try:
+                    conversions = await self.pool_ratios(symbols)
+                except Exception:
+                    conversions = {}
+                missing_ratios = sorted(symbols - conversions.keys())
+                if missing_ratios:
+                    data['warnings'].append('Pool conversion unavailable for: ' + ', '.join(missing_ratios))
+            data['valuation'] = value_trades(data['trades'], prices, conversions)
             data['valuation'].update(source='Backpack external last price', fetched_at=fetched_at)
             if data['valuation']['missing_symbols']:
                 data['warnings'].append('Unrealized P&L unavailable for: ' + ', '.join(data['valuation']['missing_symbols']))
@@ -275,17 +305,26 @@ def summarize_trades(trades):
                 other_exits=len(closed) - reasons['TAKE_PROFIT'] - reasons['STOP_LOSS'])
 
 
-def value_trades(trades, prices):
+def value_trades(trades, prices, conversions=None):
     total, missing = 0.0, set()
     for trade in trades:
-        trade.update(reference_price=None, market_value=None, unrealized_pnl=None, unrealized_pct=None)
+        trade.update(reference_price=None, market_value=None, unrealized_pnl=None, unrealized_pct=None,
+                     actual_shares=None, token_quantity=trade.get('quantity') if conversions is not None else None,
+                     quantity_units='shares' if conversions is None else 'tokens', token_per_share=None)
         if trade['state'] not in ('OPEN', 'SELL_PENDING') or (trade['quantity'] or 0) <= 0:
             continue
         price = prices.get(trade['symbol'])
+        try:
+            conversion = 1 if conversions is None else conversions.get(trade['symbol'])
+            shares = tokens_to_shares(trade['quantity'], conversion)
+        except (ValueError, TypeError, ArithmeticError):
+            missing.add(trade['symbol'])
+            continue
+        trade.update(actual_shares=float(shares), token_per_share=str(conversion))
         if price is None or trade['cost'] is None:
             missing.add(trade['symbol'])
             continue
-        value = trade['quantity'] * price
+        value = float(shares) * price
         pnl = value - trade['cost']
         trade.update(reference_price=price, market_value=value, unrealized_pnl=pnl,
                      unrealized_pct=100 * pnl / trade['cost'] if trade['cost'] > 0 else None)

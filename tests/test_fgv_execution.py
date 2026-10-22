@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
@@ -56,6 +57,7 @@ def live(tmp_path):
     api = MagicMock()
     api.get_stock_price.return_value = 100
     api.get_stock_sell_price.return_value = 99
+    api.get_token_per_share.return_value = Decimal('1')
     return LiveBroker(store, chain, config, api), store, trade
 
 
@@ -95,6 +97,7 @@ def test_broadcast_insufficient_funds_persisted_and_backed_off(live, monkeypatch
 def test_market_memo_and_signed_journal_precede_broadcast(live, side, amount, monkeypatch):
     broker, store, trade = live
     op = store.new_operation(trade, side, amount, expiry_days=1)
+    broker.api.get_token_per_share.return_value = Decimal('10')
     broadcasts = []
     def broadcast(raw):
         saved = store.operations()[0]
@@ -108,8 +111,11 @@ def test_market_memo_and_signed_journal_precede_broadcast(live, side, amount, mo
     broker.w3.eth.send_raw_transaction.side_effect = broadcast
     broker.step(op)
     recovered = store.operations()[0]
+    broker.api.get_token_per_share.return_value = Decimal('100')
     monkeypatch.setattr('fgv_trader.execution.time.time', lambda: recovered['broadcast_retry_at'] + 1)
     broker.step(recovered)
+    broker.api.get_token_per_share.assert_called_once_with('TSLA')
+    assert recovered['token_per_share_snapshot'] == '10'
     assert len(broadcasts) == 2
     assert broadcasts[0] == broadcasts[1]
     broker.blockchain.get_nonce.assert_called_once()
@@ -415,3 +421,35 @@ def test_multiple_pending_buys_prevent_ambiguous_mint_attribution(live):
     store.new_operation(trade,'buy',100,expiry_days=1)
     assert broker.chain_buy_delivery(first,{'blockNumber':100}) is None
     broker.w3.eth.get_logs.assert_not_called()
+
+
+@pytest.mark.parametrize('conversion', ['10', '0.1'])
+def test_live_buy_memo_requests_tokens_for_actual_shares(live, conversion):
+    broker, store, trade = live
+    broker.api.get_stock_price.return_value = 40
+    broker.api.get_token_per_share.return_value = Decimal(conversion)
+    broker.contract('USDC').functions.balanceOf.return_value.call.return_value = 40_000_000
+    op = store.new_operation(trade, 'buy', 40, expiry_days=1)
+    broker._prepare(op)
+    assert op['memo']['offer'] == 40_000_000
+    assert op['memo']['request'] == int(Decimal(conversion) * 10**18)
+    assert op['estimated_shares'] == 1
+    assert op['estimated_quantity'] == float(conversion)
+    assert op['token_per_share_snapshot'] == conversion
+
+
+@pytest.mark.parametrize('conversion', ['10', '0.1'])
+def test_live_sell_values_shares_but_transfers_exact_wallet_tokens(live, conversion):
+    broker, store, trade = live
+    broker.api.get_stock_sell_price.return_value = 40
+    broker.api.get_token_per_share.return_value = Decimal(conversion)
+    raw = int(Decimal(conversion) * 10**18)
+    broker.contract('TSLA').functions.balanceOf.return_value.call.return_value = raw
+    op = store.new_operation(trade, 'sell', float(conversion), expiry_days=1)
+    broker._prepare(op)
+    assert op['memo']['offer'] == raw
+    assert op['memo']['request'] == 40_000_000
+    assert op['estimated_shares'] == 1
+    assert op['amount_units'] == raw
+    assert broker.stock_shares('TSLA', float(conversion)) == 1
+    broker.api.get_token_per_share.assert_called_with('TSLA', refresh=True)

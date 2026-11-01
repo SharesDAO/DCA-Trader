@@ -27,6 +27,18 @@ def test_exact_ratio_and_legacy_missing_field():
     assert tokens_to_shares('9007199254740993.000000001', '10') == Decimal('900719925474099.3000000001')
 
 
+def test_replacement_token_does_not_silently_retarget_legacy_bot_positions():
+    client = SharesDAOClient(blockchain='arbitrum')
+    client.stock_pools = {'MSTU': {'pool_id': 'pool', 'token_per_share': '10'}}
+    version = dict(chain='arbitrum', status='active', model='evm_rebasing')
+    assert client._requires_generation_migration({'stock_token_versions': [version]})
+    assert not client._requires_generation_migration({'stock_token_versions': [{**version, 'chain': 'base'}]})
+    assert not client._requires_generation_migration({'stock_token_versions': [{**version, 'status': 'staged'}]})
+    with pytest.raises(ValueError, match='ledger reconciliation'):
+        client._update_conversion('MSTU', {'token_per_share': 1, 'stock_token_versions': [version]})
+    assert client.get_token_per_share('MSTU') == 10
+
+
 def test_catalog_preserves_current_ratio_and_excludes_other_network():
     client = SharesDAOClient(blockchain='arbitrum')
     client.session.post = MagicMock(return_value=MagicMock(status_code=200))

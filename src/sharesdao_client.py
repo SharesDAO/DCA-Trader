@@ -90,6 +90,12 @@ class SharesDAOClient:
                 if not symbol:
                     logger.debug(f"Skipping pool without symbol: {pool.get('pool_id')}")
                     continue
+                if self._requires_generation_migration(pool):
+                    # The bot's persisted positions are legacy wallet units and
+                    # do not yet identify a token generation. Never silently
+                    # retarget an old position to a replacement token address.
+                    logger.warning("Skipping %s: token-generation migration requires bot ledger reconciliation", symbol)
+                    continue
                 
                 # Parse token_id for EVM chains
                 token_id = pool.get("token_id")
@@ -162,9 +168,16 @@ class SharesDAOClient:
         return pool_ratio(self.stock_pools[ticker])
 
     def _update_conversion(self, ticker, pool_data):
+        if self._requires_generation_migration(pool_data):
+            raise ValueError('Token-generation migration requires bot ledger reconciliation')
         conversion = pool_ratio(pool_data)
         self.stock_pools[ticker].update(token_per_share=str(conversion),
                                        token_per_share_exact=str(conversion))
+
+    def _requires_generation_migration(self, pool):
+        chains = {self.blockchain, 'bsc' if self.blockchain == 'bnb' else self.blockchain}
+        return any(version.get('chain', '').lower() in chains and version.get('status') == 'active'
+                   and version.get('model') != 'legacy_fixed' for version in pool.get('stock_token_versions', []))
 
     def get_stock_price(self, ticker: str, slippage: float = 0.005) -> Optional[float]:
         """

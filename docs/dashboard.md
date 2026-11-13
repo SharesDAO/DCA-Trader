@@ -1,5 +1,17 @@
 # Trading dashboard
 
+Start both the configured bot and dashboard (without duplicating existing processes):
+
+```bash
+./scripts/start_bot_and_dashboard.sh
+```
+
+The launcher uses the existing trading configuration, including live/paper mode,
+and defaults to `0.0.0.0:8080`. Open `http://<server-ip>:8080`. Override with
+`DASHBOARD_HOST=127.0.0.1 DASHBOARD_PORT=8080 ./scripts/start_bot_and_dashboard.sh`.
+Existing processes are left unchanged; logs are in `logs/fgv-live.log` and
+`logs/fgv-dashboard.log`. This is a background launcher, not a reboot supervisor.
+
 Run independently of the trading bot:
 
 ```bash
@@ -28,7 +40,12 @@ private keys, API credentials, raw signed transactions, and raw logs are not
 included in API responses. No additional dependencies are required.
 
 Live and paper views use separate databases. Snapshots refresh every 10 seconds
-and use a shared per-mode cache. Live balances are read directly through RPC;
+after the previous browser request completes, avoiding overlapping slow refreshes.
+The chart initially loads daily realized profit from a separate local-only endpoint
+(`/api/performance`), without waiting for RPC balances or external prices. The
+portfolio-value line is added when the full snapshot arrives; missing valuation
+is never replaced with a fabricated total. Switching modes cancels old requests.
+Snapshots use a shared per-mode cache. Live balances are read directly through RPC;
 paper balances come from the simulation ledger. Balance lookup failure is not
 displayed as zero. Available USDC is cash, not total equity. Realized P&L covers
 all recorded FGV sessions and excludes native-token gas. No unrealized valuation

@@ -79,12 +79,24 @@ function render(data){
   $('healthtime').textContent=data.health?'Log: '+data.health.logged_at+' (server local)':'—';
   $('schedule').textContent=`${data.schedule.exchange_timezone}: entry ${data.schedule.first_15m_complete}–${data.schedule.scan_end} · force exit ${data.schedule.force_exit}`;
 }
-let requestId=0;
+let requestId=0,refreshTimer=null,activeRequest=null,chartMode=null;
 async function refresh(){
+  clearTimeout(refreshTimer);
+  if(activeRequest)activeRequest.abort();
+  const controller=new AbortController();activeRequest=controller;
+  const timeout=setTimeout(()=>controller.abort(),30000);
   const id=++requestId,mode=$('mode').value;
-  try{const response=await fetch('/api/state?mode='+mode,{signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('unavailable');const data=await response.json();if(id===requestId)render(data);}
+  if(chartMode!==mode){
+    fetch('/api/performance?mode='+mode,{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('unavailable');return r.json();}).then(perf=>{
+      if(id!==requestId||chartMode===mode)return;
+      renderChart(perf);$('chartsummary').textContent='Daily realized profit · live valuation loading…';$('chartnote').textContent=perf.methodology;
+    }).catch(()=>{});
+  }
+  try{const response=await fetch('/api/state?mode='+mode,{signal:controller.signal});if(!response.ok)throw Error('unavailable');const data=await response.json();if(id===requestId){chartMode=mode;render(data);}}
   catch(error){if(id===requestId)$('warning').textContent='Refresh failed. Displayed data may be stale; retrying automatically.';}
+  finally{clearTimeout(timeout);if(id===requestId){activeRequest=null;refreshTimer=setTimeout(refresh,10000);}}
 }
 $('mode').value=localStorage.getItem('fgv-mode')==='paper'?'paper':'live';
 $('mode').addEventListener('change',()=>{localStorage.setItem('fgv-mode',$('mode').value);$('warning').textContent='Loading selected mode…';for(const id of Object.keys(pageState)){pageState[id].page=1;$(id).replaceChildren();$(id+'-pagination').replaceChildren();}for(const id of ['health','chart'])$(id).replaceChildren();for(const id of ['cash','cost','pnl','active','unrealized','walletcount','walletbreakdown','pricetime','wins','losses','takeprofits','stoplosses','winrate','closedcount','otherexits','chartsummary'])$(id).textContent='—';refresh();});
-$('refresh').addEventListener('click',refresh);refresh();setInterval(refresh,10000);
+$('mode').addEventListener('change',()=>{chartMode=null;},true);
+$('refresh').addEventListener('click',refresh);refresh();

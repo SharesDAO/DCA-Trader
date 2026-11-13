@@ -87,7 +87,7 @@ market_data:
   symbol_map: {}  # Example: BRK.B: BRK.B.US_USDC
 
 stop_policy:
-  exits_enabled: false  # Disables ALL stop exits, including emergency and legacy stops
+  exits_enabled: true  # Enable confirmed buffered stops and immediate emergency stops
   enabled: true  # Frozen for new entries only; pre-upgrade positions retain original stops
   confirmation_observations: 2
   confirmation_seconds: 5  # Distinct fresh quotes, at least this far apart
@@ -102,8 +102,8 @@ stop_policy:
 execution:
   entry_max_age_seconds: 300  # Retry unsigned entries for up to 5 minutes, capped by the session cutoff
   losing_time_exit_max_sessions: 3  # Carry a normal losing 15:45 exit for at most this many additional weekdays
-  allow_entry_below_original_stop: true  # Permit deeper pullbacks only above the frozen emergency floor
-  allow_entry_at_or_below_risk_stop: true  # Include deep entries at/below that floor; stop-based reward/risk is undefined there
+  allow_entry_below_original_stop: false  # Reject execution quotes at/below the original signal stop
+  allow_entry_at_or_below_risk_stop: false  # No deep-entry bypass of the stop/reward-risk gates
   max_entry_above_trigger_r: 0.05  # Hard ceiling above the signal; the reward/risk gate may be tighter
   min_entry_reward_risk: 1.4
   max_execution_quote_age_seconds: 5

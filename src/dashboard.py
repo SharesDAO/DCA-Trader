@@ -402,7 +402,22 @@ def create_app(config, allow_remote=False):
         if name not in ('index.html', 'app.js', 'style.css'):
             raise web.HTTPNotFound()
         return web.FileResponse(assets / name)
+    async def performance(request):
+        # Local-only first paint: never queue behind RPC/API snapshot enrichment.
+        mode = request.query.get('mode', 'paper' if config.dry_run else 'live')
+        if mode not in ('live', 'paper'):
+            raise web.HTTPBadRequest(text='Invalid mode')
+        path = config.paper_database_path if mode == 'paper' else config.database_path
+        try:
+            data = await asyncio.to_thread(read_database, path, config.blockchain)
+            result = daily_performance(data['trades'], None, None,
+                                       config.session_time['exchange_timezone'])
+            result['methodology'] = 'Daily realized profit from local records. Portfolio value loads separately from live balances and prices.'
+            return web.json_response(result)
+        except Exception:
+            return web.json_response({'error': 'Performance data temporarily unavailable'}, status=503)
     app.router.add_get('/api/state', state)
+    app.router.add_get('/api/performance', performance)
     app.router.add_get('/', asset)
     app.router.add_get('/{name}', asset)
     return app

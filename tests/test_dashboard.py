@@ -16,6 +16,26 @@ def test_missing_database_is_not_created(tmp_path):
     assert not path.exists()
 
 
+def test_performance_endpoint_never_waits_for_live_snapshot(tmp_path, monkeypatch):
+    async def forbidden(*args, **kwargs):
+        raise AssertionError('Fast chart endpoint must not invoke live enrichment')
+    monkeypatch.setattr(Dashboard, 'snapshot', forbidden)
+    cfg = SimpleNamespace(dry_run=False, database_path=tmp_path/'live.db',
+                          paper_database_path=tmp_path/'paper.db', blockchain='arbitrum',
+                          session_time={'exchange_timezone': 'America/New_York'})
+    async def check():
+        async with TestClient(TestServer(create_app(cfg))) as client:
+            response = await client.get('/api/performance?mode=live')
+            assert response.status == 200
+            data = await response.json()
+            assert data['points'] == []
+            assert data['current_total'] is None
+            response = await client.get('/api/performance?mode=invalid')
+            assert response.status == 400
+    asyncio.run(check())
+    assert not cfg.database_path.exists()
+
+
 def test_payload_secrets_are_not_exposed(tmp_path):
     path = tmp_path / 'test.db'
     with sqlite3.connect(path) as db:

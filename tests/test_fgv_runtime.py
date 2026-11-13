@@ -278,8 +278,24 @@ def test_disabling_stops_preserves_already_pending_exit(system):
     assert [o['id'] for o in store.operations() if o['kind']=='sell']==[sell['id']]
 
 
+@pytest.mark.parametrize('price', [97, 97.5, 98])
+def test_strict_entry_policy_rejects_at_or_below_original_stop(system, price):
+    engine, store, broker, market = system
+    engine.config.paper['slippage_bps'] = 0  # Exercise exact-stop equality too.
+    engine.config.execution.update(allow_entry_below_original_stop=False,
+                                   allow_entry_at_or_below_risk_stop=False)
+    market.price = price
+    engine.enter(signal(), 100, .6)
+    asyncio.run(cycles(engine, count=12))
+    assert store.trades()[0]['state'] == 'FAILED'
+    buy = next(o for o in store.operations() if o['kind'] == 'buy')
+    assert buy['error'] == 'ENTRY_AT_OR_BELOW_STOP'
+
+
 def test_configured_entry_at_fallback_emergency_floor_is_filled(system):
     engine, store, broker, market = system
+    engine.config.execution.update(allow_entry_below_original_stop=True,
+                                   allow_entry_at_or_below_risk_stop=True)
     engine.stop_settings['exits_enabled'] = False
     market.price = 97
     assert engine.strategy.should_market_buy(signal(), market.price)
@@ -293,6 +309,8 @@ def test_configured_entry_at_fallback_emergency_floor_is_filled(system):
 
 def test_enabled_policy_allows_entry_below_original_stop(system):
     engine, store, broker, market = system
+    engine.config.execution.update(allow_entry_below_original_stop=True,
+                                   allow_entry_at_or_below_risk_stop=True)
     now = engine.clock.now_exchange()
     engine.bars['TSLA'] = [Candle('TSLA', now-timedelta(minutes=20-5*i),
                                     99, 100, 98, 99, 10) for i in range(4)]
